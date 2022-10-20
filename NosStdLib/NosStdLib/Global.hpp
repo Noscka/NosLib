@@ -1,9 +1,9 @@
 #ifndef _GLOBAL_HPP_
 #define _GLOBAL_HPP_
 
+#include <Windows.h>
 #include <string>
 #include <stringapiset.h>
-#include <Windows.h>
 
 /*
 Contains:
@@ -53,6 +53,22 @@ namespace NosStdLib
                 WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
                 return strTo;
             }
+
+#pragma region IsNumber
+            bool IsNumber(const std::string& str)
+            {
+                for (char const& c : str)
+                    if (std::isdigit(c) == 0) return false;
+                return true;
+            }
+
+            bool IsNumber(const std::wstring& wstr)
+            {
+                for (wchar_t const& c : wstr)
+                    if (std::isdigit(c) == 0) return false;
+                return true;
+            }
+#pragma endregion
         }
 
         /// <summary>
@@ -141,6 +157,31 @@ namespace NosStdLib
             void ClearScreen(wchar_t fillChar = L' ')
             {
                 ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
+            }
+#pragma endregion
+
+#pragma region ShowCaret
+            /// <summary>
+            /// Show or hide Console Caret with custom Console Handle
+            /// </summary>
+            /// <param name="ConsoleHandle">- Custom Console Handle</param>
+            /// <param name="showFlag">- if caret will be shown or hidden</param>
+            void ShowCaret(HANDLE ConsoleHandle, bool showFlag)
+            {
+                CONSOLE_CURSOR_INFO cursorInfo;
+
+                GetConsoleCursorInfo(ConsoleHandle, &cursorInfo);
+                cursorInfo.bVisible = showFlag; // set the cursor visibility
+                SetConsoleCursorInfo(ConsoleHandle, &cursorInfo);
+            }
+
+            /// <summary>
+            /// Show or hide Console Caret
+            /// </summary>
+            /// <param name="showFlag">- if caret will be shown or hidden</param>
+            void ShowCaret(bool showFlag)
+            {
+                ShowCaret(GetStdHandle(STD_OUTPUT_HANDLE), showFlag);
             }
 #pragma endregion
         }

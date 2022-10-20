@@ -22,6 +22,9 @@
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
