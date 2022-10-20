@@ -3,9 +3,9 @@ NosStdLib or Noscka Standard Library is a library (like boost) made to expand on
 
 ## library structers, functions and more.
 this section will show the library structer. For example it will be shown like this. <br />
->ExampleFolder <br />
->├ HeaderFileOne.hpp <br />
->└ HeaderFileTwo.hpp <br />
->>	├ {Class} SomeClass <br />
->>	│	└ {Function} std::wstring SimpleClassFunction(std::wstring ReturnWstring) <br />
->>	└ {Function} std::wstring SimpleNoneClassFunction(std::wstring ReturnWstring) <br />
+> ExampleFolder <br />
+> ├ HeaderFileOne.hpp <br />
+> └ HeaderFileTwo.hpp <br />
+> > 	├ {Class} SomeClass <br />
+> > 	│	└ {Function} std::wstring SimpleClassFunction(std::wstring ReturnWstring) <br />
+> > 	└ {Function} std::wstring SimpleNoneClassFunction(std::wstring ReturnWstring) <br />
