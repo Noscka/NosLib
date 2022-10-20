@@ -150,9 +150,33 @@ namespace NosStdLib
 			/// <param name="fillChar">- the character to clear with</param>
 			void ClearRange(int position, int range, wchar_t fillChar = L' ')
 			{
-				return ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
+				ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
 			}
 		#pragma endregion
+
+		#pragma region ClearLine
+			/// <summary>
+			/// Clear a single line on position with custom Console Handle
+			/// </summary>
+			/// <param name="ConsoleHandle">- Custom Console Handle</param>
+			/// <param name="position">- position to clear</param>
+			/// <param name="fillChar">- the character to clear with</param>
+			void ClearLine(HANDLE ConsoleHandle, int position, wchar_t fillChar = L' ')
+			{
+				ClearRange(ConsoleHandle, position, 0, fillChar);
+			}
+
+			/// <summary>
+			/// Clear a single line on position
+			/// </summary>
+			/// <param name="position">- position to clear</param>
+			/// <param name="fillChar">- the character to clear with</param>
+			void ClearLine(int position, wchar_t fillChar = L' ')
+			{
+				ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
+			}
+		#pragma endregion
+
 
 		#pragma region ClearScreen
 			/// <summary>
