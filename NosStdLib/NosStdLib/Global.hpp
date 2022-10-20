@@ -55,18 +55,44 @@ namespace NosStdLib
             }
 
 #pragma region IsNumber
-            bool IsNumber(const std::string& str)
+            /// <summary>
+            /// Check if wstring is number (with or without signs)
+            /// </summary>
+            /// <param name="wstr">- wstring to check</param>
+            /// <param name="allowSigns">- if it should allow signs at the start of the string (-123 or +123)</param>
+            /// <returns>if wstring is valid number</returns>
+            bool IsNumber(const std::wstring& wstr, bool allowSigns = false)
             {
-                for (char const& c : str)
-                    if (std::isdigit(c) == 0) return false;
+                /* Iterator int, allows for changing start position */
+                int Iteration = 0;
+                if (allowSigns)
+                {
+                    /* if allowSigns is true, check if first character is either - or + or a number */
+                    if ((wstr[0] != L'-' && wstr[0] != L'+') || std::isdigit(wstr[0]))
+                        return false;
+
+                    Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */
+                }
+
+                /* Simple for loop, checking if any char isn't a digit */
+                for (; Iteration < wstr.size(); Iteration++)
+                {
+                    if (!std::isdigit(wstr[Iteration])) return false;
+                }
+
                 return true;
             }
 
-            bool IsNumber(const std::wstring& wstr)
+            /// <summary>
+            /// Check if string is number (with or without signs)
+            /// </summary>
+            /// <param name="str">- string to check</param>
+            /// <param name="allowSigns">- if it should allow signs at the start of the string (-123 or +123)</param>
+            /// <returns>if string is valid number</returns>
+            bool IsNumber(const std::string& str, bool allowSigns = false)
             {
-                for (wchar_t const& c : wstr)
-                    if (std::isdigit(c) == 0) return false;
-                return true;
+                /* convert to Wstring and use the Wstring version, less likely to have any error involving data loss. */
+                IsNumber(ToWstring(str), allowSigns);
             }
 #pragma endregion
         }
