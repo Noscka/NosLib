@@ -12,6 +12,9 @@ Contains:
 
 namespace NosStdLib
 {
+    /// <summary>
+    /// namespace for file management
+    /// </summary>
     namespace FileManagement
     {
         /// <summary>

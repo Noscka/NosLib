@@ -16,8 +16,14 @@ String
 
 namespace NosStdLib
 {
+    /// <summary>
+    /// namespace meant for items which will get regularly used
+    /// </summary>
     namespace Global
     {
+        /// <summary>
+        /// namespace for items which are related to strings (both string and wstring)
+        /// </summary>
         namespace String
         {
             /// <summary>
@@ -49,13 +55,52 @@ namespace NosStdLib
             }
         }
 
+        /// <summary>
+        /// namespace for items which are related to Console
+        /// </summary>
         namespace Console
         {
-            void ClearRange(int position, int range, wchar_t fillChar = L' ')
+#pragma region GetConsoleCaretPosition
+            /// <summary>
+            /// Get position of console caret with Custom Console Handle
+            /// </summary>
+            /// <param name="ConsoleHandle">- Custom Console Handle</param>
+            /// <returns>COORD position of console caret</returns>
+            COORD GetConsoleCaretPosition(HANDLE ConsoleHandle)
+            {
+                CONSOLE_SCREEN_BUFFER_INFO cbsi;
+                if (GetConsoleScreenBufferInfo(ConsoleHandle, &cbsi))
+                {
+                    return cbsi.dwCursorPosition;
+                }
+                else
+                {
+                    // The function failed. Call GetLastError() for details.
+                    return { 0, 0 };
+                }
+            }
+
+            /// <summary>
+            /// Get position of console caret
+            /// </summary>
+            /// <returns>COORD position of console caret</returns>
+            COORD GetConsoleCaretPosition()
+            {
+                return GetConsoleCaretPosition(GetStdHandle(STD_OUTPUT_HANDLE));
+            }
+#pragma endregion
+
+#pragma region ClearRange
+            /// <summary>
+            /// Clear range in console from position with custom Console Handle
+            /// </summary>
+            /// <param name="ConsoleHandle">- Custom Console Handle</param>
+            /// <param name="position">- position from which to start clearing</param>
+            /// <param name="range">- range to which clear</param>
+            /// <param name="fillChar">- the character to clear with</param>
+            void ClearRange(HANDLE ConsoleHandle, int position, int range, wchar_t fillChar = L' ')
             {
                 CONSOLE_SCREEN_BUFFER_INFO csbi;
-                HANDLE ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
                 COORD tl = { 0, (SHORT)(position) };
                 GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
                 DWORD written, cells = csbi.dwSize.X * (1 + range);
@@ -64,13 +109,40 @@ namespace NosStdLib
                 SetConsoleCursorPosition(ConsoleHandle, tl);
             }
 
-            void ClearScreen(wchar_t fillChar = L' ')
+            /// <summary>
+            /// Clear range in console from position
+            /// </summary>
+            /// <param name="position">- position from which to start clearing</param>
+            /// <param name="range">- range to which clear</param>
+            /// <param name="fillChar">- the character to clear with</param>
+            void ClearRange(int position, int range, wchar_t fillChar = L' ')
+            {
+                return ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
+            }
+#pragma endregion
+
+#pragma region ClearScreen
+            /// <summary>
+            /// Clear whole console with custom Console Handle
+            /// </summary>
+            /// <param name="ConsoleHandle">- Custom Console Handle</param>
+            /// <param name="fillChar">- character to clear with</param>
+            void ClearScreen(HANDLE ConsoleHandle, wchar_t fillChar = L' ')
             {
                 CONSOLE_SCREEN_BUFFER_INFO csbi;
-                HANDLE ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
                 GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-                ClearRange(0, csbi.dwSize.Y, fillChar);
+                ClearRange(ConsoleHandle, 0, csbi.dwSize.Y, fillChar);
             }
+
+            /// <summary>
+            /// clear the whole console
+            /// </summary>
+            /// <param name="fillChar">- character to clear with</param>
+            void ClearScreen(wchar_t fillChar = L' ')
+            {
+                ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
+            }
+#pragma endregion
         }
     }
 }
