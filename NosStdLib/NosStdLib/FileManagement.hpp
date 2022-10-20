@@ -4,12 +4,6 @@
 #include <string>
 #include <filesystem>
 
-/*
-Contains:
-
- - FilePathStorage class
-*/
-
 namespace NosStdLib
 {
     /// <summary>

@@ -9,9 +9,7 @@ ExampleFolder
 ├ HeaderFileOne.hpp
 └ HeaderFileTwo.hpp
 	├ {Class} SomeClass
-	│	│
 	│	└ {Function} std::wstring SimpleClassFunction(std::wstring ReturnWstring)
-	│
 	└ {Function} std::wstring SimpleNoneClassFunction(std::wstring ReturnWstring)
 ```
 <br />
@@ -28,12 +26,19 @@ NosStdLib
 │			├ {Function} std::wstring GetFilePath()
 │			└ {Function} std::wstring GetFilename()
 └ Global.hpp
-	│
 	└ {Namespace} Global
 		├ {Namespace} String
 		│	├ {Function} std::wstring ToWstring(std::string str)
-		│	└ {Function} std::wstring ToString(std::wstring wstr)
+		│	├ {Function} std::wstring ToString(std::wstring wstr)
+		│	├ {Function} bool IsNumber(const std::wstring& wstr, bool allowSigns = false)
+		│	└ {Function} bool IsNumber(const std::string& str, bool allowSigns = false) !overload!
 		└ {Namespace} Console
-			├ {Function} void ClearRange(int position, int range, wchar_t fillChar = L' ')
-			└ {Function} void ClearScreen(wchar_t fillChar = L' ')
+			├ {Function} COORD GetConsoleCaretPosition(HANDLE ConsoleHandle)
+			├ {Function} COORD GetConsoleCaretPosition() !overload!
+			├ {Function} void ClearRange(HANDLE ConsoleHandle, int position, int range, wchar_t fillChar = L' ')
+			├ {Function} void ClearRange(int position, int range, wchar_t fillChar = L' ') !overload!
+			├ {Function} void ClearScreen(HANDLE ConsoleHandle, wchar_t fillChar = L' ')
+			├ {Function} void ClearScreen(wchar_t fillChar = L' ') !overload!
+			├ {Function} void ShowCaret(HANDLE ConsoleHandle, bool showFlag)
+			└ {Function} void ShowCaret(bool showFlag) !overload!
 ```

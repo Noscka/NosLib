@@ -5,15 +5,6 @@
 #include <string>
 #include <stringapiset.h>
 
-/*
-Contains:
-
-String
-	- to_wstring
-	- to_string
-*/
-
-
 namespace NosStdLib
 {
 	/// <summary>
