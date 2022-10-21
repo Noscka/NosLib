@@ -6,10 +6,16 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NosStdLib", "NosStdLib\NosStdLib.vcxproj", "{D04B7371-7441-44FF-9E41-12EDB6B5C76D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NosStdLib-Tester", "NosStdLib-Tester\NosStdLib-Tester.vcxproj", "{5E038DC4-7186-44F4-950F-F8362354F862}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D04B7371-7441-44FF-9E41-12EDB6B5C76D} = {D04B7371-7441-44FF-9E41-12EDB6B5C76D}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{4017037E-C210-4AEE-8CFE-68E727797F89}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Library Structure Parser", "Library Structure Parser\Library Structure Parser.vcxproj", "{8DD59FC9-122B-4CA6-BAFA-FB6DF2ACF8CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D04B7371-7441-44FF-9E41-12EDB6B5C76D} = {D04B7371-7441-44FF-9E41-12EDB6B5C76D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
