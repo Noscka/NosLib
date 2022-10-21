@@ -4,6 +4,8 @@
 #include <string>
 #include <filesystem>
 
+#include "Global.hpp"
+
 namespace NosStdLib
 {
     /// <summary>
@@ -28,7 +30,7 @@ namespace NosStdLib
             /// </summary>
             /// <param name="relativePath">- path from current/absolute path</param>
             /// <param name="filename">- filename</param>
-            FilePath(std::wstring relativePath, std::wstring filename)
+            FilePath(const std::wstring relativePath, const std::wstring filename)
             {
                 RelativePath = relativePath;
                 Filename = filename;
@@ -62,6 +64,28 @@ namespace NosStdLib
                 return Filename;
             }
         };
+
+    #pragma region GetFileExtension
+        /// <summary>
+        /// Get file extention from filename
+        /// </summary>
+        /// <param name="filename">- filename to get extension from</param>
+        /// <returns>filename extension</returns>
+        std::wstring GetFileExtension(const std::wstring& filename)
+        {
+            return filename.substr(filename.find_last_of(L".") + 1);
+        }
+
+        /// <summary>
+        /// Get file extention from filename
+        /// </summary>
+        /// <param name="filename">- filename to get extension from</param>
+        /// <returns>filename extension</returns>
+        std::string GetFileExtension(const std::string& filename)
+        {
+            return NosStdLib::Global::String::ToString(GetFileExtension(NosStdLib::Global::String::ToWstring(filename)));
+        }
+    #pragma endregion
     }
 }
 
