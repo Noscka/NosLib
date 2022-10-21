@@ -83,7 +83,7 @@ namespace NosStdLib
 			bool IsNumber(const std::string& str, bool allowSigns = false)
 			{
 				/* convert to Wstring and use the Wstring version, less likely to have any error involving data loss. */
-				IsNumber(ToWstring(str), allowSigns);
+				return IsNumber(ToWstring(str), allowSigns);
 			}
 		#pragma endregion
 		}
