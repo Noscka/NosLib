@@ -9,17 +9,36 @@
 
 class Item
 {
+public:
     enum Type { Function, Class, Namespace }; /* Item Type */
 private:
+    /* Self Properties */
     Type ItemType;
+    std::wstring Name; /* Item name */
+
+    /* Item Relation ships */
     std::vector<Item*> Children; /* Array Pointer of children */
     int ChildrenCount; /* Count of Children */
     Item* Parent; /* Pointer to parent */
 public:
-    Item(const Type& type, Item* parent)
+    /* Tracking Properties */
+    int BracketCloseCount;
+
+    Item(Type type, std::wstring name, Item* parent)
     {
         ItemType = type;
+        Name = name;
         Parent = parent;
+    }
+
+    Item* GetParent()
+    {
+        return Parent;
+    }
+
+    std::wstring GetName()
+    {
+        return Name;
     }
 
     void AddChild(Item* child)
@@ -36,22 +55,48 @@ void ParseHeader(const std::wstring& filePath)
 {
     std::wifstream ParserStream(filePath);
     std::wstring line;
+    Item* currentItem = new Item(Item::Type::Namespace, L"Root", nullptr);
     while (std::getline(ParserStream, line)) /* iterate over each line in the header file */
     {
         if (line.find(L"namespace") != std::string::npos)
         {
             wprintf(L"namespace\n");
+
+            Item namespaceItem(Item::Type::Namespace, L"namespace", currentItem);
+
+            if (currentItem != nullptr)
+                currentItem->AddChild(&namespaceItem);
+
+            currentItem = &namespaceItem;
         }
         else if (line.find(L"class") != std::string::npos)
         {
             wprintf(L"class\n");
+
+            Item classItem(Item::Type::Class, L"class", currentItem);
+
+            if (currentItem != nullptr)
+                currentItem->AddChild(&classItem);
+
+            currentItem = &classItem;
         }
         //else if (line.find(L"") != std::string::npos)
         //{
         //
         //}
         //wprintf((line + L"\n").c_str());
+
+        if (line.find(L"{") != std::string::npos)
+            currentItem->BracketCloseCount++;
+        else if (line.find(L"}") != std::string::npos)
+        {
+            currentItem->BracketCloseCount--;
+            if (currentItem->BracketCloseCount == 0)
+                currentItem = currentItem->GetParent();
+        }
     }
+
+    std::wcout << currentItem->GetName() << std::endl;
 }
 
 /// <summary>
@@ -86,7 +131,8 @@ int main()
 
     std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
 
-    RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
+    //RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
+    RecureThrouDir(LR"(C:\Users\Adam\Documents\Programing Projects\C++\NosStdLib\Build\Library Structure Parser\x64\Release\)");
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;
