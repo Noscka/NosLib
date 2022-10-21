@@ -4,11 +4,31 @@
 #include <filesystem>
 #include <iostream>
 
-void RecuireThrouDir(std::wstring root)
+#include <NosStdLib/FileManagement.hpp>
+
+void ParseHeader()
+{
+
+}
+
+void RecureThrouDir(std::wstring root)
 {
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(root))
     {
-        std::wcout << L"Path: " << entry.path() << std::endl;
+        if (entry.is_directory())
+        {
+            wprintf(L"Directory");
+            RecureThrouDir(entry.path());
+        }
+        else if (NosStdLib::FileManagement::GetFileExtension(entry.path()) == L"hpp" || NosStdLib::FileManagement::GetFileExtension(entry.path()) == L"h")
+        {
+            wprintf(L"Header File");
+            ParseHeader();
+        }
+        else
+        {
+            wprintf(L"None Header File");
+        }
     }
 }
 
@@ -18,7 +38,7 @@ int main()
 
     std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
 
-    RecuireThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
+    RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;
