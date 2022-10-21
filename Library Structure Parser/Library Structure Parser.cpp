@@ -1,20 +1,25 @@
-// Library Structure Parser.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <io.h>
+#include <fcntl.h>
+#include <filesystem>
+#include <iostream>
+
+void RecuireThrouDir(std::wstring root)
+{
+    for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(root))
+    {
+        std::wcout << L"Path: " << entry.path() << std::endl;
+    }
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    _setmode(_fileno(stdout), _O_U16TEXT);
+
+    std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
+
+    RecuireThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
+
+    wprintf(L"Press any button to continue"); getchar();
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
