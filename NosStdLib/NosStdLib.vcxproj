@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
+    <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

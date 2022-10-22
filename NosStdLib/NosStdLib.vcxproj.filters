@@ -21,6 +21,9 @@
     <ClInclude Include="NosStdLib\FileManagement.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

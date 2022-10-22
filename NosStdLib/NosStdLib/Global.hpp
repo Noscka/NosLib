@@ -97,14 +97,14 @@ namespace NosStdLib
 			/// <summary>
 			/// Get position of console caret with Custom Console Handle
 			/// </summary>
-			/// <param name="ConsoleHandle">- Custom Console Handle</param>
+			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <returns>COORD position of console caret</returns>
-			COORD GetConsoleCaretPosition(HANDLE ConsoleHandle)
+			COORD GetConsoleCaretPosition(HANDLE consoleHandle)
 			{
-				CONSOLE_SCREEN_BUFFER_INFO cbsi;
-				if (GetConsoleScreenBufferInfo(ConsoleHandle, &cbsi))
+				CONSOLE_SCREEN_BUFFER_INFO csbi;
+				if (GetConsoleScreenBufferInfo(consoleHandle, &csbi))
 				{
-					return cbsi.dwCursorPosition;
+					return csbi.dwCursorPosition;
 				}
 				else
 				{
@@ -127,19 +127,19 @@ namespace NosStdLib
 			/// <summary>
 			/// Clear range in console from position with custom Console Handle
 			/// </summary>
-			/// <param name="ConsoleHandle">- Custom Console Handle</param>
+			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="position">- position from which to start clearing</param>
 			/// <param name="range">- range to which clear</param>
 			/// <param name="fillChar">- the character to clear with</param>
-			void ClearRange(HANDLE ConsoleHandle, int position, int range, wchar_t fillChar = L' ')
+			void ClearRange(HANDLE consoleHandle, int position, int range, wchar_t fillChar = L' ')
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				COORD tl = { 0, (SHORT)(position) };
-				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
+				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
 				DWORD written, cells = csbi.dwSize.X * (1 + range);
-				FillConsoleOutputCharacter(ConsoleHandle, fillChar, cells, tl, &written);
-				FillConsoleOutputAttribute(ConsoleHandle, csbi.wAttributes, cells, tl, &written);
-				SetConsoleCursorPosition(ConsoleHandle, tl);
+				FillConsoleOutputCharacter(consoleHandle, fillChar, cells, tl, &written);
+				FillConsoleOutputAttribute(consoleHandle, csbi.wAttributes, cells, tl, &written);
+				SetConsoleCursorPosition(consoleHandle, tl);
 			}
 
 			/// <summary>
@@ -158,12 +158,12 @@ namespace NosStdLib
 			/// <summary>
 			/// Clear a single line on position with custom Console Handle
 			/// </summary>
-			/// <param name="ConsoleHandle">- Custom Console Handle</param>
+			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="position">- position to clear</param>
 			/// <param name="fillChar">- the character to clear with</param>
-			void ClearLine(HANDLE ConsoleHandle, int position, wchar_t fillChar = L' ')
+			void ClearLine(HANDLE consoleHandle, int position, wchar_t fillChar = L' ')
 			{
-				ClearRange(ConsoleHandle, position, 0, fillChar);
+				ClearRange(consoleHandle, position, 0, fillChar);
 			}
 
 			/// <summary>
@@ -182,13 +182,13 @@ namespace NosStdLib
 			/// <summary>
 			/// Clear whole console with custom Console Handle
 			/// </summary>
-			/// <param name="ConsoleHandle">- Custom Console Handle</param>
+			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="fillChar">- character to clear with</param>
-			void ClearScreen(HANDLE ConsoleHandle, wchar_t fillChar = L' ')
+			void ClearScreen(HANDLE consoleHandle, wchar_t fillChar = L' ')
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
-				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-				ClearRange(ConsoleHandle, 0, csbi.dwSize.Y, fillChar);
+				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
+				ClearRange(consoleHandle, 0, csbi.dwSize.Y, fillChar);
 			}
 
 			/// <summary>
@@ -205,15 +205,15 @@ namespace NosStdLib
 			/// <summary>
 			/// Show or hide Console Caret with custom Console Handle
 			/// </summary>
-			/// <param name="ConsoleHandle">- Custom Console Handle</param>
+			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="showFlag">- if caret will be shown or hidden</param>
-			void ShowCaret(HANDLE ConsoleHandle, bool showFlag)
+			void ShowCaret(HANDLE consoleHandle, bool showFlag)
 			{
 				CONSOLE_CURSOR_INFO cursorInfo;
 
-				GetConsoleCursorInfo(ConsoleHandle, &cursorInfo);
+				GetConsoleCursorInfo(consoleHandle, &cursorInfo);
 				cursorInfo.bVisible = showFlag; // set the cursor visibility
-				SetConsoleCursorInfo(ConsoleHandle, &cursorInfo);
+				SetConsoleCursorInfo(consoleHandle, &cursorInfo);
 			}
 
 			/// <summary>
