@@ -122,7 +122,7 @@ namespace NosStdLib
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
 			HANDLE ConsoleHandle;
 			int columns, rows;
-			NosStdLib::DynamicArray<MenuEntry> MenuEntryList;
+			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;
 			bool ContinueMenu, AddExitEntry, CustomTitle, CenteredTitle, AddedQuit;
 			std::wstring Title;
 		public:
@@ -143,7 +143,7 @@ namespace NosStdLib
 
 				AddedQuit = false;
 
-				MenuEntryList = NosStdLib::DynamicArray<MenuEntry>(3, 3);
+				MenuEntryList = NosStdLib::DynamicArray<MenuEntry*>(3, 3);
 				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 			}
 
@@ -162,7 +162,7 @@ namespace NosStdLib
 						return this->QuitMenu();
 					};
 
-					MenuEntryList.Append(MenuEntry(L"Quit", Func));
+					MenuEntryList.Append(new MenuEntry(L"Quit", Func));
 				}
 
 				int c, ex;
@@ -182,22 +182,22 @@ namespace NosStdLib
 					if (c == ENTER)
 					{
 
-						switch (MenuEntryList[CurrentIndex].EntryType)
+						switch (MenuEntryList[CurrentIndex]->EntryType)
 						{
 						case MenuEntry::Type::FunctionEntry:
 							NosStdLib::Global::Console::ClearScreen();
-							MenuEntryList[CurrentIndex].Function();
+							MenuEntryList[CurrentIndex]->Function();
 							DrawMenu(CurrentIndex, &TitleSize);
 							break;
 
 						case MenuEntry::Type::SubMenuEntry:
 							NosStdLib::Global::Console::ClearScreen();
-							MenuEntryList[CurrentIndex].SubMenu->StartMenu();
+							MenuEntryList[CurrentIndex]->SubMenu->StartMenu();
 							DrawMenu(CurrentIndex, &TitleSize);
 							break;
 
 						case MenuEntry::Type::BooleanEntry:
-							*MenuEntryList[CurrentIndex].Boolean = !*MenuEntryList[CurrentIndex].Boolean;
+							*MenuEntryList[CurrentIndex]->Boolean = !*MenuEntryList[CurrentIndex]->Boolean;
 
 							NosStdLib::Global::Console::ClearLine(TitleSize + CurrentIndex);
 
@@ -210,7 +210,7 @@ namespace NosStdLib
 							wchar_t c;
 							bool ContinueIntType = true;
 
-							COORD NumberPosition = { (((columns / 2) - MenuEntryList[CurrentIndex].Name.length() / 2) + MenuEntryList[CurrentIndex].Name.length() + 3), (CurrentIndex + TitleSize) };
+							COORD NumberPosition = { (((columns / 2) - MenuEntryList[CurrentIndex]->Name.length() / 2) + MenuEntryList[CurrentIndex]->Name.length() + 3), (CurrentIndex + TitleSize) };
 
 							SetConsoleCursorPosition(ConsoleHandle, NumberPosition);
 
@@ -249,14 +249,14 @@ namespace NosStdLib
 							{
 								try
 								{
-									*MenuEntryList[CurrentIndex].Integer = std::stoi(NewInt);
+									*MenuEntryList[CurrentIndex]->Integer = std::stoi(NewInt);
 								}
 								catch (std::out_of_range ex)
 								{
 									if (NewInt[0] == '-')
-										*MenuEntryList[CurrentIndex].Integer = INT_MIN;
+										*MenuEntryList[CurrentIndex]->Integer = INT_MIN;
 									else
-										*MenuEntryList[CurrentIndex].Integer = INT_MAX;
+										*MenuEntryList[CurrentIndex]->Integer = INT_MAX;
 								}
 							}
 							NosStdLib::Global::Console::ClearLine(TitleSize + CurrentIndex);
@@ -288,9 +288,9 @@ namespace NosStdLib
 							break;
 
 						case ARROW_LEFT:
-							if (MenuEntryList[CurrentIndex].EntryType == MenuEntry::Type::IntegerEntry)
+							if (MenuEntryList[CurrentIndex]->EntryType == MenuEntry::Type::IntegerEntry)
 							{
-								(*MenuEntryList[CurrentIndex].Integer)--;
+								(*MenuEntryList[CurrentIndex]->Integer)--;
 
 								NosStdLib::Global::Console::ClearLine(TitleSize + CurrentIndex);
 								wprintf(EntryString(CurrentIndex, true).c_str());
@@ -298,9 +298,9 @@ namespace NosStdLib
 							break;
 
 						case ARROW_RIGHT:
-							if (MenuEntryList[CurrentIndex].EntryType == MenuEntry::Type::IntegerEntry)
+							if (MenuEntryList[CurrentIndex]->EntryType == MenuEntry::Type::IntegerEntry)
 							{
-								(*MenuEntryList[CurrentIndex].Integer)++;
+								(*MenuEntryList[CurrentIndex]->Integer)++;
 
 								NosStdLib::Global::Console::ClearLine(TitleSize + CurrentIndex);
 								wprintf(EntryString(CurrentIndex, true).c_str());
@@ -434,38 +434,38 @@ namespace NosStdLib
 			/// <returns>Entry line string</returns>
 			std::wstring EntryString(int EntryIndex, bool selected)
 			{
-				int SpaceLenght = ((columns / 2) - MenuEntryList[EntryIndex].Name.length() / 2);
+				int SpaceLenght = ((columns / 2) - MenuEntryList[EntryIndex]->Name.length() / 2);
 				std::wstring EntryText;
 
-				switch (MenuEntryList[EntryIndex].EntryType) /* Different printing types for different entry types*/
+				switch (MenuEntryList[EntryIndex]->EntryType) /* Different printing types for different entry types*/
 				{
 				case MenuEntry::Type::FunctionEntry:
 					// Append to string as to make it be 1 print operation, makes it way quicker
 					if (selected)
 					{
-						return std::wstring(SpaceLenght - 2, ' ') + L">>" + MenuEntryList[EntryIndex].Name + L"<<\n";
+						return std::wstring(SpaceLenght - 2, ' ') + L">>" + MenuEntryList[EntryIndex]->Name + L"<<\n";
 					}
 					else
 					{
-						return std::wstring(SpaceLenght, ' ') + MenuEntryList[EntryIndex].Name + L"\n";
+						return std::wstring(SpaceLenght, ' ') + MenuEntryList[EntryIndex]->Name + L"\n";
 					}
 					break;
 				case MenuEntry::Type::SubMenuEntry:
 					if (selected)
 					{
-						return std::wstring(SpaceLenght - 2, ' ') + L"\033[33m>>" + MenuEntryList[EntryIndex].Name + L"<<\033[0m\n";
+						return std::wstring(SpaceLenght - 2, ' ') + L"\033[33m>>" + MenuEntryList[EntryIndex]->Name + L"<<\033[0m\n";
 					}
 					else
 					{
-						return std::wstring(SpaceLenght, ' ') + L"\033[33m" + MenuEntryList[EntryIndex].Name + L"\033[0m\n";
+						return std::wstring(SpaceLenght, ' ') + L"\033[33m" + MenuEntryList[EntryIndex]->Name + L"\033[0m\n";
 					}
 					break;
 
 				case MenuEntry::Type::BooleanEntry:
-					if (*MenuEntryList[EntryIndex].Boolean)
-						EntryText = MenuEntryList[EntryIndex].Name + std::wstring(4, ' ') + L"[X]";
+					if (*MenuEntryList[EntryIndex]->Boolean)
+						EntryText = MenuEntryList[EntryIndex]->Name + std::wstring(4, ' ') + L"[X]";
 					else
-						EntryText = MenuEntryList[EntryIndex].Name + std::wstring(4, ' ') + L"[ ]";
+						EntryText = MenuEntryList[EntryIndex]->Name + std::wstring(4, ' ') + L"[ ]";
 
 					if (selected)
 					{
@@ -480,18 +480,18 @@ namespace NosStdLib
 				case MenuEntry::Type::IntegerEntry:
 					if (selected)
 					{
-						EntryText = MenuEntryList[EntryIndex].Name + std::wstring(4, ' ') + L"<" + std::to_wstring(*MenuEntryList[EntryIndex].Integer) + L">\n";
+						EntryText = MenuEntryList[EntryIndex]->Name + std::wstring(4, ' ') + L"<" + std::to_wstring(*MenuEntryList[EntryIndex]->Integer) + L">\n";
 						return std::wstring(SpaceLenght - 2, ' ') + EntryText;
 					}
 					else
 					{
-						EntryText = MenuEntryList[EntryIndex].Name + std::wstring(4, ' ') + std::to_wstring(*MenuEntryList[EntryIndex].Integer);
+						EntryText = MenuEntryList[EntryIndex]->Name + std::wstring(4, ' ') + std::to_wstring(*MenuEntryList[EntryIndex]->Integer);
 						return std::wstring(SpaceLenght, ' ') + EntryText + L"\n";
 					}
 					break;
 
 				case MenuEntry::Type::EmptyEntry:
-					return std::wstring(SpaceLenght, ' ') + MenuEntryList[EntryIndex].Name + L"\n";
+					return std::wstring(SpaceLenght, ' ') + MenuEntryList[EntryIndex]->Name + L"\n";
 					break;
 				}
 			}
@@ -500,7 +500,7 @@ namespace NosStdLib
 			/// Adds entry to menu
 			/// </summary>
 			/// <param name="Entry">- the entry to add</param>
-			void AddMenuEntry(MenuEntry Entry)
+			void AddMenuEntry(MenuEntry* Entry)
 			{
 				MenuEntryList.Append(Entry);
 			}
