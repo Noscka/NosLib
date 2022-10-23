@@ -116,7 +116,7 @@ namespace NosStdLib
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
 			HANDLE ConsoleHandle;
 			int columns, rows;
-			DynamicArray<MenuEntry> MenuEntryList;
+			NosStdLib::DynamicArray<MenuEntry> MenuEntryList;
 			bool ContinueMenu, AddExitEntry, CustomTitle, CenteredTitle, AddedQuit;
 			std::wstring Title;
 		public:
@@ -137,7 +137,7 @@ namespace NosStdLib
 
 				AddedQuit = false;
 
-				MenuEntryList = DynamicArray<MenuEntry>(3, 2);
+				MenuEntryList = NosStdLib::DynamicArray<MenuEntry>(3, 3);
 				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 			}
 

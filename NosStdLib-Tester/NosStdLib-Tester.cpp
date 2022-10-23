@@ -1,8 +1,9 @@
+#include <NosStdLib/DynamicMenuSystem.hpp>
+#include <NosStdLib/Global.hpp>
+
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
-#include <NosStdLib/Global.hpp>
-#include <NosStdLib/DynamicMenuSystem.hpp>
 
 bool SomeBool = false;
 int number = 0;

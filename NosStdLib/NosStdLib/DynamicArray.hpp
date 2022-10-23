@@ -15,10 +15,10 @@ namespace NosStdLib
 	class DynamicArray
 	{
 	private:
-		int ArraySize;			// Array starting size and the size after it is resized
+		int ArraySize;				// Array starting size and the size after it is resized
 		ArrayDataType* MainArray;	// Pointer to Array
-		int ArrayIndexPointer;	// keeps track amount of objects in array
-		int ArrayStepSize;		// how much the array will get increased by when it reaches the limit
+		int ArrayIndexPointer;		// keeps track amount of objects in array
+		int ArrayStepSize;			// how much the array will get increased by when it reaches the limit
 
 		typedef ArrayDataType* iterator;
 		typedef const ArrayDataType* const_iterator;
