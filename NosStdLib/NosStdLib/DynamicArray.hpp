@@ -16,7 +16,7 @@ namespace NosStdLib
 	{
 	private:
 		int ArraySize;			// Array starting size and the size after it is resized
-		ArrayDataType* Array;	// Pointer to Array
+		ArrayDataType* MainArray;	// Pointer to Array
 		int ArrayIndexPointer;	// keeps track amount of objects in array
 		int ArrayStepSize;		// how much the array will get increased by when it reaches the limit
 
@@ -31,12 +31,12 @@ namespace NosStdLib
 		/// <param name="StepSize"> - how much the array will increase each time it reaches the limit</param>
 		DynamicArray(int startSize, int stepSize)
 		{
-			ArraySize = StartSize;
-			ArrayStepSize = StepSize;
+			ArraySize = startSize;
+			ArrayStepSize = stepSize;
 
 			// ! DO NOT CHANGE !
 			ArrayIndexPointer = 0;
-			Array = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 		}
 
 		/// <summary>
@@ -57,17 +57,17 @@ namespace NosStdLib
 
 			/* !DO NOT CHANGE ! */
 			ArrayIndexPointer = 0;
-			Array = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 		}
 
 		/// Destroy array contained in object
 		~DynamicArray()
 		{
-			delete[] Array;
+			delete[] MainArray;
 		}
 	#pragma endregion
 
-	#pragma region Array Modification
+	#pragma region MainArray Modification
 		/// <summary>
 		/// Append single Object
 		/// </summary>
@@ -80,11 +80,11 @@ namespace NosStdLib
 
 				for (int i = 0; i < ArraySize; i++) // assign/copy all values from Array to Temp
 				{
-					TempArray[i] = Array[i];
+					TempArray[i] = MainArray[i];
 				}
 
 				ArraySize += ArrayStepSize; // expand the Array size
-				Array = new ArrayDataType[ArraySize](); // over ride Array with new, bigger, array
+				MainArray = new ArrayDataType[ArraySize](); // over ride MainArray with new, bigger, array
 
 				/*
 				ArraySize-ArrayStepSize calculates TempArray size
@@ -92,14 +92,14 @@ namespace NosStdLib
 				*/
 				for (int i = 0; i < ArraySize - ArrayStepSize; i++)
 				{
-					Array[i] = TempArray[i];
+					MainArray[i] = TempArray[i];
 
 				}
 
 				delete[] TempArray;
 			}
 
-			Array[ArrayIndexPointer] = objectToAdd;
+			MainArray[ArrayIndexPointer] = objectToAdd;
 			ArrayIndexPointer++;
 		}
 
@@ -147,7 +147,7 @@ namespace NosStdLib
 				return;
 			}
 
-			Array[position] = replaceObject;
+			MainArray[position] = replaceObject;
 		}
 
 		/// <summary>
@@ -164,9 +164,9 @@ namespace NosStdLib
 
 			for (int i = position; i < (ArrayIndexPointer - 1); i++) // moving all back
 			{
-				Array[i] = Array[i + 1];
+				MainArray[i] = MainArray[i + 1];
 			}
-			Array[ArrayIndexPointer - 1] = NULL; // make last character blank
+			MainArray[ArrayIndexPointer - 1] = NULL; // make last character blank
 			ArrayIndexPointer--;
 		}
 
@@ -177,7 +177,7 @@ namespace NosStdLib
 		{
 			/* TODO: Return to original size */
 			ArrayIndexPointer = 0;
-			Array = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 		}
 	#pragma endregion
 
@@ -188,7 +188,7 @@ namespace NosStdLib
 		/// <returns>Object array</returns>
 		ArrayDataType* GetArray()
 		{
-			return Array;
+			return MainArray;
 		}
 
 		/// <summary>
@@ -221,33 +221,59 @@ namespace NosStdLib
 
 	#pragma region For Loop Functions
 		// For loop range-based function
-		iterator begin() { return &Array[0]; }
-		const_iterator begin() const { return &Array[0]; }
-		iterator end() { return &Array[ArrayIndexPointer]; }
-		const_iterator end() const { return &Array[ArrayIndexPointer]; }
+		iterator begin() { return &MainArray[0]; }
+		const_iterator begin() const { return &MainArray[0]; }
+		iterator end() { return &MainArray[ArrayIndexPointer]; }
+		const_iterator end() const { return &MainArray[ArrayIndexPointer]; }
 	#pragma endregion
 
 	#pragma region Operators
 		/// <summary>
-		/// What to do incase of << operator
+		/// What to do incase of << operator with wostream
 		/// </summary>
 		/// <param name="os">- output stream</param>
 		/// <param name="Array">- the array object</param>
 		/// <returns></returns>
-		friend std::ostream& operator<<(std::ostream& os, const DynamicArray& Array)
+		friend std::wostream& operator<<(std::wostream& os, const DynamicArray& MainArray)
 		{
-			if ((std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) ||	/* if the array contained is either string, wstring, char or wchar. output as normal */
-				(std::is_same<ArrayDataType, std::wstring>::value || std::is_same<ArrayDataType, wchar_t>::value))
+			if (std::is_same<ArrayDataType, std::wstring>::value || std::is_same<ArrayDataType, wchar_t>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
 			{
-				os << Array.Array;
+				os << MainArray.MainArray;
 			}
 			else  /* if type is any other "list" the array with comman */
 			{
-				for (int i = 0; i < Array.ArrayIndexPointer; i++)
+				for (int i = 0; i < MainArray.ArrayIndexPointer; i++)
 				{
-					os << Array.Array[i];
+					os << MainArray.MainArray[i];
 
-					if (!(i == Array.ArrayIndexPointer - 1))
+					if (!(i == MainArray.ArrayIndexPointer - 1))
+					{
+						os << ", ";
+					}
+				}
+			}
+			return os;
+		}
+
+		/// <summary>
+		/// What to do incase of << operator with ostream
+		/// </summary>
+		/// <param name="os">- output stream</param>
+		/// <param name="Array">- the array object</param>
+		/// <returns></returns>
+		friend std::ostream& operator<<(std::ostream& os, const DynamicArray& MainArray)
+		{
+			if (std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
+			{
+				os << MainArray.MainArray;
+			}
+			else  /* if type is any other "list" the array with comman */
+			{
+				for (int i = 0; i < MainArray.ArrayIndexPointer; i++)
+				{
+					os << MainArray.MainArray[i];
+
+					if (!(i == MainArray.ArrayIndexPointer - 1))
 					{
 						os << ", ";
 					}
@@ -263,7 +289,7 @@ namespace NosStdLib
 		/// <returns>value in the position</returns>
 		ArrayDataType& operator[](int position)
 		{
-			return Array[position];
+			return MainArray[position];
 		}
 	#pragma endregion
 	};
