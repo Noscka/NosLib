@@ -88,5 +88,4 @@ namespace NosStdLib
     #pragma endregion
     }
 }
-
 #endif

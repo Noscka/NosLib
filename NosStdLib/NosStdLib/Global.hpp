@@ -50,7 +50,7 @@ namespace NosStdLib
 			/// Check if wstring is number (with or without signs)
 			/// </summary>
 			/// <param name="wstr">- wstring to check</param>
-			/// <param name="allowSigns">- if it should allow signs at the start of the string (-123 or +123)</param>
+			/// <param name="allowSigns">(default = false) - if it should allow signs at the start of the string (-123 or +123)</param>
 			/// <returns>if wstring is valid number</returns>
 			bool IsNumber(const std::wstring& wstr, bool allowSigns = false)
 			{
@@ -78,7 +78,7 @@ namespace NosStdLib
 			/// Check if string is number (with or without signs)
 			/// </summary>
 			/// <param name="str">- string to check</param>
-			/// <param name="allowSigns">- if it should allow signs at the start of the string (-123 or +123)</param>
+			/// <param name="allowSigns">(default = false) - if it should allow signs at the start of the string (-123 or +123)</param>
 			/// <returns>if string is valid number</returns>
 			bool IsNumber(const std::string& str, bool allowSigns = false)
 			{
@@ -130,7 +130,7 @@ namespace NosStdLib
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="position">- position from which to start clearing</param>
 			/// <param name="range">- range to which clear</param>
-			/// <param name="fillChar">- the character to clear with</param>
+			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
 			void ClearRange(HANDLE consoleHandle, int position, int range, wchar_t fillChar = L' ')
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -147,7 +147,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="position">- position from which to start clearing</param>
 			/// <param name="range">- range to which clear</param>
-			/// <param name="fillChar">- the character to clear with</param>
+			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
 			void ClearRange(int position, int range, wchar_t fillChar = L' ')
 			{
 				ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
@@ -160,7 +160,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="position">- position to clear</param>
-			/// <param name="fillChar">- the character to clear with</param>
+			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
 			void ClearLine(HANDLE consoleHandle, int position, wchar_t fillChar = L' ')
 			{
 				ClearRange(consoleHandle, position, 0, fillChar);
@@ -170,7 +170,7 @@ namespace NosStdLib
 			/// Clear a single line on position
 			/// </summary>
 			/// <param name="position">- position to clear</param>
-			/// <param name="fillChar">- the character to clear with</param>
+			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
 			void ClearLine(int position, wchar_t fillChar = L' ')
 			{
 				ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
@@ -183,7 +183,7 @@ namespace NosStdLib
 			/// Clear whole console with custom Console Handle
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
-			/// <param name="fillChar">- character to clear with</param>
+			/// <param name="fillChar">(default = L' ') - character to clear with</param>
 			void ClearScreen(HANDLE consoleHandle, wchar_t fillChar = L' ')
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -194,7 +194,7 @@ namespace NosStdLib
 			/// <summary>
 			/// clear the whole console
 			/// </summary>
-			/// <param name="fillChar">- character to clear with</param>
+			/// <param name="fillChar">(default = L' ') - character to clear with</param>
 			void ClearScreen(wchar_t fillChar = L' ')
 			{
 				ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
