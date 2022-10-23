@@ -2,26 +2,46 @@
 #include <io.h>
 #include <fcntl.h>
 #include <NosStdLib/Global.hpp>
-#include <NosStdLib/DynamicArray.hpp>
+#include <NosStdLib/DynamicMenuSystem.hpp>
+
+bool SomeBool = false;
+int number = 0;
+
+void CheckBool()
+{
+    wprintf((SomeBool ? L"true" : L"false"));
+    system("Pause");
+}
+
+void CheckNumber()
+{
+    wprintf(std::to_wstring(number).c_str());
+    system("Pause");
+}
 
 int main()
 {
     _setmode(_fileno(stdout), _O_U16TEXT);
 
-    NosStdLib::DynamicArray<wchar_t> FirstArray = NosStdLib::DynamicArray<wchar_t>();
-    NosStdLib::DynamicArray<wchar_t> SecondArray = NosStdLib::DynamicArray<wchar_t>();
-    NosStdLib::DynamicArray<NosStdLib::DynamicArray<wchar_t>*> TwoDimentionalCharArray = NosStdLib::DynamicArray<NosStdLib::DynamicArray<wchar_t>*>();
+    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", false, true, true);
+    NosStdLib::Menu::DynamicMenu SubMenu(L"Sub Menu", false, true, true);
 
-    FirstArray.ArrayAppend((wchar_t*)L"Some char in first array", 25, false); // add some data
-    SecondArray.ArrayAppend((wchar_t*)L"Some char in second array", 26, false); // add some data
+    SubMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Number", &number));
+    SubMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Check Number", CheckNumber));
 
-    TwoDimentionalCharArray.Append(&FirstArray); // Add both arrays to the 2 dimentional array
-    TwoDimentionalCharArray.Append(&SecondArray);
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Secondary Menu", &SubMenu));
 
-    for (NosStdLib::DynamicArray<wchar_t>* Array : TwoDimentionalCharArray)
-    {
-        std::wcout << *Array << std::endl;
-    }
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"========== Boolean =========="));
+
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Check Bool", CheckBool));
+
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"========== Integer =========="));
+
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Number", &number));
+    MainMenu.AddMenuEntry(NosStdLib::Menu::MenuEntry(L"Check Number", CheckNumber));
+
+    MainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;

@@ -920,7 +920,7 @@ namespace NosStdLib
 		/// <returns>Big Unicode text</returns>
 		std::wstring BasicUnicodeTextGenerate(const std::wstring& input, bool center)
 		{
-			BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), input, center);
+			return BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), input, center);
 		}
 
 		/// <summary>
