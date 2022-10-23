@@ -4,6 +4,8 @@
 #include <string>
 #include <Windows.h>
 
+#include "Global.hpp"
+
 namespace NosStdLib
 {
 	/// <summary>
@@ -18,7 +20,7 @@ namespace NosStdLib
 		/// <param name="consoleHandle">- custom Console Handle</param>
 		/// <param name="input">- The text to convert into big text</param>
 		/// <param name="center">- if the output should be centered or not</param>
-		/// <returns></returns>
+		/// <returns>Big Unicode text</returns>
 		std::wstring BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::wstring& input, const bool center)
 		{
 			/*
@@ -915,10 +917,33 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="input">- The text to convert into big text</param>
 		/// <param name="center">- if the output should be centered or not</param>
-		/// <returns></returns>
+		/// <returns>Big Unicode text</returns>
 		std::wstring BasicUnicodeTextGenerate(const std::wstring& input, bool center)
 		{
 			BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), input, center);
+		}
+
+		/// <summary>
+		/// a ASCII text generator which will create big text from normal string with custom Console Handle
+		/// </summary>
+		/// <param name="consoleHandle">- custom Console Handle</param>
+		/// <param name="input">- The text to convert into big text</param>
+		/// <param name="center">- if the output should be centered or not</param>
+		/// <returns>Big ASCII text</returns>
+		std::string BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::string& input, const bool center)
+		{
+			return NosStdLib::Global::String::ToString(BasicUnicodeTextGenerate(consoleHandle, NosStdLib::Global::String::ToWstring(input), center));
+		}
+
+		/// <summary>
+		/// a ASCII text generator which will create big text from normal string
+		/// </summary>
+		/// <param name="input">- The text to convert into big text</param>
+		/// <param name="center">- if the output should be centered or not</param>
+		/// <returns>Big ASCII text</returns>
+		std::string BasicUnicodeTextGenerate(const std::string& input, bool center)
+		{
+			return NosStdLib::Global::String::ToString(BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), NosStdLib::Global::String::ToWstring(input), center));
 		}
 	#pragma endregion
 	}

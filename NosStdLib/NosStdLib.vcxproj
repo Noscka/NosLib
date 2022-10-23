@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NosStdLib\DynamicArray.hpp" />
+    <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
