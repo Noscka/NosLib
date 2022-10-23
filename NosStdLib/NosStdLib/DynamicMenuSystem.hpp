@@ -1,29 +1,32 @@
 #ifndef _DYNAMICMENUSYSTEM_HPP_
 #define _DYNAMICMENUSYSTEM_HPP_
 
+#include "Global.hpp"
+#include "DynamicArray.hpp"
+#include "UnicodeTextGenerator.hpp"
+
 #include <Windows.h>
 #include <conio.h>
 #include <string>
 #include <functional>
 
-#include "Global.hpp"
-#include "DynamicArray.hpp"
-#include "UnicodeTextGenerator.hpp"
-
-#define ARROW_UP    72
-#define ARROW_DOWN  80
-#define ARROW_LEFT	75
-#define ARROW_RIGHT	77
-
-#define ENTER       13
-#define BACKSPACE	8
-
 namespace NosStdLib
 {
 	namespace Menu
 	{
+		constexpr int ARROW_UP		=	72;
+		constexpr int ARROW_DOWN	=	80;
+		constexpr int ARROW_LEFT	=	75;
+		constexpr int ARROW_RIGHT	=	77;
+
+		constexpr int ENTER			=	13;
+		constexpr int BACKSPACE		=	8;
+
 		class DynamicMenu;
 
+		/// <summary>
+		/// Class which demostrates an entry in the menu
+		/// </summary>
 		class MenuEntry
 		{
 		public:
@@ -110,6 +113,9 @@ namespace NosStdLib
 			}
 		};
 
+		/// <summary>
+		/// Class for the Dynamic menu
+		/// </summary>
 		class DynamicMenu
 		{
 		private:
