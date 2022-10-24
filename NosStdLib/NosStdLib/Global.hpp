@@ -89,34 +89,16 @@ namespace NosStdLib
 			/// <summary>
 			/// Split a string into a vectory array using a delimiter
 			/// </summary>
+			/// <typeparam name="CharT">- string type</typeparam>
 			/// <param name="result">- the vector that will get modified</param>
 			/// <param name="input">- the input that will get split</param>
 			/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 			/// <returns>pointer to modified vector</returns>
-			std::vector<std::wstring>* Split(std::vector<std::wstring>* result, std::wstring* input, const wchar_t& delimiter = L' ')
+			template <typename CharT>
+			std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, std::basic_string<CharT>* input, const CharT& delimiter = L' ')
 			{
-				std::wstring tmp;
-				std::wstringstream ss(*input);
-
-				while (getline(ss, tmp, delimiter))
-				{
-					result->push_back(tmp);
-				}
-
-				return result;
-			}
-
-			/// <summary>
-			/// Split a string into a vectory array using a delimiter
-			/// </summary>
-			/// <param name="result">- the vector that will get modified</param>
-			/// <param name="input">- the input that will get split</param>
-			/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
-			/// <returns>pointer to modified vector</returns>
-			std::vector<std::string>* Split(std::vector<std::string>* result, std::string* input, const char& delimiter = L' ')
-			{
-				std::string tmp;
-				std::stringstream ss(*input);
+				std::basic_string<CharT> tmp;
+				std::basic_stringstream<CharT> ss(*input);
 
 				while (getline(ss, tmp, delimiter))
 				{
@@ -129,70 +111,49 @@ namespace NosStdLib
 
 		#pragma region CenterString
 			/// <summary>
-			/// Center wstring with custom console Handle
+			/// Center string with custom console Handle
 			/// </summary>
+			/// <typeparam name="CharT">- string type</typeparam>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="input">- wstring to center</param>
 			/// <param name="all">(default = true) - if it should center just first line or all lines</param>
-			/// <returns>centered wstring</returns>
-			std::wstring CenterString(HANDLE consoleHandle, std::wstring input, bool all = true)
+			/// <returns>centered string</returns>
+			template <typename CharT>
+			std::basic_string<CharT> CenterString(HANDLE consoleHandle, std::basic_string<CharT> input, bool all = true)
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
 				int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 				if (all)
 				{
-					std::vector<std::wstring> inputSplit;
-					std::wstring output = L"";
-					NosStdLib::Global::String::Split(&inputSplit, &input, L'\n');
+					std::vector<std::basic_string<CharT>> inputSplit;
+					std::basic_string<CharT> output;
+					NosStdLib::Global::String::Split<CharT>(&inputSplit, &input, L'\n');
 
-					for (std::wstring Singleinput : inputSplit)
+					for (std::basic_string<CharT> Singleinput : inputSplit)
 					{
-						std::wstring Temp = (std::wstring(((columns / 2) - Singleinput.length() / 2), ' ') + Singleinput + L'\n');
-
-						output += Temp;
+						output += (std::basic_string<CharT>(((columns / 2) - Singleinput.length() / 2), ' ') + Singleinput + (CharT)('\n'));
 					}
 
 					return output;
 				}
 				else
 				{
-					return (std::wstring(((columns / 2) - input.length() / 2), ' ') + input + L'\n');
+					return (std::basic_string<CharT>(((columns / 2) - input.length() / 2), ' ') + input + (CharT)('\n'));
 				}
 			}
 
 			/// <summary>
 			/// Center wstring 
 			/// </summary>
+			/// <typeparam name="CharT">- string type</typeparam>
 			/// <param name="input">- wstring to center</param>
 			/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 			/// <returns>centered wstring</returns>
-			std::wstring CenterString(std::wstring input, bool all = true)
+			template <typename CharT>
+			std::basic_string<CharT> CenterString(std::basic_string<CharT> input, bool all = true)
 			{
 				return CenterString(GetStdHandle(STD_OUTPUT_HANDLE), input, all);
-			}
-
-			/// <summary>
-			/// Center string with custom console Handle
-			/// </summary>
-			/// <param name="consoleHandle">- Custom Console Handle</param>
-			/// <param name="input">- string to center</param>
-			/// <param name="all">(default = true) - if it should center just first line or all lines</param>
-			/// <returns>centered string</returns>
-			std::string CenterString(HANDLE consoleHandle, std::string input, bool all = true)
-			{
-				return NosStdLib::Global::String::ToString(CenterString(consoleHandle, NosStdLib::Global::String::ToWstring(input), all));
-			}
-
-			/// <summary>
-			/// Center string
-			/// </summary>
-			/// <param name="input">- string to center</param>
-			/// <param name="all">(default = true) - if it should center just first line or all lines</param>
-			/// <returns>centered string</returns>
-			std::string CenterString(std::string input, bool all = true)
-			{
-				return NosStdLib::Global::String::ToString(CenterString(NosStdLib::Global::String::ToWstring(input), all));
 			}
 		#pragma endregion
 		}

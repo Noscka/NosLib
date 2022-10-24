@@ -12,7 +12,7 @@ void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
     for (int i = 0; i <= 500; i++)
     {
         Sleep(10);
-        Object->UpdateKnownProgressBar((float)i / 500.0, NosStdLib::Global::String::CenterString(L"Testing Status\nExtra Line,\n Innit", true));
+        Object->UpdateKnownProgressBar((float)i / 500.0, NosStdLib::Global::String::CenterString<wchar_t>(L"Testing Status\nExtra Line,\n Innit", true));
     }
     *argue = L"Completed ting innit fam";
 }
@@ -21,6 +21,11 @@ int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+
+    std::wcout << NosStdLib::Global::String::CenterString<wchar_t>(L"\033[35m\nTesting Status\nExtra Line,\n Innit\033[0m", true) << std::endl;
+
+    wprintf(L"Press any button to continue"); getchar();
+    return 0;
 
     NosStdLib::LoadingScreen::InitilizeFont();
 
