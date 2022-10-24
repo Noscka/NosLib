@@ -1,4 +1,5 @@
 ﻿#include <NosStdLib/DynamicLoadingScreen.hpp>
+#include <NosStdLib/DynamicMenuSystem.hpp>
 #include <NosStdLib/TestEnviroment.hpp>
 #include <NosStdLib/Global.hpp>
 
@@ -23,9 +24,6 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::LoadingScreen::InitilizeFont();
-
-
     std::wstring splash = LR"(
                       ████████                ███████
                     ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
@@ -45,13 +43,17 @@ int main()
                        ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀
                            ▀▀▀▀▀        ▀▀▀▀▀)";
 
-    std::wstring SomeVar(L"Some Text");
+    NosStdLib::LoadingScreen LoadingScreen(NosStdLib::LoadingScreen::LoadType::Known, splash);
 
-    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
-    LC.StartLoading(&LongFunctionTing, &SomeVar);
+    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", false, true, true);
+    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", false, true, true);
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Loading Screen", nullptr));
 
-    wprintf(L"Press any button to continue"); getchar();
-    NosStdLib::LoadingScreen::TerminateFont();
+    MainMenu.StartMenu();
+    
     return 0;
 }
 
@@ -98,4 +100,37 @@ void CheckNumber()
 * 
 * MainMenu.StartMenu();
 * 
+*/
+
+/* LOADING SCREEN TEST
+NosStdLib::LoadingScreen::InitilizeFont();
+
+
+std::wstring splash = LR"(
+                      ████████                ███████
+                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
+          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄
+     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄
+   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄
+ ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██
+██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
+██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
+▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀
+  ▀██████████████▄███         ███        ████       ███          ███
+    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌
+   ███             ██▌        ██▌         ██       ███▌         ███
+   ███             ▐██                            █████▄       ███
+    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀
+       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀
+                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀
+                           ▀▀▀▀▀        ▀▀▀▀▀)";
+
+std::wstring SomeVar(L"Some Text");
+
+NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
+LC.StartLoading(&LongFunctionTing, &SomeVar);
+
+wprintf(L"Press any button to continue"); getchar();
+NosStdLib::LoadingScreen::TerminateFont();
+
 */
