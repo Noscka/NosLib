@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NosStdLib\DynamicArray.hpp" />
+    <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp" />
     <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
+    <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\TestEnviroment.hpp" />
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
   </ItemGroup>
@@ -31,6 +33,12 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NosStdLib\Resource\Console Loading Screen.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="NosStdLib\Resource\CustomConsola.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

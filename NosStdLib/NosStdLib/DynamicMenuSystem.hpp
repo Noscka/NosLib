@@ -399,7 +399,7 @@ namespace NosStdLib
 
 				std::wstring OutputString; // string for full "display" as it is the most perfomace efficent method
 
-				if (CustomTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title*/
+				if (CustomTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title */
 					if (CenteredTitle)
 						OutputString = Title;
 					else

@@ -23,8 +23,12 @@ namespace NosStdLib
             std::wstring RelativePath; /* Subpath from current path */
             std::wstring Filename; /* Filename */
 
-            FilePath() {}
         public:
+            /// <summary>
+            /// Create FilePath Object with black members
+            /// </summary>
+            FilePath() {}
+
             /// <summary>
             /// Create FilePath Object
             /// </summary>

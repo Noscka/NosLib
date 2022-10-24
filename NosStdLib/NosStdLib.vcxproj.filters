@@ -33,6 +33,12 @@
     <ClInclude Include="NosStdLib\TestEnviroment.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\Resource\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -41,5 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NosStdLib\Resource\Console Loading Screen.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="NosStdLib\Resource\CustomConsola.ttf" />
   </ItemGroup>
 </Project>
