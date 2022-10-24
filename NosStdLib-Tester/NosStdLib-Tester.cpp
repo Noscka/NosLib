@@ -1,66 +1,20 @@
-﻿#include <NosStdLib/DynamicLoadingScreen.hpp>
-#include <NosStdLib/DynamicMenuSystem.hpp>
-#include <NosStdLib/TestEnviroment.hpp>
-#include <NosStdLib/Global.hpp>
+﻿#include <NosStdLib/Global.hpp>
+#include <NosStdLib/TextColor.hpp>
 
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
 #include <cstdio>
 
-void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
-{
-    int total = 1000;
-    for (int i = 0; i <= total; i++)
-    {
-        Sleep(10);
-        Object->UpdateKnownProgressBar((float)i / (float)total, NosStdLib::Global::String::CenterString<wchar_t>(L"Testing Status\nExtra Line,\n Innit", true));
-    }
-    *argue = L"Completed ting innit fam";
-}
-
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wcout << L"\033[38;2;-60000;-60000;-60000m" << L"abc" << L"\033[0m" << std::endl;
+    std::wcout << NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << L"abc" << L"\033[0m" << std::endl;
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;
-
-    /*std::wstring splash = LR"(
-                      ████████                ███████
-                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
-          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄
-     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄
-   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄
- ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██
-██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
-██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
-▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀
-  ▀██████████████▄███         ███        ████       ███          ███
-    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌
-   ███             ██▌        ██▌         ██       ███▌         ███
-   ███             ▐██                            █████▄       ███
-    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀
-       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀
-                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀
-                           ▀▀▀▀▀        ▀▀▀▀▀)";
-
-    NosStdLib::LoadingScreen LoadingScreen(NosStdLib::LoadingScreen::LoadType::Known, splash);
-
-    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", false, true, true);
-    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", false, true, true);
-    
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
-    
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Loading Screen", nullptr));
-
-    MainMenu.StartMenu();
-
-    wprintf(L"Press any button to continue"); getchar();
-    return 0;*/
 }
 
 /* ANSI TEST

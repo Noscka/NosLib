@@ -15,16 +15,16 @@ namespace NosStdLib
 		/// <summary>
 		/// class to represent RGB
 		/// </summary>
-		class RGB
+		class NosRGB
 		{
 		public:
 			uint8_t R; /* Red */
 			uint8_t B; /* Blue */
 			uint8_t G; /* Green */
 
-			RGB(){}
+			NosRGB(){}
 
-			RGB(uint8_t r, uint8_t b, uint8_t g)
+			NosRGB(uint8_t r, uint8_t b, uint8_t g)
 			{
 				R = r;
 				B = b;
@@ -32,10 +32,16 @@ namespace NosStdLib
 			}
 		};
 
+		/// <summary>
+		/// Create necesacry ANSI escape code to give wanted color
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="values">- the RGB values wanted</param>
+		/// <returns>the string containing the ANSI escape code</returns>
 		template <typename CharT>
-		std::basic_string<CharT> MakeANSICode(const RGB& values)
+		std::basic_string<CharT> MakeANSICode(const NosRGB& values)
 		{
-			return std::format<CharT>(std::basic_string < CharT>("\033[38;2;{};{};{}m", values.R, values.G, values.B));
+			return std::format(std::basic_string_view<CharT>((CharT*)"\033[38;2;{};{};{}m"), values.R, values.G, values.B);
 		}
 	}
 }
