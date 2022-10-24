@@ -5,6 +5,7 @@
 #include "FileManagement.hpp"
 #include <Windows.h>
 #include <string>
+#include <math.h>
 
 #include "Resource/resource.h"
 
@@ -22,7 +23,7 @@ namespace NosStdLib
 		static inline NosStdLib::FileManagement::FilePath FontFilePath; /* Path to the font life resource */
 
 		std::wstring SplashScreen;					/* Splash Screen */
-		int SplashScreenYSize, PreviousWriteCoords; /* Needs renaming, intergers */
+		int CurrentWriteRow, PreviousWriteRow;		/* Current and previous loading bar write row  */
 		float PercentageDone;						/* decimal percentage of progress */
 		std::wstring StatusMessage;					/* Status message (Might need to move to local instead of global) */
 
@@ -52,7 +53,7 @@ namespace NosStdLib
 			std::wstring bar = L"";
 			int Lenght = 50;
 
-			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)SplashScreenYSize });
+			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
 
@@ -67,11 +68,13 @@ namespace NosStdLib
 				wprintf(StatusMessage.c_str());
 
 				Sleep(100);
+				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
 				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-				PreviousWriteCoords = SplashScreenYSize;
-				SplashScreenYSize = (rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n'));
-				NosStdLib::Global::Console::ClearRange(PreviousWriteCoords, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-				NosStdLib::Global::Console::ClearRange(SplashScreenYSize, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+				PreviousWriteRow = CurrentWriteRow;
+				CurrentWriteRow = max((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n')+1));
+				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Global::Console::ClearRange(CurrentWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
 				bar = L"";
 			}
 
@@ -100,7 +103,7 @@ namespace NosStdLib
 			int TrueMid = std::ceil((float)bar.length() / 2); /* Middle absolute position */
 			bool GoingRight = true; /* Tracking the direction in which the bar is going in */
 
-			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)SplashScreenYSize });
+			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
@@ -128,11 +131,14 @@ namespace NosStdLib
 					sleepTime = ((float)(TrueMid + Difference + 1) / 15) * 50;
 				}
 				Sleep(sleepTime);
+				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
 				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-				PreviousWriteCoords = SplashScreenYSize;
-				SplashScreenYSize = (rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n'));
-				NosStdLib::Global::Console::ClearRange(PreviousWriteCoords, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-				NosStdLib::Global::Console::ClearRange(SplashScreenYSize, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+				PreviousWriteRow = CurrentWriteRow;
+				//CurrentWriteRow = (rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n'));
+				CurrentWriteRow = min((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n')));
+				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Global::Console::ClearRange(CurrentWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
 			}
 
 			FunctionThread.join();
@@ -253,12 +259,7 @@ namespace NosStdLib
 
 			CrossThreadFinishBoolean = false;
 
-			if (SplashScreen == L"")
-				SplashScreenYSize = 0;
-			else
-			{
-				SplashScreenYSize = rows - 4;
-			}
+			CurrentWriteRow = rows - 4;
 
 			switch (BarType)
 			{
