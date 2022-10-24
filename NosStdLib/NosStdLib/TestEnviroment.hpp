@@ -10,49 +10,16 @@ namespace NosStdLib
 	/// </summary>
 	namespace TestEnv
 	{
-		class ArrayClass
+		template<class CharT>
+		bool IsNumberTest(const std::basic_string<CharT>& input)
 		{
-		private:
-			std::wstring ClassName;
-			int ClassValue;
-		public:
-			ArrayClass()
+			/* Simple for loop, checking if any char isn't a digit */
+			for (int i = 0; i < input.size(); i++)
 			{
-
+				if (!std::isdigit(input[i])) return false;
 			}
-
-			ArrayClass(std::wstring className, int classValue)
-			{
-				ClassName = className;
-				ClassValue = classValue;
-			}
-
-			std::wstring GetName()
-			{
-				return ClassName;
-			}
-
-			int GetValue()
-			{
-				return ClassValue;
-			}
-		};
-
-		class TestClass
-		{
-		private:
-			NosStdLib::DynamicArray<ArrayClass*> SomeArray;
-		public:
-			TestClass()
-			{
-				SomeArray = NosStdLib::DynamicArray<ArrayClass*>(3,2);
-			}
-
-			void AppendToClass(ArrayClass *object)
-			{
-				SomeArray.Append(object);
-			}
-		};
+			return true;
+		}
 	}
 }
 

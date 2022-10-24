@@ -54,16 +54,7 @@ namespace NosStdLib
 			}
 
 		#pragma region IsNumber
-
-			/*template<class CharT>
-			bool NewFunc(std::basic_string<CharT> input)
-			{
-				if (input == std::basic_string < CharT>(""))
-				{
-					return true;
-				}
-				return false;
-			}*/ /* TODO: Research and develope specified templates so I can make 1 function for both string and wstring */
+			/* TODO: Research and develope specified templates so I can make 1 function for both string and wstring */
 
 			/// <summary>
 			/// Check if wstring is number (with or without signs)
@@ -477,5 +468,4 @@ Code	│Effect							 │Note
 65		│ideogram attributes off		 │reset the effects of all of 60-64
 90–97	│Set bright foreground color	 │aixterm (not in standard)
 100–107	│Set bright background color	 │aixterm (not in standard)
-
 */

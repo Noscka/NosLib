@@ -1,4 +1,5 @@
 ﻿#include <NosStdLib/DynamicLoadingScreen.hpp>
+#include <NosStdLib/TestEnviroment.hpp>
 #include <NosStdLib/Global.hpp>
 
 #include <iostream>
@@ -20,6 +21,11 @@ int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+
+    std::wcout << (NosStdLib::TestEnv::IsNumberTest(std::wstring(L"123")) ? L"true" : L"false") << std::endl;
+
+    wprintf(L"Press any button to continue"); getchar();
+    return 0;
 
     NosStdLib::LoadingScreen::InitilizeFont();
 
