@@ -34,6 +34,20 @@ namespace NosStdLib
 		LoadType BarType; /* bar type of the object */
 
 		/// <summary>
+		/// Update all needed variables and clear text
+		/// </summary>
+		void MidOperationUpdate()
+		{
+			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
+			rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+			PreviousWriteRow = CurrentWriteRow;
+			CurrentWriteRow = max((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1));
+			NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+			NosStdLib::Global::Console::ClearRange(CurrentWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+		}
+
+		/// <summary>
 		/// function which displays bar which knows the progress
 		/// </summary>
 		/// <typeparam name="Func">- callable type</typeparam>
@@ -68,13 +82,7 @@ namespace NosStdLib
 				wprintf(StatusMessage.c_str());
 
 				Sleep(100);
-				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-				columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-				PreviousWriteRow = CurrentWriteRow;
-				CurrentWriteRow = max((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n')+1));
-				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-				NosStdLib::Global::Console::ClearRange(CurrentWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				MidOperationUpdate();
 				bar = L"";
 			}
 
@@ -131,14 +139,7 @@ namespace NosStdLib
 					sleepTime = ((float)(TrueMid + Difference + 1) / 15) * 50;
 				}
 				Sleep(sleepTime);
-				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-				columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-				PreviousWriteRow = CurrentWriteRow;
-				//CurrentWriteRow = (rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n'));
-				CurrentWriteRow = min((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n')));
-				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-				NosStdLib::Global::Console::ClearRange(CurrentWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				MidOperationUpdate();
 			}
 
 			FunctionThread.join();
