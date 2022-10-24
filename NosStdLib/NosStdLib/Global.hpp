@@ -54,46 +54,34 @@ namespace NosStdLib
 			}
 
 		#pragma region IsNumber
-			/* TODO: Research and develope specified templates so I can make 1 function for both string and wstring */
-
 			/// <summary>
 			/// Check if wstring is number (with or without signs)
 			/// </summary>
-			/// <param name="wstr">- wstring to check</param>
-			/// <param name="allowSigns">(default = false) - if it should allow signs at the start of the string (-123 or +123)</param>
-			/// <returns>if wstring is valid number</returns>
-			bool IsNumber(const std::wstring& wstr, bool allowSigns = false)
+			/// <typeparam name="CharT">- string type</typeparam>
+			/// <param name="str">- string to check</param>
+			/// <param name="allowSigns">(default = true) - if it should allow signs at the start of the string (-123 or +123)</param>
+			/// <returns>if string is valid number</returns>
+			template <typename CharT>
+			bool IsNumber(const std::basic_string<CharT>& str, bool allowSigns = true)
 			{
 				/* Iterator int, allows for changing start position */
 				int Iteration = 0;
 				if (allowSigns)
 				{
 					/* if allowSigns is true, check if first character is either - or + or a number */
-					if ((wstr[0] != L'-' && wstr[0] != L'+') || std::isdigit(wstr[0]))
+					if ((str[0] != L'-' && str[0] != L'+') && !std::isdigit(str[0]))
 						return false;
 
 					Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */
 				}
 
 				/* Simple for loop, checking if any char isn't a digit */
-				for (; Iteration < wstr.size(); Iteration++)
+				for (; Iteration < str.size(); Iteration++)
 				{
-					if (!std::isdigit(wstr[Iteration])) return false;
+					if (!std::isdigit(str[Iteration])) return false;
 				}
 
 				return true;
-			}
-
-			/// <summary>
-			/// Check if string is number (with or without signs)
-			/// </summary>
-			/// <param name="str">- string to check</param>
-			/// <param name="allowSigns">(default = false) - if it should allow signs at the start of the string (-123 or +123)</param>
-			/// <returns>if string is valid number</returns>
-			bool IsNumber(const std::string& str, bool allowSigns = false)
-			{
-				/* convert to Wstring and use the Wstring version, less likely to have any error involving data loss. */
-				return IsNumber(ToWstring(str), allowSigns);
 			}
 		#pragma endregion
 
