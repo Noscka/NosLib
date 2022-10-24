@@ -24,7 +24,12 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wstring splash = LR"(
+    std::wcout << L"\033[38;2;-60000;-60000;-60000m" << L"abc" << L"\033[0m" << std::endl;
+
+    wprintf(L"Press any button to continue"); getchar();
+    return 0;
+
+    /*std::wstring splash = LR"(
                       ████████                ███████
                     ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
           ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄
@@ -53,8 +58,9 @@ int main()
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Loading Screen", nullptr));
 
     MainMenu.StartMenu();
-    
-    return 0;
+
+    wprintf(L"Press any button to continue"); getchar();
+    return 0;*/
 }
 
 /* ANSI TEST
