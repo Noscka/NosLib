@@ -119,12 +119,16 @@ namespace NosStdLib
 		class DynamicMenu
 		{
 		private:
-			CONSOLE_SCREEN_BUFFER_INFO csbi;
-			HANDLE ConsoleHandle;
-			int columns, rows;
-			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;
-			bool ContinueMenu, AddExitEntry, CustomTitle, CenteredTitle, AddedQuit;
-			std::wstring Title;
+			std::wstring Title;														/* The title */
+			CONSOLE_SCREEN_BUFFER_INFO csbi;										/* global ConsoleScreenBI so it is synced across all operations */
+			HANDLE ConsoleHandle;													/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
+			int Columns, Rows;														/* global Colums and Rows, currently gets recalculated in some functions to keep updated */
+			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;						/* Menu Entry pointer dynamicArray to store all the menu entries */
+			bool ContinueMenu,	/* bool if the menu should continue or if it should quit */
+				AddExitEntry,	/* bool if to add a quit option/entry at the bottom */
+				CustomTitle,	/* bool if the menu has a custom menu */
+				CenteredTitle,	/* bool if the menu should center the title */
+				AddedQuit;		/* bool on if the quit option/entry was added or not */
 		public:
 
 			/// <summary>
@@ -210,7 +214,7 @@ namespace NosStdLib
 							wchar_t c;
 							bool ContinueIntType = true;
 
-							COORD NumberPosition = { (((columns / 2) - MenuEntryList[CurrentIndex]->Name.length() / 2) + MenuEntryList[CurrentIndex]->Name.length() + 3), (CurrentIndex + TitleSize) };
+							COORD NumberPosition = { (((Columns / 2) - MenuEntryList[CurrentIndex]->Name.length() / 2) + MenuEntryList[CurrentIndex]->Name.length() + 3), (CurrentIndex + TitleSize) };
 
 							SetConsoleCursorPosition(ConsoleHandle, NumberPosition);
 
@@ -349,12 +353,12 @@ namespace NosStdLib
 							SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex - 1) });
 							wprintf((EntryString(OldIndex, false) + EntryString(CurrentIndex, true)).c_str());
 
-							if ((TitleSize + CurrentIndex) + (rows / 2) < 0)
+							if ((TitleSize + CurrentIndex) + (Rows / 2) < 0)
 								FinalPosition = { 0,0 };
-							else if ((TitleSize + CurrentIndex) + (rows / 2) > MenuEntryList.GetArrayIndexPointer())
+							else if ((TitleSize + CurrentIndex) + (Rows / 2) > MenuEntryList.GetArrayIndexPointer())
 								FinalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + TitleSize - 1) };
 							else
-								FinalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (rows / 2)) };
+								FinalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (Rows / 2)) };
 
 							SetConsoleCursorPosition(ConsoleHandle, FinalPosition);
 						}
@@ -363,12 +367,12 @@ namespace NosStdLib
 							SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex) });
 							wprintf((EntryString(CurrentIndex, true) + EntryString(OldIndex, false)).c_str());
 
-							if ((TitleSize + CurrentIndex) - (rows / 2) < 0)
+							if ((TitleSize + CurrentIndex) - (Rows / 2) < 0)
 								FinalPosition = { 0,0 };
-							else if ((TitleSize + CurrentIndex) - (rows / 2) > MenuEntryList.GetArrayIndexPointer())
+							else if ((TitleSize + CurrentIndex) - (Rows / 2) > MenuEntryList.GetArrayIndexPointer())
 								FinalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
 							else
-								FinalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (rows / 2)) };
+								FinalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (Rows / 2)) };
 
 							SetConsoleCursorPosition(ConsoleHandle, FinalPosition);
 						}
@@ -377,6 +381,7 @@ namespace NosStdLib
 
 					OldIndex = CurrentIndex;
 				}
+				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
 			}
 
 			/// <summary>
@@ -389,8 +394,8 @@ namespace NosStdLib
 				NosStdLib::Global::Console::ClearScreen();
 
 				GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-				columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+				Columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+				Rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
 				std::wstring OutputString; // string for full "display" as it is the most perfomace efficent method
 
@@ -398,7 +403,7 @@ namespace NosStdLib
 					if (CenteredTitle)
 						OutputString = Title;
 					else
-						OutputString = std::wstring(((columns / 2) - Title.length() / 2), ' ') + Title;
+						OutputString = std::wstring(((Columns / 2) - Title.length() / 2), ' ') + Title;
 				else
 					OutputString = NosStdLib::UnicodeTextGenerator::BasicUnicodeTextGenerate(ConsoleHandle, Title, CenteredTitle); // add title with "ascii generator"
 
@@ -434,7 +439,7 @@ namespace NosStdLib
 			/// <returns>Entry line string</returns>
 			std::wstring EntryString(int EntryIndex, bool selected)
 			{
-				int SpaceLenght = ((columns / 2) - MenuEntryList[EntryIndex]->Name.length() / 2);
+				int SpaceLenght = ((Columns / 2) - MenuEntryList[EntryIndex]->Name.length() / 2);
 				std::wstring EntryText;
 
 				switch (MenuEntryList[EntryIndex]->EntryType) /* Different printing types for different entry types*/
