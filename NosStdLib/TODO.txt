@@ -1,8 +1,9 @@
 text file for TODO, such as adding new features
-1. Add ascii/unicode generator
+1. (Half Done (Needs dynamic generation)) Add ascii/unicode generator
 2. Add 2 Dimentional Vector and 3 Dimentional Vector from (https://github.com/Noscka/CSDLL-CSGO-internal/blob/GUI/CSDLL%20GUI%20VERSION/MultiVector.h), later and not now as I don't have a project to test it on
-3. Add Dynamically sized Array object, also rename to have a shorter and better name (DONE)
-4. Add Improved Dynamic Menu System, Might shorten it to Dynamic Menu System
+3. (DONE) Add Dynamically sized Array object, also rename to have a shorter and better name
+4. (Done) Add Improved Dynamic Menu System, Might shorten it to Dynamic Menu System
 5. Figure out what Trim and Reduce from (https://github.com/Noscka/SideWorkTool/blob/main/SWT/Options/Options.cpp) do and add to Global::String
 6. Make stob from (https://github.com/Noscka/SideWorkTool/blob/main/SWT/Options/Options.cpp) more efficient plus maybe rename/alias and add to Global::String
 7. Add MoveLeft and MoveRight from (https://github.com/Noscka/Console-Loading-Screen/blob/master/Console%20Loading%20Screen/ConsoleLoadingScreen/LoadingScreen.hpp)
+8. Add ability to have multiple consoles (most likely creating second child process)

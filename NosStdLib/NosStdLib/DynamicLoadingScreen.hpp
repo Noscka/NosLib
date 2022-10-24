@@ -1,6 +1,7 @@
 ﻿#ifndef _DYNAMICLOADINGSCREEN_HPP_
 #define _DYNAMICLOADINGSCREEN_HPP_
 
+#include "Global.hpp"
 #include "FileManagement.hpp"
 #include <Windows.h>
 #include <string>
@@ -14,23 +15,30 @@ namespace NosStdLib
 	public:
 		enum LoadType
 		{
-			Unknown = 0,
-			Known = 1,
+			Unknown = 0,	/* progress cannot be counted or it is unknown */
+			Known = 1,		/* progress can be counted */
 		};
 	private:
 		static inline NosStdLib::FileManagement::FilePath FontFilePath; /* Path to the font life resource */
 
-		std::wstring SplashScreen; /* Splash Screen */
+		std::wstring SplashScreen;					/* Splash Screen */
 		int SplashScreenYSize, PreviousWriteCoords; /* Needs renaming, intergers */
-		float PercentageDone;
-		std::wstring StatusMessage;
+		float PercentageDone;						/* decimal percentage of progress */
+		std::wstring StatusMessage;					/* Status message (Might need to move to local instead of global) */
 
-		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;
-		static inline HANDLE ConsoleHandle;
-		static inline int columns, rows;
+		static inline HANDLE ConsoleHandle;				/* global and static Console Handle */
+		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;	/* global and static Console ScreenBI */
+		static inline int columns, rows;				/* global and static colums and rows */
 
-		LoadType BarType;
+		LoadType BarType; /* bar type of the object */
 
+		/// <summary>
+		/// function which displays bar which knows the progress
+		/// </summary>
+		/// <typeparam name="Func">- callable type</typeparam>
+		/// <typeparam name="...VariadicArgs">- the parameter's of the callable</typeparam>
+		/// <param name="callable">- the callable</param>
+		/// <param name="...args">- the parameters of the callable</param>
 		template <typename Func, typename ... VariadicArgs>
 		void KnownProgressLoad(Func&& callable, VariadicArgs&& ... args)
 		{
@@ -62,14 +70,21 @@ namespace NosStdLib
 				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 				PreviousWriteCoords = SplashScreenYSize;
 				SplashScreenYSize = (rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n'));
-				LoadingScreen::ClearRangeLines(PreviousWriteCoords, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-				LoadingScreen::ClearRangeLines(SplashScreenYSize, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Global::Console::ClearRange(PreviousWriteCoords, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Global::Console::ClearRange(SplashScreenYSize, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
 				bar = L"";
 			}
 
 			FunctionThread.join();
 		}
 
+		/// <summary>
+		/// function which displays bar in which the progress is unknown
+		/// </summary>
+		/// <typeparam name="Func">- callable type</typeparam>
+		/// <typeparam name="...VariadicArgs">- the parameter's of the callable</typeparam>
+		/// <param name="callable">- the callable</param>
+		/// <param name="...args">- the parameters of the callable</param>
 		template <typename Func, typename ... VariadicArgs>
 		void UnknownProgressLoad(Func&& callable, VariadicArgs&& ... args)
 		{
@@ -116,33 +131,31 @@ namespace NosStdLib
 				rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 				PreviousWriteCoords = SplashScreenYSize;
 				SplashScreenYSize = (rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n'));
-				LoadingScreen::ClearRangeLines(PreviousWriteCoords, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-				LoadingScreen::ClearRangeLines(SplashScreenYSize, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Global::Console::ClearRange(PreviousWriteCoords, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Global::Console::ClearRange(SplashScreenYSize, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
 			}
 
 			FunctionThread.join();
 		}
 
+		/// <summary>
+		/// function which calls the callable and onces its finished, makes finish bool false
+		/// </summary>
+		/// <typeparam name="Func">- callable type</typeparam>
+		/// <typeparam name="...VariadicArgs">- the parameter's of the callable</typeparam>
+		/// <param name="callable">- the callable</param>
+		/// <param name="...args">- the parameters of the callable</param>
 		template <typename Func, typename ... VariadicArgs>
 		void ThreadingFunction(Func&& callable, VariadicArgs&& ... args)
 		{
 			(*callable)(this, std::forward<VariadicArgs>(args)...);
-			(CrossThreadFinishBoolean) = !(CrossThreadFinishBoolean);
-		}
-
-		static void ClearRangeLines(int Position, int range)
-		{
-			CONSOLE_SCREEN_BUFFER_INFO csbi;
-			HANDLE ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-			COORD tl = { 0, (SHORT)(Position) };
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-			DWORD written, cells = csbi.dwSize.X * (1 + range);
-			FillConsoleOutputCharacter(ConsoleHandle, ' ', cells, tl, &written);
-			FillConsoleOutputAttribute(ConsoleHandle, csbi.wAttributes, cells, tl, &written);
-			SetConsoleCursorPosition(ConsoleHandle, tl);
+			(CrossThreadFinishBoolean) = true;
 		}
 	public:
+		/// <summary>
+		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory
+		/// </summary>
+		/// <param name="Path">- relative path where to put font (change or allow for absolute)</param>
 		static void InitilizeFont(std::wstring Path = LR"(\Resources\)")
 		{
 			if (!(Path[Path.length() - 1] == L'\\'))
@@ -194,6 +207,9 @@ namespace NosStdLib
 			/* Make console use font */
 		}
 
+		/// <summary>
+		/// Remove font as resource (free it)
+		/// </summary>
 		static void TerminateFont()
 		{
 			/* Remove Font Resource */
@@ -204,19 +220,32 @@ namespace NosStdLib
 			/* Remove Font Resource */
 		}
 
-		static std::wstring CenterString(std::wstring input, bool All)
+		// TODO: Move CenterString to Global
+
+		/// <summary>
+		/// Center string 
+		/// </summary>
+		/// <param name="input">- string to center</param>
+		/// <param name="All">(default = true) - if it should center just first line or all lines</param>
+		/// <returns>centered string</returns>
+		static std::wstring CenterString(std::wstring input, bool All = true)
 		{
+			ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
 			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 			if (All)
 			{
 				std::vector<std::wstring> inputSplit;
-				std::wstring output = L"";
+				std::wstring output = L""; // TODO: add custom or find another split function to replace the boost one
 				//boost::split(inputSplit, input, boost::is_any_of(L"\n"));
+
+				NosStdLib::Global::String::Split(&inputSplit, &input, L'\n');
 
 				for (std::wstring Singleinput : inputSplit)
 				{
-					output += (std::wstring(((columns / 2) - Singleinput.length() / 2), ' ') + Singleinput + L'\n');
+					std::wstring Temp = (std::wstring(((columns / 2) - Singleinput.length() / 2), ' ') + Singleinput + L'\n');
+
+					output += Temp;
 				}
 
 				return output;
@@ -227,8 +256,13 @@ namespace NosStdLib
 			}
 		}
 
-		bool CrossThreadFinishBoolean;
+		bool CrossThreadFinishBoolean; /* bool which determens if loading screen thread should still load or not (false means continue loading, true means stop loading) */
 
+		/// <summary>
+		/// create LoadingScreen object
+		/// </summary>
+		/// <param name="barType">- the bar type which will be displayed when started</param>
+		/// <param name="splashScreen">(default = L"")- what the should display above the bar</param>
 		LoadingScreen(LoadType barType, std::wstring splashScreen = L"")
 		{
 			BarType = barType;
@@ -239,12 +273,21 @@ namespace NosStdLib
 			ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 		}
 
+		/// <summary>
+		/// the function that starts loading. 
+		/// </summary>
+		/// <typeparam name="Func">- callable type</typeparam>
+		/// <typeparam name="...VariadicArgs">- the parameter's of the callable</typeparam>
+		/// <param name="callable">- the callable</param>
+		/// <param name="...args">- the parameters of the callable</param>
 		template <typename Func, typename ... VariadicArgs>
 		void StartLoading(Func&& callable, VariadicArgs&& ... args)
 		{
 			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
 			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 			rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+			CrossThreadFinishBoolean = false;
 
 			if (SplashScreen == L"")
 				SplashScreenYSize = 0;
@@ -264,6 +307,11 @@ namespace NosStdLib
 			}
 		}
 
+		/// <summary>
+		/// Function used inside the function that is being loaded, updates different parameters
+		/// </summary>
+		/// <param name="percentageDone">- Percent done in decimal form</param>
+		/// <param name="statusMessage">- status message that gets displayed below the loading bar</param>
 		void UpdateKnownProgressBar(float percentageDone, std::wstring statusMessage = L"") //, bool centerString = true, bool centerAll = true)
 		{
 			PercentageDone = percentageDone;
@@ -275,11 +323,21 @@ namespace NosStdLib
 			//	StatusMessage = statusMessage;
 		}
 
+		/// <summary>
+		/// Finish loading
+		/// </summary>
 		void Finish()
 		{
 			CrossThreadFinishBoolean = true;
 		}
 
+		// TODO: put MoveRight and MoveLeft to Global namespace
+
+		/// <summary>
+		/// Move the contents of a string right by 1 space
+		/// </summary>
+		/// <param name="string">- the string to move right</param>
+		/// <returns>modified string</returns>
 		std::wstring MoveRight(std::wstring* string)
 		{
 			wchar_t LastChar = (*string)[string->length() - 1];
@@ -293,7 +351,12 @@ namespace NosStdLib
 
 			return *string;
 		}
-
+		
+		/// <summary>
+		/// Move the contents of a string left by 1 space
+		/// </summary>
+		/// <param name="string">- the string to move left</param>
+		/// <returns>modified string</returns>
 		std::wstring MoveLeft(std::wstring* string)
 		{
 			wchar_t LastChar = (*string)[0];

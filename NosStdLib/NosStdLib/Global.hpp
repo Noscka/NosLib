@@ -6,6 +6,8 @@
 #include <stringapiset.h>
 #include <io.h>
 #include <fcntl.h>
+#include <sstream>
+#include <vector>
 
 /*
 ANSI Table at the bottom
@@ -90,6 +92,28 @@ namespace NosStdLib
 			{
 				/* convert to Wstring and use the Wstring version, less likely to have any error involving data loss. */
 				return IsNumber(ToWstring(str), allowSigns);
+			}
+		#pragma endregion
+
+		#pragma region Split
+			/// <summary>
+			/// split a string into a vector array
+			/// </summary>
+			/// <param name="result">- the vector that will get modified</param>
+			/// <param name="input">- the input that will get split</param>
+			/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
+			/// <returns></returns>
+			std::vector<std::wstring>* Split(std::vector<std::wstring>* result, std::wstring* input, const wchar_t& delimiter = L' ')
+			{
+				std::wstring tmp;
+				std::wstringstream ss(*input);
+
+				while (getline(ss, tmp, delimiter))
+				{
+					result->push_back(tmp);
+				}
+
+				return result;
 			}
 		#pragma endregion
 		}
