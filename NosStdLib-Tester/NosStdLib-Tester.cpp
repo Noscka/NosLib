@@ -25,15 +25,8 @@ void CheckNumber()
 
 int main()
 {
-    _setmode(_fileno(stdout), _O_U16TEXT); /* set program to unicode output */
-
-
-    HANDLE handleOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD consoleMode;
-    GetConsoleMode(handleOut, &consoleMode);
-    consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    consoleMode |= DISABLE_NEWLINE_AUTO_RETURN;
-    SetConsoleMode(handleOut, consoleMode);
+    NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
+    NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", false, true, true);
     NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", false, true, true);

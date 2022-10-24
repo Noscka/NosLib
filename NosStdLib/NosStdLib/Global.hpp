@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <string>
 #include <stringapiset.h>
+#include <io.h>
+#include <fcntl.h>
 
 namespace NosStdLib
 {
@@ -93,6 +95,49 @@ namespace NosStdLib
 		/// </summary>
 		namespace Console
 		{
+			/// <summary>
+			/// namespace for items (mostly functions) which are meant to (but don't have to) be used at the beginning of the program to enable stuff like Unicode characters or ANSI escape code (colored text)
+			/// </summary>
+			namespace InitializeModifiers
+			{
+				/// <summary>
+				/// Sets program to output unicode16 text
+				/// </summary>
+				/// <returns>output of function used. -1 if error and anything else if succeful</returns>
+				int EnableUnicode()
+				{
+					return _setmode(_fileno(stdout), _O_U16TEXT); /* set program to unicode output */
+				}
+
+			#pragma region EnableANSI
+				/// <summary>
+				/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text with Custom Console Handle
+				/// </summary>
+				/// <param name="consoleHandle">- Custom Console Handle</param>
+				/// <returns>if operation was succesful</returns>
+				bool EnableANSI(HANDLE consoleHandle)
+				{
+					DWORD consoleMode;
+					bool getOperationResults = GetConsoleMode(consoleHandle, &consoleMode);
+					consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING; /* makes output get parsed, so ANSI gets actually used */
+					consoleMode |= DISABLE_NEWLINE_AUTO_RETURN; /* makes it so newlines have an effect. */
+					bool setOperationResults = SetConsoleMode(consoleHandle, consoleMode);
+
+					return (getOperationResults && setOperationResults); /* return the and of both (only returns true if both are true) */
+				}
+
+
+				/// <summary>
+				/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text
+				/// </summary>
+				/// <returns>if operation was succesful</returns>
+				bool EnableANSI()
+				{
+					return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
+				}
+			#pragma endregion
+			}
+
 		#pragma region GetConsoleCaretPosition
 			/// <summary>
 			/// Get position of console caret with Custom Console Handle
@@ -176,7 +221,6 @@ namespace NosStdLib
 				ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
 			}
 		#pragma endregion
-
 
 		#pragma region ClearScreen
 			/// <summary>
