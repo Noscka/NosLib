@@ -220,40 +220,6 @@ namespace NosStdLib
 			/* Remove Font Resource */
 		}
 
-		// TODO: Move CenterString to Global
-
-		/// <summary>
-		/// Center string 
-		/// </summary>
-		/// <param name="input">- string to center</param>
-		/// <param name="All">(default = true) - if it should center just first line or all lines</param>
-		/// <returns>centered string</returns>
-		static std::wstring CenterString(std::wstring input, bool All = true)
-		{
-			ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-			if (All)
-			{
-				std::vector<std::wstring> inputSplit;
-				std::wstring output = L"";
-				NosStdLib::Global::String::Split(&inputSplit, &input, L'\n');
-
-				for (std::wstring Singleinput : inputSplit)
-				{
-					std::wstring Temp = (std::wstring(((columns / 2) - Singleinput.length() / 2), ' ') + Singleinput + L'\n');
-
-					output += Temp;
-				}
-
-				return output;
-			}
-			else
-			{
-				return (std::wstring(((columns / 2) - input.length() / 2), ' ') + input + L'\n');
-			}
-		}
-
 		bool CrossThreadFinishBoolean; /* bool which determens if loading screen thread should still load or not (false means continue loading, true means stop loading) */
 
 		/// <summary>
