@@ -97,7 +97,7 @@ namespace NosStdLib
 
 		#pragma region Split
 			/// <summary>
-			/// split a string into a vector array
+			/// Split a string into a vectory array using a delimiter
 			/// </summary>
 			/// <param name="result">- the vector that will get modified</param>
 			/// <param name="input">- the input that will get split</param>
@@ -107,6 +107,26 @@ namespace NosStdLib
 			{
 				std::wstring tmp;
 				std::wstringstream ss(*input);
+
+				while (getline(ss, tmp, delimiter))
+				{
+					result->push_back(tmp);
+				}
+
+				return result;
+			}
+
+			/// <summary>
+			/// Split a string into a vectory array using a delimiter
+			/// </summary>
+			/// <param name="result">- the vector that will get modified</param>
+			/// <param name="input">- the input that will get split</param>
+			/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
+			/// <returns></returns>
+			std::vector<std::string>* Split(std::vector<std::string>* result, std::string* input, const char& delimiter = L' ')
+			{
+				std::string tmp;
+				std::stringstream ss(*input);
 
 				while (getline(ss, tmp, delimiter))
 				{

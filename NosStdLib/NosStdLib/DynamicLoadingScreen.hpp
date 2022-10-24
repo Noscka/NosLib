@@ -236,9 +236,7 @@ namespace NosStdLib
 			if (All)
 			{
 				std::vector<std::wstring> inputSplit;
-				std::wstring output = L""; // TODO: add custom or find another split function to replace the boost one
-				//boost::split(inputSplit, input, boost::is_any_of(L"\n"));
-
+				std::wstring output = L"";
 				NosStdLib::Global::String::Split(&inputSplit, &input, L'\n');
 
 				for (std::wstring Singleinput : inputSplit)
