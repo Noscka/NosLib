@@ -1,6 +1,8 @@
 #ifndef _TEXTCOLOR_HPP_
 #define _TEXTCOLOR_HPP_
 
+#include "Experimental.hpp"
+
 #include <codecvt>
 #include <stdint.h>
 #include <string>
@@ -47,9 +49,9 @@ namespace NosStdLib
 			/* TODO: find or create terminoligy for a value that is constant in a function. */
 			/* TODO: Create terminoligy table */
 			
-			//std::basic_string<CharT> baseString = (CharT*)"\033[38;2;{};{};{}m";
-			//return std::format(baseString, values.R, values.G, values.B);
-			return std::basic_string<CharT>();
+			std::basic_string<CharT> baseString;
+			NosStdLib::Experimental::ConvertGlobal(L"\033[38;2;{};{};{}m", &baseString);
+			return std::vformat(baseString, std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(values.R, values.G, values.B));
 		}
 	}
 }

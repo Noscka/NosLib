@@ -1,5 +1,6 @@
 ﻿#include <NosStdLib/Global.hpp>
-#include <NosStdLib/TestEnviroment.hpp>
+#include <NosStdLib/TextColor.hpp>
+#include <NosStdLib/Experimental.hpp>
 
 #include <iostream>
 #include <io.h>
@@ -13,9 +14,7 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    //std::wcout << NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << L"abc" << L"\033[0m" << std::endl;
-
-    NosStdLib::TestEnv::IterateSquare();
+    std::wcout << NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << L"abc" << L"\033[0m" << std::endl;
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;

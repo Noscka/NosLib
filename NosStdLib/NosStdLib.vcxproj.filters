@@ -30,7 +30,7 @@
     <ClInclude Include="NosStdLib\DynamicArray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\TestEnviroment.hpp">
+    <ClInclude Include="NosStdLib\Experimental.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp">

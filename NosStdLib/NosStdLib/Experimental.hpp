@@ -1,10 +1,43 @@
-#ifndef _TESTENVIROMENT_HPP_
-#define _TESTENVIROMENT_HPP_
+#ifndef _EXPERIMENTAL_HPP_
+#define _EXPERIMENTAL_HPP_
 
-#include "DynamicArray.hpp"
+#include <Windows.h>
+#include <string>
+#include <codecvt>
+#include "Global.hpp"
 
 namespace NosStdLib
 {
+    /// <summary>
+    /// namespace contains items which are experimental (require more testing)
+    /// </summary>
+    namespace Experimental
+    {
+        /// <summary>
+        /// function to convert global wstring to string
+        /// </summary>
+        /// <param name="globalWString">- the text to convert</param>
+        /// <param name="output">- the output for overloads</param>
+        /// <returns>pointer to output string</returns>
+        std::string* ConvertGlobal(const std::wstring& globalWString, std::string* output)
+        {
+            *output = NosStdLib::Global::String::ToString(globalWString);
+            return output;
+        }
+
+        /// <summary>
+        /// function to convert global wstring to wstring
+        /// </summary>
+        /// <param name="globalWString">- the text to convert</param>
+        /// <param name="output">- the output for overloads</param>
+        /// <returns>pointer to output wstring</returns>
+        std::wstring* ConvertGlobal(const std::wstring& globalWString, std::wstring* output)
+        {
+            *output = globalWString;
+            return output;
+        }
+    }
+
 	/// <summary>
 	/// namespace which contains functions and classes which get used for testing (this namespace will most likely not have comments)
 	/// </summary>
@@ -19,10 +52,10 @@ namespace NosStdLib
 
 		std::wstring DrawSquare(int position, int columnCount)
 		{
-			return std::wstring(max(position - 1, 0), L' ') + L"X" + std::wstring(max(columnCount - position, 0), L' ');
+			return std::wstring(max(position - 1, 0), L' ') + L"|" + std::wstring(max(columnCount - position, 0), L' ');
 		}
 
-        void IterateSquare(int sleepSpeed = 20)
+        void IterateSquare(int sleepSpeed = 15)
 		{
             NosStdLib::Global::Console::ShowCaret(false);
 

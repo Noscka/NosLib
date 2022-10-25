@@ -25,7 +25,7 @@
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
-    <ClInclude Include="NosStdLib\TestEnviroment.hpp" />
+    <ClInclude Include="NosStdLib\Experimental.hpp" />
     <ClInclude Include="NosStdLib\TextColor.hpp" />
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
   </ItemGroup>
