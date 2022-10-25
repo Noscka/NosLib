@@ -43,8 +43,13 @@ namespace NosStdLib
 		template <typename CharT>
 		std::basic_string<CharT> MakeANSICode(const NosRGB& values)
 		{
-			std::basic_string<CharT> baseString = (CharT*)"\033[38;2;{};{};{}m";
-			return std::format(baseString, values.R, values.G, values.B);
+			/* TODO: Fix by making a function with overloads for each string type. (have a selected string type to be used for constants) */
+			/* TODO: find or create terminoligy for a value that is constant in a function. */
+			/* TODO: Create terminoligy table */
+			
+			//std::basic_string<CharT> baseString = (CharT*)"\033[38;2;{};{};{}m";
+			//return std::format(baseString, values.R, values.G, values.B);
+			return std::basic_string<CharT>();
 		}
 	}
 }

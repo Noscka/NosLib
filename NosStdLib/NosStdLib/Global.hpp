@@ -389,7 +389,7 @@ Code	│Effect							 │Note
 9		│Crossed-out					 │Characters legible, but marked for deletion. Not widely supported.
 10		│Primary(default) font			 │
 11–19	│Alternate font					 │Select alternate font n-10
-20		│Fraktur	hardly ever supported│
+20		│Fraktur						 │hardly ever supported
 21		│Bold off or Double Underline	 │Bold off not widely supported; double underline hardly ever supported.
 22		│Normal color or intensity		 │Neither bold nor faint
 23		│Not italic, not Fraktur		 │

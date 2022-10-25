@@ -10,15 +10,49 @@ namespace NosStdLib
 	/// </summary>
 	namespace TestEnv
 	{
-		template<class CharT>
-		bool IsNumberTest(const std::basic_string<CharT>& input)
+        LPPOINT GetCaretPositionReturn()
+        {
+            LPPOINT point = new POINT();
+            GetCaretPos(point);
+            return point;
+        }
+
+		std::wstring DrawSquare(int position, int columnCount)
 		{
-			/* Simple for loop, checking if any char isn't a digit */
-			for (int i = 0; i < input.size(); i++)
-			{
-				if (!std::isdigit(input[i])) return false;
-			}
-			return true;
+			return std::wstring(max(position - 1, 0), L' ') + L"X" + std::wstring(max(columnCount - position, 0), L' ');
+		}
+
+        void IterateSquare(int sleepSpeed = 20)
+		{
+            NosStdLib::Global::Console::ShowCaret(false);
+
+            HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo(consoleHandle, &csbi);
+            int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+            int rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+            for (int i = 0; i <= columns; i++)
+            {
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                SetConsoleCursorPosition(consoleHandle, { 0, 0 });
+                Sleep(sleepSpeed);
+            }
+
+            for (int i = columns; i > 0; i--)
+            {
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                wprintf((NosStdLib::TestEnv::DrawSquare(i, columns) + L'\n').c_str());
+                SetConsoleCursorPosition(consoleHandle, { 0, 0 });
+                Sleep(sleepSpeed);
+            }
+
+            NosStdLib::Global::Console::ShowCaret(true);
 		}
 	}
 }
