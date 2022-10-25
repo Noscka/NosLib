@@ -1,6 +1,7 @@
 #ifndef _EXPERIMENTAL_HPP_
 #define _EXPERIMENTAL_HPP_
 
+#include "TextColor.hpp"
 #include <Windows.h>
 #include <string>
 #include <codecvt>
@@ -8,36 +9,6 @@
 
 namespace NosStdLib
 {
-    /// <summary>
-    /// namespace contains items which are experimental (require more testing)
-    /// </summary>
-    namespace Experimental
-    {
-        /// <summary>
-        /// function to convert global wstring to string
-        /// </summary>
-        /// <param name="globalWString">- the text to convert</param>
-        /// <param name="output">- the output for overloads</param>
-        /// <returns>pointer to output string</returns>
-        std::string* ConvertGlobal(const std::wstring& globalWString, std::string* output)
-        {
-            *output = NosStdLib::Global::String::ToString(globalWString);
-            return output;
-        }
-
-        /// <summary>
-        /// function to convert global wstring to wstring
-        /// </summary>
-        /// <param name="globalWString">- the text to convert</param>
-        /// <param name="output">- the output for overloads</param>
-        /// <returns>pointer to output wstring</returns>
-        std::wstring* ConvertGlobal(const std::wstring& globalWString, std::wstring* output)
-        {
-            *output = globalWString;
-            return output;
-        }
-    }
-
 	/// <summary>
 	/// namespace which contains functions and classes which get used for testing (this namespace will most likely not have comments)
 	/// </summary>
@@ -52,7 +23,13 @@ namespace NosStdLib
 
 		std::wstring DrawSquare(int position, int columnCount)
 		{
-			return std::wstring(max(position - 1, 0), L' ') + L"|" + std::wstring(max(columnCount - position, 0), L' ');
+            std::wstring ANSIEscapeCodeStart = NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(20, 180, 170));
+            std::wstring LeftPadding = std::wstring(max(position - 1, 0), L' ');
+            std::wstring BoxCharacter = L"|";
+            std::wstring RightPadding = std::wstring(max(columnCount - position, 0), L' ');
+            std::wstring ANSIEscapeCodeEnd = L"\033[0m";
+
+			return  ANSIEscapeCodeStart + LeftPadding + BoxCharacter + RightPadding + ANSIEscapeCodeEnd;
 		}
 
         void IterateSquare(int sleepSpeed = 15)

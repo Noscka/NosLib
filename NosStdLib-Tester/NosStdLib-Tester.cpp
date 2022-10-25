@@ -14,8 +14,8 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wcout << NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << L"abc" << L"\033[0m" << std::endl;
-
+    NosStdLib::TestEnv::IterateSquare();
+    
     wprintf(L"Press any button to continue"); getchar();
     return 0;
 }
@@ -25,6 +25,7 @@ std::wcout << L"🯰" << std::endl;
 std::wcout << L"\033[48;2;255;255;255;38;2;20;120;20m" << L"text 1" << L"\033[0m" << std::endl;
 std::wcout << L"\033[38;5;214;48;5;124m" << L"text 2" << L"\033[0m"<< std::endl;
 std::wcout << L"\033[5m" << L"text 2" << L"\033[0m"<< std::endl;
+std::wcout << NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << L"abc" << L"\033[0m" << std::endl;
 */
 
 /* MENU TEST
