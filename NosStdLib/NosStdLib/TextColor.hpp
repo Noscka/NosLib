@@ -1,8 +1,10 @@
 #ifndef _TEXTCOLOR_HPP_
 #define _TEXTCOLOR_HPP_
 
+#include <codecvt>
 #include <stdint.h>
 #include <string>
+#include <string_view>
 #include <format>
 
 namespace NosStdLib
@@ -41,9 +43,9 @@ namespace NosStdLib
 		template <typename CharT>
 		std::basic_string<CharT> MakeANSICode(const NosRGB& values)
 		{
-			return std::format(std::basic_string_view<CharT>((CharT*)"\033[38;2;{};{};{}m"), values.R, values.G, values.B);
+			std::basic_string<CharT> baseString = (CharT*)"\033[38;2;{};{};{}m";
+			return std::format(baseString, values.R, values.G, values.B);
 		}
 	}
 }
-
 #endif
