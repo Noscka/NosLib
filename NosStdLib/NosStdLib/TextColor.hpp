@@ -1,4 +1,4 @@
-#ifndef _TEXTCOLOR_HPP_
+﻿#ifndef _TEXTCOLOR_HPP_
 #define _TEXTCOLOR_HPP_
 
 #include "Global.hpp"
@@ -16,27 +16,18 @@ namespace NosStdLib
 	namespace Experimental
 	{
 		/// <summary>
-		/// function to convert global wstring to string
+		/// Simpliefied function to 1 function instead of 2 overloads
 		/// </summary>
-		/// <param name="globalWString">- the text to convert</param>
-		/// <param name="output">- the output for overloads</param>
-		/// <returns>pointer to output string</returns>
-		std::string* ConvertGlobal(const std::wstring& globalWString, std::string* output)
+		/// <typeparam name="CharT">- the type to get converted to</typeparam>
+		/// <param name="globalWString">- the wstring that will get converted</param>
+		/// <returns>converted string</returns>
+		template <typename CharT>
+		std::basic_string<CharT> ConvertGlobal(const std::wstring& globalWString)
 		{
-			*output = NosStdLib::Global::String::ToString(globalWString);
-			return output;
-		}
-
-		/// <summary>
-		/// function to convert global wstring to wstring
-		/// </summary>
-		/// <param name="globalWString">- the text to convert</param>
-		/// <param name="output">- the output for overloads</param>
-		/// <returns>pointer to output wstring</returns>
-		std::wstring* ConvertGlobal(const std::wstring& globalWString, std::wstring* output)
-		{
-			*output = globalWString;
-			return output;
+			if constexpr (std::is_same_v<CharT, char>)
+				return NosStdLib::Global::String::ToString(globalWString);
+			else if constexpr (std::is_same_v<CharT, wchar_t>)
+				return std::wstring(globalWString);
 		}
 	}
 
@@ -72,13 +63,73 @@ namespace NosStdLib
 		/// <param name="values">- the RGB values wanted</param>
 		/// <returns>the string containing the ANSI escape code</returns>
 		template <typename CharT>
-		std::basic_string<CharT> MakeANSICode(const NosRGB& values)
+		std::basic_string<CharT> MakeANSICode(const NosStdLib::TextColor::NosRGB& values)
 		{
 			/* TODO: find or create terminoligy for a value that is constant in a function. */
 			/* TODO: Create terminoligy table */
-			
-			std::basic_string<CharT> baseString;
-			return std::vformat(*NosStdLib::Experimental::ConvertGlobal(L"\033[38;2;{};{};{}m", &baseString), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(values.R, values.G, values.B));
+			return std::vformat(NosStdLib::Experimental::ConvertGlobal<CharT>(L"\033[38;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(values.R, values.G, values.B));
+		}
+
+		/// <summary>
+		/// namespace which contains functions which aren't useful but are entraiting or fun
+		/// </summary>
+		namespace Fun
+		{
+			/// <summary>
+			/// Function which creates a line of characters with the specified color
+			/// </summary>
+			/// <param name="columnCount">- the amount of columns</param>
+			/// <param name="rgbValue">(default = (20, 180, 170)) - the RGB value wanted</param>
+			/// <returns>a row with a color</returns>
+			std::wstring ColorRow(const int& columnCount, const NosStdLib::TextColor::NosRGB& rgbValue = NosStdLib::TextColor::NosRGB(20, 180, 170))
+			{
+				return  NosStdLib::TextColor::MakeANSICode<wchar_t>(rgbValue) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
+			}
+
+			/// <summary>
+			/// function which iterates the ColorRow function to make the console output nice colors
+			/// </summary>
+			/// <param name="singleRow">(singleRow = false) - if it should only output on 1 row or file the whole console</param>
+			/// <param name="sleepSpeed">(default = 1) - the speed to output at</param>
+			void IterateRainbow(const bool& singleRow = false, const int& sleepSpeed = 1)
+			{
+				NosStdLib::Global::Console::ShowCaret(false);
+
+				HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+				CONSOLE_SCREEN_BUFFER_INFO csbi;
+				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
+				int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+				int rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+				int R = 255, G = 0, B = 0;
+
+
+				while (true)
+				{
+					if (R > 0 && B == 0)
+					{
+						R--;
+						G++;
+					}
+					if (G > 0 && R == 0)
+					{
+						G--;
+						B++;
+					}
+					if (B > 0 && G == 0)
+					{
+						R++;
+						B--;
+					}
+
+					wprintf(ColorRow(columns, NosStdLib::TextColor::NosRGB(R, G, B)).c_str());
+					if(singleRow)
+						SetConsoleCursorPosition(consoleHandle, { 0, 0 });
+					Sleep(sleepSpeed);
+				}
+
+				NosStdLib::Global::Console::ShowCaret(true);
+			}
 		}
 	}
 }
