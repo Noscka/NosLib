@@ -72,10 +72,9 @@ namespace NosStdLib
 			{
 				float left = PercentageDone * Lenght;
 
-				bar += std::wstring(floor(left), L'█');
-
-				left -= floor(left);
-				bar += std::wstring(floor(left / 0.5), L'▌');
+				bar += std::wstring((left / 1.0), L'█');
+				
+				bar += std::wstring(fmod(left, 1.0)/ 0.5, L'▌');
 
 				wprintf((std::wstring(((columns / 2) - Lenght / 2), ' ') + bar + L'\n').c_str());
 				wprintf(StatusMessage.c_str());
@@ -232,11 +231,12 @@ namespace NosStdLib
 		/// create LoadingScreen object
 		/// </summary>
 		/// <param name="barType">- the bar type which will be displayed when started</param>
-		/// <param name="splashScreen">(default = L"")- what the should display above the bar</param>
-		LoadingScreen(LoadType barType, std::wstring splashScreen = L"")
+		/// <param name="splashScreen">(default = L"") - what the should display above the bar</param>
+		/// <param name="centerString">(default = true) - if the splashScreen should be centered</param>
+		LoadingScreen(LoadType barType, std::wstring splashScreen = L"", bool centerString = true)
 		{
 			BarType = barType;
-			SplashScreen = splashScreen;
+			SplashScreen = centerString ? NosStdLib::Global::String::CenterString(splashScreen, true) : splashScreen;
 
 			PercentageDone = 0;
 			CrossThreadFinishBoolean = false;
