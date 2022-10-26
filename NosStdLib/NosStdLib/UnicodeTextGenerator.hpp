@@ -6,6 +6,9 @@
 
 #include "Global.hpp"
 
+/* TODO: Create UnicodeTextGenerator that will dynamically create the text (research and develop) */
+/* TODO: make functions use template (like in Global::String) */
+
 namespace NosStdLib
 {
 	/// <summary>
