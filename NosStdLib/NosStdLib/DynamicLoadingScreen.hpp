@@ -4,6 +4,7 @@
 #include "Global.hpp"
 #include "FileManagement.hpp"
 #include <Windows.h>
+#include <minmax.h>
 #include <string>
 #include <math.h>
 
