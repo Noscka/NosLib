@@ -117,7 +117,7 @@ namespace NosStdLib
 			bool GoingRight = true; /* Tracking the direction in which the bar is going in */
 
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-			while (PercentageDone < 1 || !CrossThreadFinishBoolean)
+			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
 				if (MidPosition == 1 || MidPosition == bar.length())
 					GoingRight = !GoingRight;
