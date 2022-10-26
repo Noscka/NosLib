@@ -80,14 +80,8 @@ namespace NosStdLib
 				
 				bar += std::wstring(fmod(left, 1.0)/ 0.5, L'▌');
 
-				std::wstring LeftPadding = std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ');
-				std::wstring Middle = bar;
-				std::wstring RightPadding = std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ');
-				
-				std::wstring output = LeftPadding + Middle + RightPadding + L"\n";
-
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-				wprintf(output.c_str());
+				wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
 				wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);

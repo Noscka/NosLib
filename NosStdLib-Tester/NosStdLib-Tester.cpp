@@ -18,6 +18,19 @@ void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
     *argue = L"Completed ting innit fam";
 }
 
+void ChangingProgressFunction(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+{
+    int total = 1000;
+    Object->UpdateKnownProgressBar(0.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+    Object->UpdateKnownProgressBar(250.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+    Object->UpdateKnownProgressBar(100.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+
+    *argue = L"Completed ting innit fam";
+}
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
@@ -47,7 +60,7 @@ int main()
     std::wstring SomeVar(L"Some Text");
 
     NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
-    LC.StartLoading(&LongFunctionTing, &SomeVar);
+    LC.StartLoading(&ChangingProgressFunction, &SomeVar);
 
     wprintf(L"Press any button to continue"); getchar();
     NosStdLib::LoadingScreen::TerminateFont();
