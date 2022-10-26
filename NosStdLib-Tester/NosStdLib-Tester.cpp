@@ -12,7 +12,7 @@ void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
     for (int i = 0; i <= total; i++)
     {
         Sleep(10);
-        Object->UpdateKnownProgressBar((float)i / (float)total, NosStdLib::Global::String::CenterString<wchar_t>(L"Testing Status\nExtra Line,\n Innit", true));
+        Object->UpdateKnownProgressBar((float)i / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
     }
     *argue = L"Completed ting innit fam";
 }

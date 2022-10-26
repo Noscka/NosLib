@@ -26,6 +26,7 @@ namespace NosStdLib
 		int CurrentWriteRow, PreviousWriteRow;		/* Current and previous loading bar write row  */
 		float PercentageDone;						/* decimal percentage of progress */
 		std::wstring StatusMessage;					/* Status message (Might need to move to local instead of global) */
+		bool CenterStatusMesage;					/* if the StatusMessage should get centered. takes stress off the work thread and gets done on the drawing thread */
 
 		static inline HANDLE ConsoleHandle;				/* global and static Console Handle */
 		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;	/* global and static Console ScreenBI */
@@ -65,11 +66,11 @@ namespace NosStdLib
 			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 
 			std::wstring bar = L"";
-			int Lenght = 50;
 
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
+				int Lenght = max(columns - 60, 20);
 				float left = PercentageDone * Lenght;
 
 				bar += std::wstring((left / 1.0), L'█');
@@ -77,7 +78,7 @@ namespace NosStdLib
 				bar += std::wstring(fmod(left, 1.0)/ 0.5, L'▌');
 
 				wprintf((std::wstring(((columns / 2) - Lenght / 2), ' ') + bar + L'\n').c_str());
-				wprintf(StatusMessage.c_str());
+				wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
 				MidOperationUpdate();
@@ -118,13 +119,13 @@ namespace NosStdLib
 				if (GoingRight)
 				{
 					wprintf((std::wstring(((columns / 2) - bar.length() / 2), ' ') + MoveRight(&bar) + L'\n').c_str());
-					wprintf(StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 					MidPosition++;
 				}
 				else
 				{
 					wprintf((std::wstring(((columns / 2) - bar.length() / 2), ' ') + MoveLeft(&bar) + L'\n').c_str());
-					wprintf(StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 					MidPosition--;
 				}
 
@@ -277,11 +278,11 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="percentageDone">- Percent done in decimal form</param>
 		/// <param name="statusMessage">- status message that gets displayed below the loading bar</param>
-		void UpdateKnownProgressBar(float percentageDone, std::wstring statusMessage = L"") //, bool centerString = true, bool centerAll = true)
+		void UpdateKnownProgressBar(float percentageDone, std::wstring statusMessage = L"", bool centerStatusMessage = true) //, bool centerString = true, bool centerAll = true)
 		{
 			PercentageDone = percentageDone;
 			StatusMessage = statusMessage;
-
+			CenterStatusMesage = centerStatusMessage;
 			//if (centerString)
 			//	StatusMessage = std::async(std::launch::async, CenterString, statusMessage, centerAll).get();
 			//else
