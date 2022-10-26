@@ -39,13 +39,16 @@ namespace NosStdLib
 		/// </summary>
 		void MidOperationUpdate()
 		{
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-			rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-			PreviousWriteRow = CurrentWriteRow;
+			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi); /* update console info */
+			rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1; /* recalculate rows */
+			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1; /* and columns */
+			PreviousWriteRow = CurrentWriteRow; /* before recalculating new writing row, save it incase its different and the old one needs clearing */
+
+			/* recalculate writing row, either 4 above the bottom (with status message) or right below the splash screen */
 			CurrentWriteRow = max((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1));
-			NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
-			NosStdLib::Global::Console::ClearRange(CurrentWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+
+			if (CurrentWriteRow != PreviousWriteRow) /* if CurrentWriteRow and PreviousWriteRow are not equal (write position changed), clear previous */
+				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
 		}
 
 		/// <summary>
@@ -70,14 +73,21 @@ namespace NosStdLib
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
-				int Lenght = max(columns - 60, 20);
-				float left = PercentageDone * Lenght;
+				int maxLenght = max(columns - 60, 20);
+				float left = PercentageDone * maxLenght;
 
 				bar += std::wstring((left / 1.0), L'█');
 				
 				bar += std::wstring(fmod(left, 1.0)/ 0.5, L'▌');
 
-				wprintf((std::wstring(((columns / 2) - Lenght / 2), ' ') + bar + L'\n').c_str());
+				std::wstring LeftPadding = std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ');
+				std::wstring Middle = bar;
+				std::wstring RightPadding = std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ');
+				
+				std::wstring output = LeftPadding + Middle + RightPadding + L"\n";
+
+				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
+				wprintf(output.c_str());
 				wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);

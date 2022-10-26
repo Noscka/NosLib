@@ -1,4 +1,5 @@
 ﻿#include <NosStdLib/Global.hpp>
+#include <NosStdLib/TextColor.hpp>
 #include <NosStdLib/DynamicLoadingScreen.hpp>
 
 #include <iostream>
