@@ -11,14 +11,12 @@
 
 int main()
 {
-    //NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
+    NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::cout << NosStdLib::TextColor::MakeANSICode<char>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << NosStdLib::Experimental::ConvertGlobal<char>(L"abc") << NosStdLib::Experimental::ConvertGlobal<char>(L"\033[0m") << std::endl;
-
-    //wprintf(L"Press any button to start"); getchar();
-    //
-    //NosStdLib::TextColor::Fun::IterateRainbow(false, 5);
+    wprintf(L"Press any button to start"); getchar();
+    
+    NosStdLib::TextColor::Fun::IterateRainbow(false, 5);
     
     wprintf(L"Press any button to continue"); getchar();
     return 0;

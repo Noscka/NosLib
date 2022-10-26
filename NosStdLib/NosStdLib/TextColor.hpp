@@ -60,14 +60,15 @@ namespace NosStdLib
 		/// Create necesacry ANSI escape code to give wanted color
 		/// </summary>
 		/// <typeparam name="CharT">- string type</typeparam>
-		/// <param name="values">- the RGB values wanted</param>
+		/// <param name="value">- the RGB values wanted</param>
+		/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
 		/// <returns>the string containing the ANSI escape code</returns>
 		template <typename CharT>
-		std::basic_string<CharT> MakeANSICode(const NosStdLib::TextColor::NosRGB& values)
+		std::basic_string<CharT> MakeANSICode(const NosStdLib::TextColor::NosRGB& value, const bool& foreGroundBackGround = true)
 		{
 			/* TODO: find or create terminoligy for a value that is constant in a function. */
 			/* TODO: Create terminoligy table */
-			return std::vformat(NosStdLib::Experimental::ConvertGlobal<CharT>(L"\033[38;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(values.R, values.G, values.B));
+			return std::vformat(NosStdLib::Experimental::ConvertGlobal<CharT>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(value.R, value.G, value.B));
 		}
 
 		/// <summary>
@@ -83,7 +84,7 @@ namespace NosStdLib
 			/// <returns>a row with a color</returns>
 			std::wstring ColorRow(const int& columnCount, const NosStdLib::TextColor::NosRGB& rgbValue = NosStdLib::TextColor::NosRGB(20, 180, 170))
 			{
-				return  NosStdLib::TextColor::MakeANSICode<wchar_t>(rgbValue) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
+				return  NosStdLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
 			}
 
 			/// <summary>
@@ -98,31 +99,29 @@ namespace NosStdLib
 				HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
-				int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-				int rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 
-				int R = 255, G = 0, B = 0;
-
+				uint8_t R = 255, G = 0, B = 0;
+				uint8_t changeValue = 1; /* 85 for lego mode */
 
 				while (true)
 				{
 					if (R > 0 && B == 0)
 					{
-						R--;
-						G++;
+						R -= changeValue;
+						G += changeValue;
 					}
 					if (G > 0 && R == 0)
 					{
-						G--;
-						B++;
+						G -= changeValue;
+						B += changeValue;
 					}
 					if (B > 0 && G == 0)
 					{
-						R++;
-						B--;
+						R += changeValue;
+						B -= changeValue;
 					}
 
-					wprintf(ColorRow(columns, NosStdLib::TextColor::NosRGB(R, G, B)).c_str());
+					wprintf(ColorRow(csbi.srWindow.Right - csbi.srWindow.Left + 1, NosStdLib::TextColor::NosRGB(R, G, B)).c_str());
 					if(singleRow)
 						SetConsoleCursorPosition(consoleHandle, { 0, 0 });
 					Sleep(sleepSpeed);
