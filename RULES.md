@@ -7,3 +7,4 @@ a simple rule book so I remember how I should name functions, variables and etc.
 6.	Function Parameters must start with lowercase letter
 7.	Do not use #param region inside functions as it lowers readablity
 8.	Class and Enum Members/attributes must start with capital letter
+9.	Experimental features must be in the header file to which they relate
