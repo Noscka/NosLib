@@ -166,18 +166,21 @@ namespace NosStdLib
 		}
 	public:
 		/// <summary>
-		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory
+		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory. uses FilePath for path to font
 		/// </summary>
-		/// <param name="Path">- relative path where to put font (change or allow for absolute)</param>
-		static void InitilizeFont(std::wstring Path = LR"(\Resources\)")
+		/// <param name="filePathObj">(default = LR"(\Resources\)", L"CustomConsola.ttf") - FilePath object to were store the font</param>
+		static void InitilizeFont(const NosStdLib::FileManagement::FilePath& filePathObj = NosStdLib::FileManagement::FilePath(LR"(\Resources\)", L"CustomConsola.ttf"))
 		{
-			if (!(Path[Path.length() - 1] == L'\\'))
+			FontFilePath = filePathObj;
+
+			if (FontFilePath.GetFilename().empty())
+				FontFilePath.SetFilename(L"CustomConsola.ttf");
+
+			if (FontFilePath.GetAbsolutePath() == L"")
 			{
-				throw std::invalid_argument("Isn't a valid path. Cannot have file name included in the path");
+				throw std::invalid_argument("Cannot be a blank path");
 				return;
 			}
-
-			FontFilePath = NosStdLib::FileManagement::FilePath(Path, L"CustomConsola.ttf");
 
 			std::filesystem::create_directories(std::filesystem::path(FontFilePath.GetAbsolutePath())); /* Make Resources Direcory */
 
@@ -218,6 +221,21 @@ namespace NosStdLib
 			wcscpy_s(cfi.FaceName, L"Custom Consolas");
 			SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &cfi);
 			/* Make console use font */
+		}
+
+		/// <summary>
+		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory
+		/// </summary>
+		/// <param name="Path">- relative path where to put font</param>
+		static void InitilizeFont(std::wstring Path)
+		{
+			if (!(Path[Path.length() - 1] == L'\\'))
+			{
+				throw std::invalid_argument("Isn't a valid path. Cannot have file name included in the path");
+				return;
+			}
+
+			InitilizeFont(NosStdLib::FileManagement::FilePath(Path, L"CustomConsola.ttf"));
 		}
 
 		/// <summary>

@@ -18,7 +18,7 @@ namespace NosStdLib
         /// </summary>
         class FilePath
         {
-        private:
+        protected:
             std::wstring AbsolutePath; /* Absolute path to exe (without exe filename) */
             std::wstring RelativePath; /* Subpath from current path */
             std::wstring Filename; /* Filename */
@@ -65,6 +65,17 @@ namespace NosStdLib
             /// <returns>filename</returns>
             std::wstring GetFilename()
             {
+                return Filename;
+            }
+
+            /// <summary>
+            /// Change the filename
+            /// </summary>
+            /// <param name="newFilename">- the new filename</param>
+            /// <returns>filename</returns>
+            std::wstring SetFilename(std::wstring newFilename)
+            {
+                Filename = newFilename;
                 return Filename;
             }
         };
