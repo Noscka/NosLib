@@ -1,34 +1,25 @@
 ﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/TextColor.hpp>
-#include <NosStdLib/DynamicLoadingScreen.hpp>
+#include <NosStdLib/DynamicMenuSystem.hpp>
 
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
 #include <cstdio>
 
-void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+bool SomeBool = false;
+int number = 0;
+
+void CheckBool()
 {
-    int total = 1000;
-    for (int i = 0; i <= total; i++)
-    {
-        Sleep(10);
-        Object->UpdateKnownProgressBar((float)i / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
-    }
-    *argue = L"Completed ting innit fam";
+    wprintf((SomeBool ? L"true" : L"false"));
+    system("Pause");
 }
 
-void ChangingProgressFunction(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+void CheckNumber()
 {
-    int total = 1000;
-    Object->UpdateKnownProgressBar(0.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
-    Sleep(1000);
-    Object->UpdateKnownProgressBar(250.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
-    Sleep(1000);
-    Object->UpdateKnownProgressBar(100.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
-    Sleep(1000);
-
-    *argue = L"Completed ting innit fam";
+    wprintf(std::to_wstring(number).c_str());
+    system("Pause");
 }
 
 int main()
@@ -36,34 +27,27 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::LoadingScreen::InitilizeFont();
-
-    std::wstring splash = LR"(
-                      ████████                ███████                            
-                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
-          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
-     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
-   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
- ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
-██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
-██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
-▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
-  ▀██████████████▄███         ███        ████       ███          ███             
-    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
-   ███             ██▌        ██▌         ██       ███▌         ███              
-   ███             ▐██                            █████▄       ███               
-    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
-       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
-                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
-                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
-
-    std::wstring SomeVar(L"Some Text");
-
-    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Unknown, splash);
-    LC.StartLoading(&LongFunctionTing, &SomeVar);
+    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", false, true, true);
+    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", false, true, true);
+    
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", &CheckNumber));
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"========== Boolean =========="));
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool", &CheckBool));
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"========== Integer =========="));
+    
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", &CheckNumber));
+    
+    MainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); getchar();
-    NosStdLib::LoadingScreen::TerminateFont();
     return 0;
 }
 
@@ -110,38 +94,61 @@ void CheckNumber()
 * MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", CheckNumber));
 * 
 * MainMenu.StartMenu();
-* 
+* wprintf(L"Press any button to continue"); getchar();
 */
 
 /* LOADING SCREEN TEST
-NosStdLib::LoadingScreen::InitilizeFont();
+void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+{
+    int total = 1000;
+    for (int i = 0; i <= total; i++)
+    {
+        Object->UpdateKnownProgressBar((float)i / (float)total, std::format(L"{}\nTesting Status\nExtra Line,\n Innit", (float)i / (float)total), true);
+        Sleep(10);
+    }
+    *argue = L"Completed ting innit fam";
+}
 
+void ChangingProgressFunction(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+{
+    int total = 1000;
+    Object->UpdateKnownProgressBar(0.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+    Object->UpdateKnownProgressBar(250.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+    Object->UpdateKnownProgressBar(100.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
 
-std::wstring splash = LR"(
-                      ████████                ███████
-                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
-          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄
-     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄
-   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄
- ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██
-██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
-██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
-▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀
-  ▀██████████████▄███         ███        ████       ███          ███
-    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌
-   ███             ██▌        ██▌         ██       ███▌         ███
-   ███             ▐██                            █████▄       ███
-    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀
-       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀
-                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀
-                           ▀▀▀▀▀        ▀▀▀▀▀)";
+    *argue = L"Completed ting innit fam";
+}
 
-std::wstring SomeVar(L"Some Text");
-
-NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
-LC.StartLoading(&LongFunctionTing, &SomeVar);
-
-wprintf(L"Press any button to continue"); getchar();
-NosStdLib::LoadingScreen::TerminateFont();
-
+* NosStdLib::LoadingScreen::InitilizeFont();
+* 
+* 
+* std::wstring splash = LR"(
+*                       ████████                ███████
+*                     ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
+*           ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄
+*      ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄
+*    ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄
+*  ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██
+* ██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
+* ██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
+* ▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀
+*   ▀██████████████▄███         ███        ████       ███          ███
+*     ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌
+*    ███             ██▌        ██▌         ██       ███▌         ███
+*    ███             ▐██                            █████▄       ███
+*     ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀
+*        ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀
+*                        ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀
+*                            ▀▀▀▀▀        ▀▀▀▀▀)";
+* 
+* std::wstring SomeVar(L"Some Text");
+* 
+* NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
+* LC.StartLoading(&LongFunctionTing, &SomeVar);
+* 
+* wprintf(L"Press any button to continue"); getchar();
+* NosStdLib::LoadingScreen::TerminateFont();
 */
