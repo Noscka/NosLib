@@ -59,8 +59,8 @@ int main()
 
     std::wstring SomeVar(L"Some Text");
 
-    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
-    LC.StartLoading(&ChangingProgressFunction, &SomeVar);
+    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Unknown, splash);
+    LC.StartLoading(&LongFunctionTing, &SomeVar);
 
     wprintf(L"Press any button to continue"); getchar();
     NosStdLib::LoadingScreen::TerminateFont();

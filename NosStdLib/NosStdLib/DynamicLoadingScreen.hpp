@@ -110,25 +110,28 @@ namespace NosStdLib
 
 			std::wstring bar = L"▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▇ ▆ ▅ ▄ ▃ ▂ ▁";
 
+			int maxLenght = bar.size(); /* for efficiency so string.size() doesn't have to get recalculated each time */
 			int MidPosition = std::ceil((float)bar.length() / 2); /* For tracking the middle character character */
 			int TrueMid = std::ceil((float)bar.length() / 2); /* Middle absolute position */
 			bool GoingRight = true; /* Tracking the direction in which the bar is going in */
 
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 
-			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
+			while (PercentageDone < 1 || !CrossThreadFinishBoolean)
 			{
 				if (MidPosition == 1 || MidPosition == bar.length())
 					GoingRight = !GoingRight;
 				if (GoingRight)
 				{
-					wprintf((std::wstring(((columns / 2) - bar.length() / 2), ' ') + MoveRight(&bar) + L'\n').c_str());
+					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
+					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveRight(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
 					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 					MidPosition++;
 				}
 				else
 				{
-					wprintf((std::wstring(((columns / 2) - bar.length() / 2), ' ') + MoveLeft(&bar) + L'\n').c_str());
+					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
+					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveLeft(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
 					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 					MidPosition--;
 				}
