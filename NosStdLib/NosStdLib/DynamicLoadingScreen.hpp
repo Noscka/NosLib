@@ -70,7 +70,6 @@ namespace NosStdLib
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
-
 				float left = PercentageDone * Lenght;
 
 				bar += std::wstring(floor(left), L'█');

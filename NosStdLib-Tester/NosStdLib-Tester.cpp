@@ -1,24 +1,55 @@
 ﻿#include <NosStdLib/Global.hpp>
-#include <NosStdLib/TextColor.hpp>
-#include <NosStdLib/Experimental.hpp>
+#include <NosStdLib/DynamicLoadingScreen.hpp>
 
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
 #include <cstdio>
 
-
+void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+{
+    int total = 1000;
+    for (int i = 0; i <= total; i++)
+    {
+        Sleep(10);
+        Object->UpdateKnownProgressBar((float)i / (float)total, NosStdLib::Global::String::CenterString<wchar_t>(L"Testing Status\nExtra Line,\n Innit", true));
+    }
+    *argue = L"Completed ting innit fam";
+}
 
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    wprintf(L"Press any button to start"); getchar();
-    
-    NosStdLib::TextColor::Fun::IterateRainbow(false, 5);
-    
+    NosStdLib::LoadingScreen::InitilizeFont();
+
+    std::wstring splash = LR"(
+                      ████████                ███████
+                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄
+          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄
+     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄
+   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄
+ ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██
+██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
+██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
+▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀
+  ▀██████████████▄███         ███        ████       ███          ███
+    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌
+   ███             ██▌        ██▌         ██       ███▌         ███
+   ███             ▐██                            █████▄       ███
+    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀
+       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀
+                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀
+                           ▀▀▀▀▀        ▀▀▀▀▀)";
+
+    std::wstring SomeVar(L"Some Text");
+
+    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
+    LC.StartLoading(&LongFunctionTing, &SomeVar);
+
     wprintf(L"Press any button to continue"); getchar();
+    NosStdLib::LoadingScreen::TerminateFont();
     return 0;
 }
 
