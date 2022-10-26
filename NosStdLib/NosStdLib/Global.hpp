@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <sstream>
 #include <vector>
+#include <minmax.h>
 
 /*
 ANSI Table at the bottom
@@ -119,7 +120,7 @@ namespace NosStdLib
 			/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 			/// <returns>centered string</returns>
 			template <typename CharT>
-			std::basic_string<CharT> CenterString(HANDLE consoleHandle, std::basic_string<CharT> input, bool all = true)
+			std::basic_string<CharT> CenterString(HANDLE consoleHandle, std::basic_string<CharT> input, bool rightPadding = false, bool all = true)
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
@@ -132,14 +133,14 @@ namespace NosStdLib
 
 					for (std::basic_string<CharT> Singleinput : inputSplit)
 					{
-						output += (std::basic_string<CharT>(((columns / 2) - Singleinput.length() / 2), ' ') + Singleinput + (CharT)('\n'));
+						output += (std::basic_string<CharT>(((columns / 2) - Singleinput.size() / 2), ' ') + Singleinput + (rightPadding ? std::wstring(max((columns - (Singleinput.size() + ((columns / 2) - Singleinput.size() / 2))), 0), L' ') : L"") + (CharT)(L'\n'));
 					}
 
 					return output;
 				}
 				else
 				{
-					return (std::basic_string<CharT>(((columns / 2) - input.length() / 2), ' ') + input + (CharT)('\n'));
+					return (std::basic_string<CharT>(((columns / 2) - input.size() / 2), ' ') + input + (rightPadding ? std::wstring(max((columns - (input.size() + ((columns / 2) - input.size() / 2))), 0), L' ') : L"") + (CharT)(L'\n'));
 				}
 			}
 
@@ -151,9 +152,9 @@ namespace NosStdLib
 			/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 			/// <returns>centered wstring</returns>
 			template <typename CharT>
-			std::basic_string<CharT> CenterString(std::basic_string<CharT> input, bool all = true)
+			std::basic_string<CharT> CenterString(std::basic_string<CharT> input, bool rightPadding = false, bool all = true)
 			{
-				return CenterString(GetStdHandle(STD_OUTPUT_HANDLE), input, all);
+				return CenterString(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
 			}
 		#pragma endregion
 		}

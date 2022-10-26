@@ -83,7 +83,7 @@ namespace NosStdLib
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 				wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-				wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
+				wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
 				MidOperationUpdate();
@@ -125,14 +125,14 @@ namespace NosStdLib
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveRight(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 					MidPosition++;
 				}
 				else
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveLeft(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 					MidPosition--;
 				}
 
@@ -302,16 +302,13 @@ namespace NosStdLib
 		/// Function used inside the function that is being loaded, updates different parameters
 		/// </summary>
 		/// <param name="percentageDone">- Percent done in decimal form</param>
-		/// <param name="statusMessage">- status message that gets displayed below the loading bar</param>
-		void UpdateKnownProgressBar(float percentageDone, std::wstring statusMessage = L"", bool centerStatusMessage = true) //, bool centerString = true, bool centerAll = true)
+		/// <param name="statusMessage">(default = L"") - status message that gets displayed below the loading bar</param>
+		/// <param name="centerStatusMessage">(default = true) - if statusMessage should get centered, if yes. will get centered in the drawing thread</param>
+		void UpdateKnownProgressBar(float percentageDone, std::wstring statusMessage = L"", bool centerStatusMessage = true)
 		{
 			PercentageDone = percentageDone;
 			StatusMessage = statusMessage;
 			CenterStatusMesage = centerStatusMessage;
-			//if (centerString)
-			//	StatusMessage = std::async(std::launch::async, CenterString, statusMessage, centerAll).get();
-			//else
-			//	StatusMessage = statusMessage;
 		}
 
 		/// <summary>

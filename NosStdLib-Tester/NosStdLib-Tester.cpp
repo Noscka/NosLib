@@ -1,25 +1,25 @@
 ﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/TextColor.hpp>
-#include <NosStdLib/DynamicMenuSystem.hpp>
+#include <NosStdLib/DynamicLoadingScreen.hpp>
 
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
 #include <cstdio>
 
-bool SomeBool = false;
-int number = 0;
-
-void CheckBool()
+void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
 {
-    wprintf((SomeBool ? L"true" : L"false"));
-    system("Pause");
-}
-
-void CheckNumber()
-{
-    wprintf(std::to_wstring(number).c_str());
-    system("Pause");
+    int total = 100;
+    for (int i = 0; i <= total; i++)
+    {
+        Object->UpdateKnownProgressBar((float)i / (float)total, std::format(L"{}\nTesting Status\nExtra Line,\n Innit", (float)i / (float)total), true);
+        Sleep(500);
+        Object->UpdateKnownProgressBar((float)i / (float)total, L"abc", true);
+        Sleep(500);
+        Object->UpdateKnownProgressBar((float)i / (float)total, L"abc\nannnnn", true);
+        Sleep(500);
+    }
+    *argue = L"Completed ting innit fam";
 }
 
 int main()
@@ -27,27 +27,35 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", false, true, true);
-    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", false, true, true);
+    NosStdLib::LoadingScreen::InitilizeFont();
     
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", &CheckNumber));
     
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
+    std::wstring splash = LR"(
+                      ████████                ███████                            
+                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
+          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
+     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
+   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
+ ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
+██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
+██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
+▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
+  ▀██████████████▄███         ███        ████       ███          ███             
+    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
+   ███             ██▌        ██▌         ██       ███▌         ███              
+   ███             ▐██                            █████▄       ███               
+    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
+       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
+                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
+                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
     
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"========== Boolean =========="));
+    std::wstring SomeVar(L"Some Text");
     
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool", &CheckBool));
+    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
+    LC.StartLoading(&LongFunctionTing, &SomeVar);
     
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"========== Integer =========="));
-    
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", &CheckNumber));
-    
-    MainMenu.StartMenu();
-
     wprintf(L"Press any button to continue"); getchar();
+    NosStdLib::LoadingScreen::TerminateFont();
     return 0;
 }
 

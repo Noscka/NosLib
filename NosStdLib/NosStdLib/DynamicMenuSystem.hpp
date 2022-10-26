@@ -13,7 +13,7 @@
 /* TODO: Rewrite DynamicMenuSystem as it seems to be frequently crashing due to memory issues.
 Features needed:
  - dynamic functions with parameter passthrough (menu entry).
- - text overwrite algorith instead of clear and write algorith.
+ - text overwrite algorithm instead of clear and write algorithm.
 */
 
 namespace NosStdLib
