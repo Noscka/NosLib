@@ -84,21 +84,13 @@ namespace NosStdLib
         /// <summary>
         /// Get file extention from filename
         /// </summary>
+        /// <typeparam name="CharT">- string type</typeparam>
         /// <param name="filename">- filename to get extension from</param>
         /// <returns>filename extension</returns>
-        std::wstring GetFileExtension(const std::wstring& filename)
+        template <typename CharT>
+        std::basic_string<CharT> GetFileExtension(const std::basic_string<CharT>& filename)
         {
             return filename.substr(filename.find_last_of(L".") + 1);
-        }
-
-        /// <summary>
-        /// Get file extention from filename
-        /// </summary>
-        /// <param name="filename">- filename to get extension from</param>
-        /// <returns>filename extension</returns>
-        std::string GetFileExtension(const std::string& filename)
-        {
-            return NosStdLib::Global::String::ToString(GetFileExtension(NosStdLib::Global::String::ToWstring(filename)));
         }
     #pragma endregion
     }

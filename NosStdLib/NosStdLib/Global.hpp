@@ -154,7 +154,7 @@ namespace NosStdLib
 			template <typename CharT>
 			std::basic_string<CharT> CenterString(std::basic_string<CharT> input, bool rightPadding = false, bool all = true)
 			{
-				return CenterString(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
+				return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
 			}
 		#pragma endregion
 		}

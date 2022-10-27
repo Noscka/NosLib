@@ -1,6 +1,7 @@
 ﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/TextColor.hpp>
 #include <NosStdLib/DynamicLoadingScreen.hpp>
+#include <NosStdLib/FileManagement.hpp>
 
 #include <iostream>
 #include <io.h>
@@ -12,12 +13,8 @@ void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
     int total = 100;
     for (int i = 0; i <= total; i++)
     {
-        Object->UpdateKnownProgressBar((float)i / (float)total, std::format(L"{}\nTesting Status\nExtra Line,\n Innit", (float)i / (float)total), true);
-        Sleep(500);
-        Object->UpdateKnownProgressBar((float)i / (float)total, L"abc", true);
-        Sleep(500);
-        Object->UpdateKnownProgressBar((float)i / (float)total, L"abc\nannnnn", true);
-        Sleep(500);
+        Object->UpdateKnownProgressBar((float)i / (float)total, std::format(L"{}\nTesting Status\nExtra Line,\n Innit\n{}", (float)i / (float)total, NosStdLib::FileManagement::GetFileExtension<wchar_t>(L"abc.txt")), true);
+        Sleep(100);
     }
     *argue = L"Completed ting innit fam";
 }

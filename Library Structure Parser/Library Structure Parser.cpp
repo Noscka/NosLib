@@ -113,7 +113,7 @@ void RecureThrouDir(const std::wstring& root)
             wprintf(L"Directory\n");
             RecureThrouDir(entry.path());
         }
-        else if (NosStdLib::FileManagement::GetFileExtension(entry.path()) == L"hpp" || NosStdLib::FileManagement::GetFileExtension(entry.path()) == L"h") /* if not a directory and is a header (hpp or h extention), parse it */
+        else if (NosStdLib::FileManagement::GetFileExtension<wchar_t>(entry.path()) == L"hpp" || NosStdLib::FileManagement::GetFileExtension<wchar_t>(entry.path()) == L"h") /* if not a directory and is a header (hpp or h extention), parse it */
         {
             wprintf(L"Header File\n");
             ParseHeader(entry.path());
