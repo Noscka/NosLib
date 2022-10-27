@@ -9,6 +9,7 @@
 #include <conio.h>
 #include <string>
 #include <functional>
+#include <type_traits>
 
 /* TODO: Rewrite DynamicMenuSystem as it seems to be frequently crashing due to memory issues.
 Features needed:
@@ -18,6 +19,49 @@ Features needed:
 
 namespace NosStdLib
 {
+	namespace MenuRewrite
+	{
+
+		/// <summary>
+		/// Class which is used for entries in the DynamicMenu class, contains the necessary data
+		/// </summary>
+		template <typename EntryType>
+		class MenuEntry
+		{
+			//static_assert(std::is_same_v<int, EntryType>, "MenuEntry has to be int, bool,"); /* Create statis Assert to stop user from creating objects with types that aren't allowed */
+		private:
+			std::wstring EntryName;
+
+			EntryType* EntryStoreObjectPointer;
+		public:
+			/// <summary>
+			/// Create empty entry
+			/// </summary>
+			MenuEntry(){}
+
+			/// <summary>
+			/// Create entry with an object
+			/// </summary>
+			/// <param name="entryName">- the name that will be showed in the menu</param>
+			/// <param name="entryStoreObjectPointer">- a pointer to the object which will get used</param>
+			MenuEntry(std::wstring entryName, EntryType* entryStoreObjectPointer)
+			{
+				EntryName = entryName;
+				EntryStoreObjectPointer = entryStoreObjectPointer
+			}
+
+		};
+
+		/// <summary>
+		/// the main Menu class which will be used to 
+		/// </summary>
+		class DynamicMenu
+		{
+
+		};
+
+	}
+
 	namespace Menu
 	{
 		constexpr int ARROW_UP		=	72;

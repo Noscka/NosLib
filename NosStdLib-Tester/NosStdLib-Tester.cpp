@@ -1,7 +1,7 @@
 ﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/TextColor.hpp>
 #include <NosStdLib/DynamicLoadingScreen.hpp>
-#include <NosStdLib/FileManagement.hpp>
+#include <NosStdLib/DynamicMenuSystem.hpp>
 
 #include <iostream>
 #include <io.h>
@@ -24,35 +24,8 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::LoadingScreen::InitilizeFont();
-    
-    
-    std::wstring splash = LR"(
-                      ████████                ███████                            
-                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
-          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
-     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
-   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
- ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
-██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
-██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
-▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
-  ▀██████████████▄███         ███        ████       ███          ███             
-    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
-   ███             ██▌        ██▌         ██       ███▌         ███              
-   ███             ▐██                            █████▄       ███               
-    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
-       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
-                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
-                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
-    
-    std::wstring SomeVar(L"Some Text");
-    
-    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
-    LC.StartLoading(&LongFunctionTing, &SomeVar);
-    
-    wprintf(L"Press any button to continue"); getchar();
-    NosStdLib::LoadingScreen::TerminateFont();
+    NosStdLib::MenuRewrite::MenuEntry<char> abc;
+
     return 0;
 }
 
