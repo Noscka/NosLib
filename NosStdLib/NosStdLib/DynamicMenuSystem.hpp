@@ -47,7 +47,7 @@ namespace NosStdLib
 			MenuEntry(std::wstring entryName, EntryType* entryStoreObjectPointer)
 			{
 				EntryName = entryName;
-				EntryStoreObjectPointer = entryStoreObjectPointer
+				EntryStoreObjectPointer = entryStoreObjectPointer;
 			}
 
 		};
@@ -57,7 +57,11 @@ namespace NosStdLib
 		/// </summary>
 		class DynamicMenu
 		{
-
+		private:
+			std::wstring Title;							/* Menu Title */
+			HANDLE ConsoleHandle;						/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
+			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;	/* global ConsoleScreenBI so it is synced across all operations */
+		public:
 		};
 
 	}
