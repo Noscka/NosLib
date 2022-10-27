@@ -58,12 +58,17 @@ namespace NosStdLib
 		class DynamicMenu
 		{
 		private:
-			std::wstring Title;							/* Menu Title */
-			HANDLE ConsoleHandle;						/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
-			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;	/* global ConsoleScreenBI so it is synced across all operations */
+			std::wstring Title;												/* Menu Title */
+			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
+			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
+			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
+			//NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;			/* TODO: figure out how to store all MenuEntry types or use the same system as old MenuEntry */
 		public:
+			DynamicMenu(std::wstring title)
+			{
+				Title = title;
+			}
 		};
-
 	}
 
 	namespace Menu

@@ -342,7 +342,7 @@ namespace NosStdLib
 			/// <summary>
 			/// a struct to represent ConsoleSize with Colums and Rows members
 			/// </summary>
-			struct ConsoleSize
+			struct ConsoleSizeStruct
 			{
 				int Columns;
 				int Rows;
@@ -352,8 +352,8 @@ namespace NosStdLib
 			/// <summary>
 			/// Gets console size with no parameters (uses default console handle and CONSOLE_SCREEN_BUFFER_INFO)
 			/// </summary>
-			/// <returns>ConsoleSize</returns>
-			ConsoleSize GetConsoleSize()
+			/// <returns>ConsoleSizeStruct</returns>
+			ConsoleSizeStruct GetConsoleSize()
 			{
 				CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;
 				GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleScreenBI);
@@ -364,8 +364,8 @@ namespace NosStdLib
 			/// Gets console size with custom CONSOLE_SCREEN_BUFFER_INFO. doesn't update it
 			/// </summary>
 			/// <param name="consoleScreenBI">- the Console_screen_buffer_info to use</param>
-			/// <returns>ConsoleSize</returns>
-			ConsoleSize GetConsoleSize(const CONSOLE_SCREEN_BUFFER_INFO& consoleScreenBI)
+			/// <returns>ConsoleSizeStruct</returns>
+			ConsoleSizeStruct GetConsoleSize(const CONSOLE_SCREEN_BUFFER_INFO& consoleScreenBI)
 			{
 				return { consoleScreenBI.srWindow.Right - consoleScreenBI.srWindow.Left + 1, consoleScreenBI.srWindow.Bottom - consoleScreenBI.srWindow.Top + 1 };
 			}
@@ -374,8 +374,8 @@ namespace NosStdLib
 			/// Gets console size with custom ConsoleHandle
 			/// </summary>
 			/// <param name="ConsoleHandle">- the Console Handle to use</param>
-			/// <returns>ConsoleSize</returns>
-			ConsoleSize GetConsoleSize(const HANDLE& ConsoleHandle)
+			/// <returns>ConsoleSizeStruct</returns>
+			ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle)
 			{
 				CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;
 				GetConsoleScreenBufferInfo(ConsoleHandle, &ConsoleScreenBI);
@@ -387,8 +387,8 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="ConsoleHandle">- the Console Handle to use</param>
 			/// <param name="consoleScreenBI">- a pointer to Console_screen_buffer_info to use</param>
-			/// <returns>ConsoleSize</returns>
-			ConsoleSize GetConsoleSize(const HANDLE& ConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* consoleScreenBI)
+			/// <returns>ConsoleSizeStruct</returns>
+			ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* consoleScreenBI)
 			{
 				GetConsoleScreenBufferInfo(ConsoleHandle, consoleScreenBI);
 				return { consoleScreenBI->srWindow.Right - consoleScreenBI->srWindow.Left + 1, consoleScreenBI->srWindow.Bottom - consoleScreenBI->srWindow.Top + 1 };

@@ -26,7 +26,7 @@ int main()
 
     //NosStdLib::MenuRewrite::MenuEntry<char> abc;
 
-    NosStdLib::Global::Console::ConsoleSize CS = NosStdLib::Global::Console::GetConsoleSize();
+    NosStdLib::Global::Console::ConsoleSizeStruct CS = NosStdLib::Global::Console::GetConsoleSize();
 
     std::wcout << CS.Columns << L" | " << CS.Rows << std::endl;
 
