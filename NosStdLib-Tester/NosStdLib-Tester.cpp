@@ -2,6 +2,7 @@
 #include <NosStdLib/TextColor.hpp>
 #include <NosStdLib/DynamicLoadingScreen.hpp>
 #include <NosStdLib/DynamicMenuSystem.hpp>
+#include <NosStdLib/Experimental.hpp>
 
 #include <iostream>
 #include <io.h>
@@ -19,16 +20,27 @@ void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
     *argue = L"Completed ting innit fam";
 }
 
+void BasicFunction()
+{
+    wprintf(L"Function was ran \n");
+}
+
+int BasicFunctionInt()
+{
+    wprintf(L"int version was ran \n");
+    return 0;
+}
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    //NosStdLib::MenuRewrite::MenuEntry<char> abc;
+    NosStdLib::TestEnv::StoringFunctionTest test(new NosStdLib::TestEnv::FunctionStore(&BasicFunction));
+    test.RunFunction();
 
-    NosStdLib::Global::Console::ConsoleSizeStruct CS = NosStdLib::Global::Console::GetConsoleSize();
-
-    std::wcout << CS.Columns << L" | " << CS.Rows << std::endl;
+    test.Pointer = new NosStdLib::TestEnv::FunctionStore(&BasicFunctionInt);
+    test.RunFunction();
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;

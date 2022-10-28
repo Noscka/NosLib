@@ -21,35 +21,99 @@ namespace NosStdLib
 {
 	namespace MenuRewrite
 	{
+		/// <summary>
+		/// Test class which is used to store variadic functions
+		/// </summary>
+		class FunctionStore
+		{
+			
+			void abc()
+			{
+
+			}
+		};
+
+		class DynamicMenu;
 
 		/// <summary>
 		/// Class which is used for entries in the DynamicMenu class, contains the necessary data
 		/// </summary>
-		template <typename EntryType>
 		class MenuEntry
 		{
-			//static_assert(std::is_same_v<int, EntryType>, "MenuEntry has to be int, bool,"); /* Create statis Assert to stop user from creating objects with types that aren't allowed */
-		private:
-			std::wstring EntryName;
-
-			EntryType* EntryStoreObjectPointer;
 		public:
 			/// <summary>
-			/// Create empty entry
+			/// defines the type that this entry is
 			/// </summary>
-			MenuEntry(){}
+			enum Type
+			{
+				FunctionEntry = 1, /* Normal entry with a function */
+				SubMenuEntry = 2, /* an entry which contains a submenu */
+				BooleanEntry = 3, /* an entry that has a boolean */
+				IntegerEntry = 4, /* an entry that has a Integer */
+			};
+		private:
+			std::wstring EntryName;
+			Type EntryType;
+
+			// Type specific vars
+			std::function<void()> Function; /* TODO: allow any function type */
+			DynamicMenu* SubMenu;
+			bool* Boolean;
+			int* Integer;
+		public:
+
+			//// <summary>
+			/// For Arrays
+			/// </summary>
+			MenuEntry() {}
 
 			/// <summary>
-			/// Create entry with an object
+			/// Function Entry
 			/// </summary>
-			/// <param name="entryName">- the name that will be showed in the menu</param>
-			/// <param name="entryStoreObjectPointer">- a pointer to the object which will get used</param>
-			MenuEntry(std::wstring entryName, EntryType* entryStoreObjectPointer)
+			/// <param name="name">- entry name</param>
+			/// <param name="function">- what to do when selected</param>
+			MenuEntry(std::wstring name, std::function<void()> function)
 			{
-				EntryName = entryName;
-				EntryStoreObjectPointer = entryStoreObjectPointer;
+				EntryName = name;
+				Function = function;
+				EntryType = FunctionEntry;
 			}
 
+			/// <summary>
+			/// Sub Menu entry
+			/// </summary>
+			/// <param name="name">- entry name</param>
+			/// <param name="subMenu">- pointer to submenu object</param>
+			MenuEntry(std::wstring name, DynamicMenu* subMenu)
+			{
+				EntryName = name;
+				SubMenu = subMenu;
+				EntryType = SubMenuEntry;
+			}
+
+			/// <summary>
+			/// Boolean entry
+			/// </summary>
+			/// <param name="name">- entry name</param>
+			/// <param name="boolean">- pointer to bool</param>
+			MenuEntry(std::wstring name, bool* boolean)
+			{
+				EntryName = name;
+				Boolean = boolean;
+				EntryType = BooleanEntry;
+			}
+
+			/// <summary>
+			/// integer entry
+			/// </summary>
+			/// <param name="name">- entry name</param>
+			/// <param name="integer">- pointer to int</param>
+			MenuEntry(std::wstring name, int* integer)
+			{
+				EntryName = name;
+				Integer = integer;
+				EntryType = IntegerEntry;
+			}
 		};
 
 		/// <summary>
@@ -62,7 +126,7 @@ namespace NosStdLib
 			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
 			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
-			//NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;			/* TODO: figure out how to store all MenuEntry types or use the same system as old MenuEntry */
+			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;				/* TODO: figure out how to store all MenuEntry types or use the same system as old MenuEntry */
 		public:
 			DynamicMenu(std::wstring title)
 			{
