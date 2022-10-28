@@ -31,6 +31,11 @@ int BasicFunctionInt()
     return 0;
 }
 
+void SomeFunction(int param1, std::wstring string)
+{
+    std::wcout << param1 << string << std::endl;
+}
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
@@ -38,9 +43,15 @@ int main()
 
     NosStdLib::TestEnv::StoringFunctionTest test(new NosStdLib::TestEnv::FunctionStore(&BasicFunction));
     test.RunFunction();
-
+    
     test.Pointer = new NosStdLib::TestEnv::FunctionStore(&BasicFunctionInt);
     test.RunFunction();
+
+    NosStdLib::TestEnv::FunctionStore<void(int, std::wstring), int, std::wstring>* PFS = new NosStdLib::TestEnv::FunctionStore<void(int, std::wstring), int, std::wstring>(&SomeFunction, 2, L"test text");
+
+    NosStdLib::TestEnv::StoringFunctionTest test2(PFS);
+    test2.RunFunction();
+
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;

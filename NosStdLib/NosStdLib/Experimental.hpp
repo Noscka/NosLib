@@ -31,20 +31,22 @@ namespace NosStdLib
             }
         };
 
-        template<class FuncType>
+        template<class FuncType, typename ... VariadicArgs>
         class FunctionStore : public FunctionStoreBase
         {
         public:
             FuncType* FuncPointer;
+            std::tuple<VariadicArgs...> Args;
 
-            FunctionStore(FuncType* funcPointer)
+            FunctionStore(FuncType* funcPointer, VariadicArgs&& ... args)
             {
                 FuncPointer = funcPointer;
+                Args = std::tuple<VariadicArgs...>(std::forward<VariadicArgs>(args)...);
             }
 
             void RunFunction()
             {
-                (*FuncPointer)();
+                std::apply(FuncPointer, Args);
             }
         };
 
