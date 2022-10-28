@@ -41,11 +41,11 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::TestEnv::FunctionStore(&BasicFunction)).RunFunction();
+    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::Functional::FunctionStore(&BasicFunction)).RunFunction();
     
-    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::TestEnv::FunctionStore(&BasicFunctionInt)).RunFunction();
+    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::Functional::FunctionStore(&BasicFunctionInt)).RunFunction();
 
-    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::TestEnv::FunctionStore<void(int, std::wstring), int, std::wstring>(&SomeFunction, 2, L"test text")).RunFunction();
+    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::Functional::FunctionStore<void(int, std::wstring), int, std::wstring>(&SomeFunction, 2, L"test text")).RunFunction();
 
 
     wprintf(L"Press any button to continue"); getchar();

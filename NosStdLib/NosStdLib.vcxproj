@@ -23,6 +23,7 @@
     <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp" />
     <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
+    <ClInclude Include="NosStdLib\Functional.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\Experimental.hpp" />

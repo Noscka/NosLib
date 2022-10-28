@@ -4,6 +4,7 @@
 #include "TextColor.hpp"
 #include "Global.hpp"
 
+#include "Functional.hpp"
 #include <Windows.h>
 #include <string>
 #include <codecvt>
@@ -22,42 +23,13 @@ namespace NosStdLib
 
         }*/
 
-        class FunctionStoreBase
-        {
-        public:
-            virtual void RunFunction()
-            {
-
-            }
-        };
-
-        template<class FuncType, typename ... VariadicArgs>
-        class FunctionStore : public FunctionStoreBase
-        {
-        private:
-            FuncType* FuncPointer;
-            std::tuple<VariadicArgs...> Args;
-        public:
-
-            FunctionStore(FuncType* funcPointer, VariadicArgs&& ... args)
-            {
-                FuncPointer = funcPointer;
-                Args = std::tuple<VariadicArgs...>(std::forward<VariadicArgs>(args)...);
-            }
-
-            void RunFunction()
-            {
-                std::apply(FuncPointer, Args);
-            }
-        };
-
         class StoringFunctionTest
         {
         private:
-            FunctionStoreBase* Pointer;
+            NosStdLib::Functional::FunctionStoreBase* Pointer;
         public:
 
-            StoringFunctionTest(FunctionStoreBase* pointer)
+            StoringFunctionTest(NosStdLib::Functional::FunctionStoreBase* pointer)
             {
                 Pointer = pointer;
             }

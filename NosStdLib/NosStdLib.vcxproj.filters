@@ -42,6 +42,9 @@
     <ClInclude Include="NosStdLib\TextColor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NosStdLib\Functional.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
