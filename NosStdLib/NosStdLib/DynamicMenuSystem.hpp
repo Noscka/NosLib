@@ -12,12 +12,6 @@
 #include <functional>
 #include <type_traits>
 
-/* TODO: Rewrite DynamicMenuSystem as it seems to be frequently crashing due to memory issues.
-Features needed:
- - dynamic functions with parameter passthrough (menu entry).
- - text overwrite algorithm instead of clear and write algorithm.
-*/
-
 namespace NosStdLib
 {
 	namespace MenuRewrite
@@ -119,11 +113,20 @@ namespace NosStdLib
 			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
 			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;				/* array of MenuEntries */
 
-
+			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
+				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
+				 AddExitEntry,			/* if to add a quit option/entry at the bottom */
+				 CenterTitle,			/* if the title should be centered */
+				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
 		public:
-			DynamicMenu(std::wstring title)
+			DynamicMenu(std::wstring title, bool generateUnicodeTitle = false, bool addExitEntry = true, bool centerTitle = true)
 			{
 				Title = title;
+				AddExitEntry = addExitEntry;
+				GenerateUnicodeTitle = generateUnicodeTitle;
+				CenterTitle = centerTitle;
+
+				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 			}
 			
 			/// <summary>
@@ -131,7 +134,53 @@ namespace NosStdLib
 			/// </summary>
 			void StartMenu()
 			{
+				MenuLoop = true; /* incase menu was quit before */
 
+				if (AddExitEntry && !AddedQuit)
+				{
+					AddedQuit = true;
+					std::function<void()> Func = [this]()
+					{
+						return this->QuitMenu();
+					};
+					MenuEntryList.Append(new MenuEntry(L"Quit", new NosStdLib::Functional::FunctionStore(&std::bind(&DynamicMenu::QuitMenu, this))));
+				}
+
+				int ch, exCh; /* for getting input data */
+				int currentIndex = 0; /* Which item is currently selected */
+				int oldIndex = currentIndex; /* Old index to know old position */
+				int titleSize = 0; /* title size (for calculations where actual menu entries start) */
+				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
+
+				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
+			}
+
+			/// <summary>
+			/// Draws the menu
+			/// </summary>
+			/// <param name="CurrentIndex">- currrent index</param>
+			/// <param name="TitleSize">- pointer to the title size int so it can be calculated</param>
+			void DrawMenu(const int& currentIndex, int* titleSize)
+			{
+				NosStdLib::Global::Console::ClearScreen();
+
+			}
+
+			/// <summary>
+			/// Adds entry to menu
+			/// </summary>
+			/// <param name="Entry">- the entry to add</param>
+			void AddMenuEntry(MenuEntry* Entry)
+			{
+				MenuEntryList.Append(Entry);
+			}
+
+			/// <summary>
+			/// quits the menu
+			/// </summary>
+			void QuitMenu()
+			{
+				MenuLoop = false;
 			}
 		};
 	}
@@ -300,7 +349,7 @@ namespace NosStdLib
 
 				int LastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
 
-				DrawMenu(CurrentIndex, &TitleSize); /* Draw menu first time*/
+				DrawMenu(CurrentIndex, &TitleSize); /* Draw menu first time */
 
 				while (ContinueMenu)
 				{
