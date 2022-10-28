@@ -146,10 +146,28 @@ void CheckNumber()
 void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
 {
     int total = 1000;
+    uint8_t R = 255, G = 0, B = 0;
+    uint8_t changeValue = 1;
     for (int i = 0; i <= total; i++)
     {
-        Object->UpdateKnownProgressBar((float)i / (float)total, std::format(L"{}\nTesting Status\nExtra Line,\n Innit", (float)i / (float)total), true);
-        Sleep(10);
+        if (R > 0 && B == 0)
+        {
+            R -= changeValue;
+            G += changeValue;
+        }
+        if (G > 0 && R == 0)
+        {
+            G -= changeValue;
+            B += changeValue;
+        }
+        if (B > 0 && G == 0)
+        {
+            R += changeValue;
+            B -= changeValue;
+        }
+
+        Object->UpdateKnownProgressBar((float)i / (float)total, std::vformat((NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(R, G, B)) + L"\n{}\nTesting Status\nExtra Line,\n Innit\n{}" + L"\033[0m"), std::make_wformat_args((float)i / (float)total, NosStdLib::FileManagement::GetFileExtension<wchar_t>(L"abc.txt"), true)));
+        Sleep(1);
     }
     *argue = L"Completed ting innit fam";
 }

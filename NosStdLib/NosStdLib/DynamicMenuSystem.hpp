@@ -24,6 +24,8 @@ namespace NosStdLib
 	{
 		class DynamicMenu;
 
+		/* TODO: if I add menu entry with templates, make a function which will do different things depending on the type (for example: RunEntry which will do x if its int version and do y if its string version) */
+
 		/// <summary>
 		/// Class which is used for entries in the DynamicMenu class, contains the necessary data
 		/// </summary>
@@ -115,11 +117,21 @@ namespace NosStdLib
 			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
 			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
-			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;				/* TODO: figure out how to store all MenuEntry types or use the same system as old MenuEntry */
+			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;				/* array of MenuEntries */
+
+
 		public:
 			DynamicMenu(std::wstring title)
 			{
 				Title = title;
+			}
+			
+			/// <summary>
+			/// Starts the menu
+			/// </summary>
+			void StartMenu()
+			{
+
 			}
 		};
 	}
