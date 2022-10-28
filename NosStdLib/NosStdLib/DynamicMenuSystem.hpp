@@ -4,6 +4,7 @@
 #include "Global.hpp"
 #include "DynamicArray.hpp"
 #include "UnicodeTextGenerator.hpp"
+#include "Functional.hpp"
 
 #include <Windows.h>
 #include <conio.h>
@@ -21,18 +22,6 @@ namespace NosStdLib
 {
 	namespace MenuRewrite
 	{
-		/// <summary>
-		/// Test class which is used to store variadic functions
-		/// </summary>
-		class FunctionStore
-		{
-			
-			void abc()
-			{
-
-			}
-		};
-
 		class DynamicMenu;
 
 		/// <summary>
@@ -56,7 +45,7 @@ namespace NosStdLib
 			Type EntryType;
 
 			// Type specific vars
-			std::function<void()> Function; /* TODO: allow any function type */
+			NosStdLib::Functional::FunctionStoreBase* FunctionStorePoiner;
 			DynamicMenu* SubMenu;
 			bool* Boolean;
 			int* Integer;
@@ -72,10 +61,10 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="name">- entry name</param>
 			/// <param name="function">- what to do when selected</param>
-			MenuEntry(std::wstring name, std::function<void()> function)
+			MenuEntry(std::wstring name, NosStdLib::Functional::FunctionStoreBase* functionStorePoiner)
 			{
 				EntryName = name;
-				Function = function;
+				FunctionStorePoiner = functionStorePoiner;
 				EntryType = FunctionEntry;
 			}
 
@@ -117,7 +106,7 @@ namespace NosStdLib
 		};
 
 		/// <summary>
-		/// the main Menu class which will be used to 
+		/// the main Menu class which will be used to render and display menu
 		/// </summary>
 		class DynamicMenu
 		{
