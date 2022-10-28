@@ -34,9 +34,10 @@ namespace NosStdLib
         template<class FuncType, typename ... VariadicArgs>
         class FunctionStore : public FunctionStoreBase
         {
-        public:
+        private:
             FuncType* FuncPointer;
             std::tuple<VariadicArgs...> Args;
+        public:
 
             FunctionStore(FuncType* funcPointer, VariadicArgs&& ... args)
             {
@@ -52,8 +53,9 @@ namespace NosStdLib
 
         class StoringFunctionTest
         {
-        public:
+        private:
             FunctionStoreBase* Pointer;
+        public:
 
             StoringFunctionTest(FunctionStoreBase* pointer)
             {

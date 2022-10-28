@@ -22,7 +22,7 @@ void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
 
 void BasicFunction()
 {
-    wprintf(L"Function was ran \n");
+    wprintf(L"BasicFunction was ran\n");
 }
 
 int BasicFunctionInt()
@@ -31,9 +31,9 @@ int BasicFunctionInt()
     return 0;
 }
 
-void SomeFunction(int param1, std::wstring string)
+void SomeFunction(int param1, std::wstring param2)
 {
-    std::wcout << param1 << string << std::endl;
+    std::wcout << L"Param1: " << param1 << L" | Param2: " << param2 << std::endl;
 }
 
 int main()
@@ -41,16 +41,11 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::TestEnv::StoringFunctionTest test(new NosStdLib::TestEnv::FunctionStore(&BasicFunction));
-    test.RunFunction();
+    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::TestEnv::FunctionStore(&BasicFunction)).RunFunction();
     
-    test.Pointer = new NosStdLib::TestEnv::FunctionStore(&BasicFunctionInt);
-    test.RunFunction();
+    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::TestEnv::FunctionStore(&BasicFunctionInt)).RunFunction();
 
-    NosStdLib::TestEnv::FunctionStore<void(int, std::wstring), int, std::wstring>* PFS = new NosStdLib::TestEnv::FunctionStore<void(int, std::wstring), int, std::wstring>(&SomeFunction, 2, L"test text");
-
-    NosStdLib::TestEnv::StoringFunctionTest test2(PFS);
-    test2.RunFunction();
+    NosStdLib::TestEnv::StoringFunctionTest(new NosStdLib::TestEnv::FunctionStore<void(int, std::wstring), int, std::wstring>(&SomeFunction, 2, L"test text")).RunFunction();
 
 
     wprintf(L"Press any button to continue"); getchar();
