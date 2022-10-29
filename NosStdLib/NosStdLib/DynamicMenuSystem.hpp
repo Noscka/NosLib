@@ -104,14 +104,9 @@ namespace NosStdLib
 
 				if constexpr (std::is_base_of_v<NosStdLib::Functional::FunctionStoreBase, EntryType>)
 				{
-					if (selected)
-					{
-						return std::wstring(SpaceLenght - 2, ' ') + L">>" + EntryName + L"<<\n";
-					}
-					else
-					{
-						return std::wstring(SpaceLenght, ' ') + EntryName + L"\n";
-					}
+					std::wstring output = std::wstring(SpaceLenght - (selected ? 2 : 0) , ' ') + (selected ? L">> " : L"") + EntryName + (selected ? L" <<" : L"");
+					output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
+					return output;
 				}
 				else
 				{
@@ -134,7 +129,7 @@ namespace NosStdLib
 
 			if (selected)
 			{
-				return std::wstring(SpaceLenght - 2, ' ') + L">>" + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + L"<<\n";
+				return std::wstring(SpaceLenght - 2, ' ') + L">> " + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + L" <<\n";
 			}
 			else
 			{
@@ -251,13 +246,13 @@ namespace NosStdLib
 						switch (exCh = _getch())
 						{
 						case ARROW_UP:
-							if (currentIndex > 0) /* Decrement only if smaller then List size */
+							if (currentIndex > 0) /* Decrement only if larger the 0 */
 							{
 								currentIndex--; /* Decrement the Indenetation */
 							}
 						break;
 						case ARROW_DOWN:
-							if (currentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if larger the 0 */
+							if (currentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
 							{
 								currentIndex++; /* Increment the Indenetation */
 							}
@@ -270,9 +265,52 @@ namespace NosStdLib
 							break;
 						}
 					}
-					DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
 
+					/*
+						What needs to be redrawing depending on if its up for down
+						if the index goes down (bigger number), you need to clear above and current line
+						|| Old Selected Entry
+						\/ New Selected Entry <-- Here is Cursor
+						and if going up (smaller number)
+						/\ New Selected Entry <-- Here is Cursor
+						|| Old Selected Entry
+					*/
+
+					COORD finalPosition;
+
+					if (currentIndex > oldIndex && oldIndex != currentIndex) /* Going Down */
+					{
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(titleSize + currentIndex - 1) });
+						wprintf((MenuEntryList[oldIndex]->EntryString(false) + MenuEntryList[currentIndex]->EntryString(true)).c_str());
+
+						if ((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
+							finalPosition = { 0,0 };
+						else if ((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+							finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + titleSize - 1) };
+						else
+							finalPosition = { 0, (SHORT)((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2)) };
+					}
+					else if(oldIndex != currentIndex)/* Going Up */
+					{
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(titleSize + currentIndex) });
+						wprintf((MenuEntryList[currentIndex]->EntryString(true) + MenuEntryList[oldIndex]->EntryString(false)).c_str());
+
+						if ((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
+							finalPosition = { 0,0 };
+						else if ((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+							finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
+						else
+							finalPosition = { 0, (SHORT)((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2)) };
+
+					}
+
+					SetConsoleCursorPosition(ConsoleHandle, finalPosition);
+
+
+					//DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
+					oldIndex = currentIndex;
 				}
+				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
 			}
 
 			/// <summary>
