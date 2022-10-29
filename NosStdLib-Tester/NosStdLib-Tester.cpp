@@ -9,8 +9,8 @@
 #include <fcntl.h>
 #include <cstdio>
 
-bool SomeBool = false;
-int number = 0;
+bool SomeBool = true;
+int number = 100;
 
 void CheckBool()
 {
@@ -45,8 +45,8 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::MenuRewrite::DynamicMenu MainMenu(L"Main Menu", false, true, true);
-    NosStdLib::MenuRewrite::DynamicMenu SecondaryMenu(L"Second Menu", false, true, true);
+    NosStdLib::MenuRewrite::DynamicMenu MainMenu(L"Main Menu", true, true, true);
+    NosStdLib::MenuRewrite::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
     SecondaryMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Number", &number));
     SecondaryMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
@@ -61,7 +61,7 @@ int main()
 
     MainMenu.StartMenu();
 
-    wprintf(L"Press any button to continue"); getchar();
+    wprintf(L"Press any button to continue"); _getch();
     return 0;
 }
 

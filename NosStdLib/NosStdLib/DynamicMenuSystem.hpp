@@ -5,6 +5,7 @@
 #include "DynamicArray.hpp"
 #include "UnicodeTextGenerator.hpp"
 #include "Functional.hpp"
+#include "TextColor.hpp"
 
 #include <Windows.h>
 #include <conio.h>
@@ -16,6 +17,14 @@ namespace NosStdLib
 {
 	namespace MenuRewrite
 	{
+		constexpr int ARROW_UP = 72;
+		constexpr int ARROW_DOWN = 80;
+		constexpr int ARROW_LEFT = 75;
+		constexpr int ARROW_RIGHT = 77;
+
+		constexpr int ENTER = 13;
+		constexpr int BACKSPACE = 8;
+
 		class DynamicMenu;
 
 		/* TODO: if I add menu entry with templates, make a function which will do different things depending on the type (for example: RunEntry which will do x if its int version and do y if its string version) */
@@ -27,23 +36,30 @@ namespace NosStdLib
 		{
 		protected:
 			std::wstring EntryName; /* The entry name */
+
+			HANDLE* MenuConsoleHandle;												/* a pointer to the menu's MenuConsoleHandle, so its synced */
+			CONSOLE_SCREEN_BUFFER_INFO* MenuConsoleScreenBI;						/* a pointer to the menu's MenuConsoleScreenBI, so its synced */
+			NosStdLib::Global::Console::ConsoleSizeStruct* MenuConsoleSizeStruct;	/* a pointer to the menu's MenuConsoleSizeStruct, so its synced */
 		public:
 			/// <summary>
 			/// create a wstring which shows the Entry name, value and is also centered
 			/// </summary>
+			/// <param name="selected">- if the entry is selected or not</param>
 			/// <returns>wstring which shows the Entry name, value and is also centered</returns>
-			virtual std::wstring EntryString()
+			virtual std::wstring EntryString(bool selected)
 			{
 				return EntryName;
 			}
 
 			/// <summary>
-			/// Temp function to show value contained
+			/// Update/set the variables such as pointers to ConsoleHandle, ConsoleScreenBI and ConsoleSizeStruct
 			/// </summary>
-			/// <returns>value contained</returns>
-			virtual std::wstring ReturnValue()
+			/// <returns></returns>
+			void SetEntryVariables(HANDLE* menuConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* menuConsoleScreenBI, NosStdLib::Global::Console::ConsoleSizeStruct* menuConsoleSizeStruct)
 			{
-				return L"";
+				MenuConsoleHandle = menuConsoleHandle;
+				MenuConsoleScreenBI = menuConsoleScreenBI;
+				MenuConsoleSizeStruct = menuConsoleSizeStruct;
 			}
 		};
 
@@ -75,37 +91,96 @@ namespace NosStdLib
 				TypePointerStore = typePointerStore;
 			}
 
-			std::wstring ReturnValue()
+			/// <summary>
+			/// create a wstring which shows the Entry name, value and is also centered
+			/// </summary>
+			/// <param name="selected">- if the entry is selected or not</param>
+			/// <returns>wstring which shows the Entry name, value and is also centered</returns>
+			std::wstring EntryString(bool selected)
 			{
+				*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+
+				int SpaceLenght = ((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
+
 				if constexpr (std::is_base_of_v<NosStdLib::Functional::FunctionStoreBase, EntryType>)
 				{
-					return L"Functional";
+					if (selected)
+					{
+						return std::wstring(SpaceLenght - 2, ' ') + L">>" + EntryName + L"<<\n";
+					}
+					else
+					{
+						return std::wstring(SpaceLenght, ' ') + EntryName + L"\n";
+					}
 				}
 				else
 				{
 					return L"generic";
-
 				}
 			}
 		};
 	#pragma region FunctionSpecialization
-
 		/// <summary>
-		/// Temp function to show value contained
+		/// create a wstring which shows the Entry name, value and is also centered
 		/// </summary>
-		/// <returns>value contained</returns>
-		std::wstring MenuEntry<bool>::ReturnValue()
+		/// <param name="selected">- if the entry is selected or not</param>
+		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
+		std::wstring MenuEntry<bool>::EntryString(bool selected)
 		{
-			return (*TypePointerStore ? L"true" : L"false");
+			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+
+			int SpaceLenght = ((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
+			int RightPadding = 0;
+
+			if (selected)
+			{
+				return std::wstring(SpaceLenght - 2, ' ') + L">>" + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + L"<<\n";
+			}
+			else
+			{
+				return std::wstring(SpaceLenght, ' ') + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + L"\n";
+			}
 		}
 
 		/// <summary>
-		/// Temp function to show value contained
+		/// create a wstring which shows the Entry name, value and is also centered
 		/// </summary>
-		/// <returns>value contained</returns>
-		std::wstring MenuEntry<int>::ReturnValue()
+		/// <param name="selected">- if the entry is selected or not</param>
+		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
+		std::wstring MenuEntry<int>::EntryString(bool selected)
 		{
-			return std::to_wstring(*TypePointerStore);
+			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+
+			int SpaceLenght = ((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
+
+			if (selected)
+			{
+				return std::wstring(SpaceLenght - 2, ' ') + EntryName + std::wstring(4, ' ') + L"<" + std::to_wstring(*TypePointerStore) + L">\n";
+			}
+			else
+			{
+				return std::wstring(SpaceLenght, ' ') + EntryName + std::wstring(4, ' ') + std::to_wstring(*TypePointerStore) + L"\n";
+			}
+		}
+
+		/// <summary>
+		/// create a wstring which shows the Entry name, value and is also centered
+		/// </summary>
+		/// <param name="selected">- if the entry is selected or not</param>
+		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
+		std::wstring MenuEntry<DynamicMenu>::EntryString(bool selected)
+		{
+			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+
+			int SpaceLenght = ((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
+			if (selected)
+			{
+				return std::wstring(SpaceLenght - 2, ' ') + NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(212, 155, 55)) + L">> " + EntryName + L" <<\033[0m\n";
+			}
+			else
+			{
+				return std::wstring(SpaceLenght, ' ') + NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(212, 155, 55)) + EntryName + L"\033[0m\n";
+			}
 		}
 	#pragma endregion
 
@@ -127,7 +202,8 @@ namespace NosStdLib
 				 CenterTitle,			/* if the title should be centered */
 				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
 		public:
-			DynamicMenu(std::wstring title, bool generateUnicodeTitle = false, bool addExitEntry = true, bool centerTitle = true)
+			
+			DynamicMenu(std::wstring title, bool generateUnicodeTitle = true, bool addExitEntry = true, bool centerTitle = true)
 			{
 				Title = title;
 				AddExitEntry = addExitEntry;
@@ -159,8 +235,44 @@ namespace NosStdLib
 				int oldIndex = currentIndex; /* Old index to know old position */
 				int titleSize = 0; /* title size (for calculations where actual menu entries start) */
 				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
+				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
 
 				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
+
+				while (MenuLoop)
+				{
+					ch = _getch(); /* first character input */
+					if (ch == ENTER)
+					{
+
+					}
+					else if (!(ch && ch != 224))
+					{
+						switch (exCh = _getch())
+						{
+						case ARROW_UP:
+							if (currentIndex > 0) /* Decrement only if smaller then List size */
+							{
+								currentIndex--; /* Decrement the Indenetation */
+							}
+						break;
+						case ARROW_DOWN:
+							if (currentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if larger the 0 */
+							{
+								currentIndex++; /* Increment the Indenetation */
+							}
+							break;
+						case ARROW_LEFT:
+
+							break;
+						case ARROW_RIGHT:
+
+							break;
+						}
+					}
+					DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
+
+				}
 			}
 
 			/// <summary>
@@ -172,12 +284,32 @@ namespace NosStdLib
 			{
 				NosStdLib::Global::Console::ClearScreen();
 
-				for (MenuEntryBase* Entries : MenuEntryList)
+				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+
+				std::wstring outputString; /* string for full "display" as it is the most perfomace efficent method */
+
+				if (GenerateUnicodeTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title */
+					outputString = NosStdLib::UnicodeTextGenerator::BasicUnicodeTextGenerate(ConsoleHandle, Title, CenterTitle); // add title with "ascii generator"
+				else
+					if (CenterTitle)
+						outputString = std::wstring(((ConsoleSizeStruct.Columns / 2) - Title.length() / 2), ' ') + Title;
+					else
+						outputString = Title;
+
+				*titleSize = std::count(outputString.begin(), outputString.end(), L'\n');
+
+				// for loop using counter to get the index so to add the >< to the selected option
+				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
 				{
-					wprintf((Entries->EntryString() + L"\t" + Entries->ReturnValue() + L'\n').c_str());
+					if (i == currentIndex)
+						outputString += MenuEntryList[i]->EntryString(true);
+					else
+						outputString += MenuEntryList[i]->EntryString(false);
 				}
 
-				wprintf(L"Implement Draw Menu\n");
+				wprintf(outputString.c_str());
+
+				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(currentIndex) });
 			}
 
 			/// <summary>
@@ -186,6 +318,7 @@ namespace NosStdLib
 			/// <param name="Entry">- the entry to add</param>
 			void AddMenuEntry(MenuEntryBase* Entry)
 			{
+				Entry->SetEntryVariables(&ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				MenuEntryList.Append(Entry);
 			}
 
