@@ -80,8 +80,9 @@ namespace NosStdLib
 				return L"generic";
 			}
 		};
-
-		std::wstring MenuEntry<NosStdLib::Functional::FunctionStoreBase>::ReturnValue()
+	#pragma region FunctionSpecialization
+		template<class EntryType, std::is_base_of_v(EntryType, NosStdLib::Functional::FunctionStoreBase)>
+		std::wstring MenuEntry<std::is_base_of_v(EntryType, NosStdLib::Functional::FunctionStoreBase)/*NosStdLib::Functional::FunctionStore<void(int), int>*/>::ReturnValue()
 		{
 			return L"Functional";
 		}
@@ -103,6 +104,7 @@ namespace NosStdLib
 		{
 			return std::to_wstring(*TypePointerStore);
 		}
+	#pragma endregion
 
 		/// <summary>
 		/// the main Menu class which will be used to render and display menu
