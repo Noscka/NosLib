@@ -19,87 +19,90 @@ namespace NosStdLib
 		class DynamicMenu;
 
 		/* TODO: if I add menu entry with templates, make a function which will do different things depending on the type (for example: RunEntry which will do x if its int version and do y if its string version) */
+		 
+		/// <summary>
+		/// The base of MenuEntry which only exists to allow for storing all the templated types together
+		/// </summary>
+		class MenuEntryBase
+		{
+		protected:
+			std::wstring EntryName; /* The entry name */
+		public:
+			/// <summary>
+			/// create a wstring which shows the Entry name, value and is also centered
+			/// </summary>
+			/// <returns>wstring which shows the Entry name, value and is also centered</returns>
+			virtual std::wstring EntryString()
+			{
+				return EntryName;
+			}
+
+			/// <summary>
+			/// Temp function to show value contained
+			/// </summary>
+			/// <returns>value contained</returns>
+			virtual std::wstring ReturnValue()
+			{
+				return L"";
+			}
+		};
 
 		/// <summary>
 		/// Class which is used for entries in the DynamicMenu class, contains the necessary data
 		/// </summary>
-		class MenuEntry
+		/// <typeparam name="EntryType">- the type of entry</typeparam>
+		template<class EntryType>
+		class MenuEntry : public MenuEntryBase
 		{
-		public:
-			/// <summary>
-			/// defines the type that this entry is
-			/// </summary>
-			enum Type
-			{
-				FunctionEntry = 1, /* Normal entry with a function */
-				SubMenuEntry = 2, /* an entry which contains a submenu */
-				BooleanEntry = 3, /* an entry that has a boolean */
-				IntegerEntry = 4, /* an entry that has a Integer */
-			};
 		private:
-			std::wstring EntryName;
-			Type EntryType;
-
 			// Type specific vars
-			NosStdLib::Functional::FunctionStoreBase* FunctionStorePoiner;
-			DynamicMenu* SubMenu;
-			bool* Boolean;
-			int* Integer;
+			EntryType* TypePointerStore;
 		public:
 
 			//// <summary>
 			/// For Arrays
 			/// </summary>
 			MenuEntry() {}
-
+			
 			/// <summary>
 			/// Function Entry
 			/// </summary>
 			/// <param name="name">- entry name</param>
-			/// <param name="function">- what to do when selected</param>
-			MenuEntry(std::wstring name, NosStdLib::Functional::FunctionStoreBase* functionStorePoiner)
+			/// <param name="typePointerStore">- pointer to variable of type</param>
+			MenuEntry(std::wstring name, EntryType* typePointerStore)
 			{
 				EntryName = name;
-				FunctionStorePoiner = functionStorePoiner;
-				EntryType = FunctionEntry;
+				TypePointerStore = typePointerStore;
 			}
 
-			/// <summary>
-			/// Sub Menu entry
-			/// </summary>
-			/// <param name="name">- entry name</param>
-			/// <param name="subMenu">- pointer to submenu object</param>
-			MenuEntry(std::wstring name, DynamicMenu* subMenu)
+			std::wstring ReturnValue()
 			{
-				EntryName = name;
-				SubMenu = subMenu;
-				EntryType = SubMenuEntry;
-			}
-
-			/// <summary>
-			/// Boolean entry
-			/// </summary>
-			/// <param name="name">- entry name</param>
-			/// <param name="boolean">- pointer to bool</param>
-			MenuEntry(std::wstring name, bool* boolean)
-			{
-				EntryName = name;
-				Boolean = boolean;
-				EntryType = BooleanEntry;
-			}
-
-			/// <summary>
-			/// integer entry
-			/// </summary>
-			/// <param name="name">- entry name</param>
-			/// <param name="integer">- pointer to int</param>
-			MenuEntry(std::wstring name, int* integer)
-			{
-				EntryName = name;
-				Integer = integer;
-				EntryType = IntegerEntry;
+				return L"generic";
 			}
 		};
+
+		//std::wstring MenuEntry<NosStdLib::Functional::FunctionStore>::ReturnValue()
+		//{
+		//
+		//}
+
+		/// <summary>
+		/// Temp function to show value contained
+		/// </summary>
+		/// <returns>value contained</returns>
+		std::wstring MenuEntry<bool>::ReturnValue()
+		{
+			return (*TypePointerStore ? L"true" : L"false");
+		}
+
+		/// <summary>
+		/// Temp function to show value contained
+		/// </summary>
+		/// <returns>value contained</returns>
+		std::wstring MenuEntry<int>::ReturnValue()
+		{
+			return std::to_wstring(*TypePointerStore);
+		}
 
 		/// <summary>
 		/// the main Menu class which will be used to render and display menu
@@ -111,7 +114,7 @@ namespace NosStdLib
 			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
 			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
-			NosStdLib::DynamicArray<MenuEntry*> MenuEntryList;				/* array of MenuEntries */
+			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;			/* array of MenuEntries */
 
 			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
 				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
@@ -143,7 +146,7 @@ namespace NosStdLib
 					{
 						return this->QuitMenu();
 					};
-					MenuEntryList.Append(new MenuEntry(L"Quit", new NosStdLib::Functional::FunctionStore(&std::bind(&DynamicMenu::QuitMenu, this))));
+					//MenuEntryList.Append(new MenuEntry(L"Quit", new NosStdLib::Functional::FunctionStore(&std::bind(&DynamicMenu::QuitMenu, this)))); TODO: add back adding the quit menu
 				}
 
 				int ch, exCh; /* for getting input data */
@@ -164,14 +167,19 @@ namespace NosStdLib
 			{
 				NosStdLib::Global::Console::ClearScreen();
 
-				wprintf(L"Implement Draw Menu");
+				for (MenuEntryBase* Entries : MenuEntryList)
+				{
+					wprintf((Entries->EntryString() + L"\t" + Entries->ReturnValue() + L'\n').c_str());
+				}
+
+				wprintf(L"Implement Draw Menu\n");
 			}
 
 			/// <summary>
 			/// Adds entry to menu
 			/// </summary>
 			/// <param name="Entry">- the entry to add</param>
-			void AddMenuEntry(MenuEntry* Entry)
+			void AddMenuEntry(MenuEntryBase* Entry)
 			{
 				MenuEntryList.Append(Entry);
 			}
