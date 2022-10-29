@@ -81,10 +81,10 @@ namespace NosStdLib
 			}
 		};
 
-		//std::wstring MenuEntry<NosStdLib::Functional::FunctionStore>::ReturnValue()
-		//{
-		//
-		//}
+		std::wstring MenuEntry<NosStdLib::Functional::FunctionStoreBase>::ReturnValue()
+		{
+			return L"Functional";
+		}
 
 		/// <summary>
 		/// Temp function to show value contained
