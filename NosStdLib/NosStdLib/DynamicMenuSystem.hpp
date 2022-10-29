@@ -77,15 +77,18 @@ namespace NosStdLib
 
 			std::wstring ReturnValue()
 			{
-				return L"generic";
+				if constexpr (std::is_base_of_v<NosStdLib::Functional::FunctionStoreBase, EntryType>)
+				{
+					return L"Functional";
+				}
+				else
+				{
+					return L"generic";
+
+				}
 			}
 		};
 	#pragma region FunctionSpecialization
-		template<class EntryType, std::is_base_of_v(EntryType, NosStdLib::Functional::FunctionStoreBase)>
-		std::wstring MenuEntry<std::is_base_of_v(EntryType, NosStdLib::Functional::FunctionStoreBase)/*NosStdLib::Functional::FunctionStore<void(int), int>*/>::ReturnValue()
-		{
-			return L"Functional";
-		}
 
 		/// <summary>
 		/// Temp function to show value contained
