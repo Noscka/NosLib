@@ -164,6 +164,7 @@ namespace NosStdLib
 			{
 				NosStdLib::Global::Console::ClearScreen();
 
+				wprintf(L"Implement Draw Menu");
 			}
 
 			/// <summary>
