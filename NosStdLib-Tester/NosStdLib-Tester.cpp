@@ -45,19 +45,19 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::MenuRewrite::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-    NosStdLib::MenuRewrite::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
+    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
+    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
-    SecondaryMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Number", &number));
-    SecondaryMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
 
-    MainMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Another Menu", &SecondaryMenu));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
 
-    MainMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Toggle", &SomeBool));
-    MainMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Check Bool",new NosStdLib::Functional::FunctionStore(&CheckBool)));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool",new NosStdLib::Functional::FunctionStore(&CheckBool)));
 
-    MainMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Number", &number));
-    MainMenu.AddMenuEntry(new NosStdLib::MenuRewrite::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
 
     MainMenu.StartMenu();
 
