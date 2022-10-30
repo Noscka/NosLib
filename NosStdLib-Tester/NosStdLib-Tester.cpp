@@ -24,20 +24,10 @@ void CheckNumber()
     system("Pause");
 }
 
-void BasicFunction()
+void SomeFunction(int* param1, int* param2)
 {
-    wprintf(L"BasicFunction was ran\n");
-}
-
-int BasicFunctionInt()
-{
-    wprintf(L"int version was ran \n");
-    return 0;
-}
-
-void SomeFunction(int param1, std::wstring param2)
-{
-    std::wcout << L"Param1: " << param1 << L" | Param2: " << param2 << std::endl;
+    std::wcout << L"Param1: " << *param1 <<  L" | Param2: " << *param2 << std::endl;
+    system("Pause");
 }
 
 int main()
@@ -50,6 +40,13 @@ int main()
 
     SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
     SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
+
+    int param1, param2;
+
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));
+
+    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Run Function", new NosStdLib::Functional::FunctionStore(&SomeFunction, &param1, &param2)));
 
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
 
