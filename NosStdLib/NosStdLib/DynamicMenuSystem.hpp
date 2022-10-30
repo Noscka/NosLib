@@ -509,7 +509,7 @@ namespace NosStdLib
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-			std::wstring output = std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - (selected ? 3 : 0), ' ') + NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(212, 155, 55)) + (selected ? L">> " : L"") + EntryName + (selected ? L" <<" : L"");
+			std::wstring output = std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - (selected ? 3 : 0), ' ') + NosStdLib::TextColor::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + (selected ? L">> " : L"") + EntryName + (selected ? L" <<" : L"");
 			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L"\033[0m\n";
 			return output;
 		}

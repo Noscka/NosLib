@@ -54,6 +54,18 @@ namespace NosStdLib
 				G = g;
 				B = b;
 			}
+
+			/// <summary>
+			/// Create necesacry ANSI escape code to give wanted color
+			/// </summary>
+			/// <typeparam name="CharT">- string type</typeparam>
+			/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
+			/// <returns>the string containing the ANSI escape code</returns>
+			template <typename CharT>
+			std::basic_string<CharT> MakeANSICode(const bool& foreGroundBackGround = true)
+			{
+				return MakeANSICode<CharT>((*this), foreGroundBackGround);
+			}
 		};
 
 		/// <summary>
@@ -64,11 +76,23 @@ namespace NosStdLib
 		/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
 		/// <returns>the string containing the ANSI escape code</returns>
 		template <typename CharT>
-		std::basic_string<CharT> MakeANSICode(const NosStdLib::TextColor::NosRGB& value, const bool& foreGroundBackGround = true)
+		std::basic_string<CharT> MakeANSICode(const NosStdLib::TextColor::NosRGB* value, const bool& foreGroundBackGround = true)
 		{
-			/* TODO: find or create terminoligy for a value that is constant in a function. */
-			/* TODO: Create terminoligy table */
-			return std::vformat(NosStdLib::Experimental::ConvertGlobal<CharT>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(value.R, value.G, value.B));
+			return std::vformat(NosStdLib::Experimental::ConvertGlobal<CharT>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(value->R, value->G, value->B));
+		}
+
+		/// <summary>
+		/// Create necesacry ANSI escape code to give wanted color
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="value">- the RGB values wanted</param>
+		/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
+		/// <returns>the string containing the ANSI escape code</returns>
+		template <typename CharT>
+		std::basic_string<CharT> MakeANSICode(const NosStdLib::TextColor::NosRGB value, const bool& foreGroundBackGround = true)
+		{
+			return MakeANSICode<CharT>(&value, foreGroundBackGround);
+			//return std::vformat(NosStdLib::Experimental::ConvertGlobal<CharT>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(value.R, value.G, value.B));
 		}
 
 		/// <summary>
