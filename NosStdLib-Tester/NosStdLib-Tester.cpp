@@ -14,13 +14,13 @@ int number = 100;
 
 void CheckBool()
 {
-    wprintf((SomeBool ? L"true" : L"false"));
+    wprintf((SomeBool ? L"true\n" : L"false\n"));
     system("Pause");
 }
 
 void CheckNumber()
 {
-    wprintf(std::to_wstring(number).c_str());
+    wprintf((std::to_wstring(number) + L"\n").c_str());
     system("Pause");
 }
 

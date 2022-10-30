@@ -41,6 +41,7 @@ namespace NosStdLib
 			int CurrentIndex;
 			int TitleSize;
 			InputType inputType;
+			bool Redraw;
 		};
 
 		/// <summary>
@@ -69,7 +70,7 @@ namespace NosStdLib
 			/// pass/send a input to the Entry
 			/// </summary>
 			/// <param name="inputType">- input that is getting sent</param>
-			virtual void EntryInput(const EntryInputPassStruct& inputStruct)
+			virtual void EntryInput(EntryInputPassStruct* inputStruct)
 			{
 				return;
 			}
@@ -141,14 +142,16 @@ namespace NosStdLib
 			/// pass/send a input to the Entry
 			/// </summary>
 			/// <param name="inputType">- input that is getting sent</param>
-			void EntryInput(const EntryInputPassStruct& inputStruct)
+			void EntryInput(EntryInputPassStruct* inputStruct)
 			{
 				if constexpr (std::is_base_of_v<NosStdLib::Functional::FunctionStoreBase, EntryType>)
 				{
-					switch (inputStruct.inputType)
+					switch (inputStruct->inputType)
 					{
 					case EntryInputPassStruct::InputType::Enter:
-						TypePointerStore->RunFunction(); /* TODO: Figure out how to make it clear screen and then redraw menu */
+						NosStdLib::Global::Console::ClearScreen();
+						TypePointerStore->RunFunction();
+						inputStruct->Redraw = true;
 						break;
 					case EntryInputPassStruct::InputType::ArrowLeft:
 						break;
@@ -182,12 +185,14 @@ namespace NosStdLib
 		/// pass/send a input to the Entry
 		/// </summary>
 		/// <param name="inputType">- input that is getting sent</param>
-		void MenuEntry<bool>::EntryInput(const EntryInputPassStruct& inputStruct)
+		void MenuEntry<bool>::EntryInput(EntryInputPassStruct* inputStruct)
 		{
-			switch (inputStruct.inputType)
+			switch (inputStruct->inputType)
 			{
 			case EntryInputPassStruct::InputType::Enter:
-				(*TypePointerStore) = !(*TypePointerStore); /* TODO: Redraw current line too */
+				(*TypePointerStore) = !(*TypePointerStore);
+				SetConsoleCursorPosition(*MenuConsoleHandle, { 0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
+				wprintf(EntryString(true).c_str());
 				break;
 			case EntryInputPassStruct::InputType::ArrowLeft:
 				break;
@@ -216,9 +221,9 @@ namespace NosStdLib
 		/// pass/send a input to the Entry
 		/// </summary>
 		/// <param name="inputType">- input that is getting sent</param>
-		void MenuEntry<int>::EntryInput(const EntryInputPassStruct& inputStruct)
+		void MenuEntry<int>::EntryInput(EntryInputPassStruct* inputStruct)
 		{
-			switch (inputStruct.inputType)
+			switch (inputStruct->inputType)
 			{
 			case EntryInputPassStruct::InputType::Enter:
 			{
@@ -226,7 +231,7 @@ namespace NosStdLib
 				wchar_t ch;
 				bool ContinueIntType = true;
 
-				COORD NumberPosition = { (((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), (inputStruct.CurrentIndex + inputStruct.TitleSize) };
+				COORD NumberPosition = { (((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), (inputStruct->CurrentIndex + inputStruct->TitleSize) };
 
 				SetConsoleCursorPosition(*MenuConsoleHandle, NumberPosition);
 
@@ -245,12 +250,12 @@ namespace NosStdLib
 
 						if (!NewInt.empty())
 						{
-							GetConsoleScreenBufferInfo(MenuConsoleHandle, MenuConsoleScreenBI);
+							*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI);
 
 							NewCoord = { (SHORT)(MenuConsoleScreenBI->dwCursorPosition.X - 1), MenuConsoleScreenBI->dwCursorPosition.Y }; // create new coord with x-1 and same y
-							SetConsoleCursorPosition(MenuConsoleHandle, NewCoord); // use new coord
+							SetConsoleCursorPosition(*MenuConsoleHandle, NewCoord); // use new coord
 							wprintf(L" "); // delete character
-							SetConsoleCursorPosition(MenuConsoleHandle, NewCoord);
+							SetConsoleCursorPosition(*MenuConsoleHandle, NewCoord);
 							NewInt.pop_back();
 						}
 					}
@@ -267,21 +272,32 @@ namespace NosStdLib
 					{
 						*TypePointerStore = std::stoi(NewInt);
 					}
-					catch (std::out_of_range ex)
+					catch (const std::out_of_range& ex)
 					{
 						if (NewInt[0] == '-')
 							*TypePointerStore = INT_MIN;
 						else
 							*TypePointerStore = INT_MAX;
 					}
+					catch (...)
+					{
+						/* if any other exception, do nothing */
+					}
 				}
-				SetConsoleCursorPosition(MenuConsoleHandle, {0, (SHORT)(inputStruct.CurrentIndex + inputStruct.TitleSize) }); /* TODO: Figure out why this doesn't overwrite previous */
+
+				SetConsoleCursorPosition(*MenuConsoleHandle, {0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
 				wprintf(EntryString(true).c_str());
 				break;
 			}
 			case EntryInputPassStruct::InputType::ArrowLeft:
+				(*TypePointerStore)--;
+				SetConsoleCursorPosition(*MenuConsoleHandle, { 0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
+				wprintf(EntryString(true).c_str());
 				break;
 			case EntryInputPassStruct::InputType::ArrowRight:
+				(*TypePointerStore)++;
+				SetConsoleCursorPosition(*MenuConsoleHandle, { 0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
+				wprintf(EntryString(true).c_str());
 				break;
 			}
 		}
@@ -306,9 +322,9 @@ namespace NosStdLib
 		/// pass/send a input to the Entry
 		/// </summary>
 		/// <param name="inputType">- input that is getting sent</param>
-		void MenuEntry<DynamicMenu>::EntryInput(const EntryInputPassStruct& inputStruct)
+		void MenuEntry<DynamicMenu>::EntryInput(EntryInputPassStruct* inputStruct)
 		{
-			switch (inputStruct.inputType)
+			switch (inputStruct->inputType)
 			{
 			case EntryInputPassStruct::InputType::Enter:
 
@@ -381,7 +397,10 @@ namespace NosStdLib
 					ch = _getch(); /* first character input */
 					if (ch == ENTER)
 					{
-						MenuEntryList[currentIndex]->EntryInput({ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter });
+						EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter, false };
+						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+						if (InputPassStruct.Redraw)
+							DrawMenu(currentIndex, &titleSize);
 					}
 					else if (!(ch && ch != 224))
 					{
@@ -400,11 +419,21 @@ namespace NosStdLib
 							}
 							break;
 						case ARROW_LEFT:
-							MenuEntryList[currentIndex]->EntryInput({ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowLeft });
-							break;
+							{
+								EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
+								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+								if (InputPassStruct.Redraw)
+									DrawMenu(currentIndex, &titleSize);
+								break;
+							}
 						case ARROW_RIGHT:
-							MenuEntryList[currentIndex]->EntryInput({ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowRight });
-							break;
+							{
+								EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowRight, false };
+								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+								if (InputPassStruct.Redraw)
+									DrawMenu(currentIndex, &titleSize);
+								break;
+							}
 						}
 					}
 
@@ -448,8 +477,6 @@ namespace NosStdLib
 
 					SetConsoleCursorPosition(ConsoleHandle, finalPosition);
 
-
-					//DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
 					oldIndex = currentIndex;
 				}
 				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
