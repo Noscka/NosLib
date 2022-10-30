@@ -165,6 +165,202 @@ namespace NosStdLib
 				}
 			}
 		};
+
+		/// <summary>
+		/// the main Menu class which will be used to render and display menu
+		/// </summary>
+		class DynamicMenu
+		{
+		private:
+			std::wstring Title;												/* Menu Title */
+			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
+			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
+			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
+			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;			/* array of MenuEntries */
+
+			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
+				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
+				 AddExitEntry,			/* if to add a quit option/entry at the bottom */
+				 CenterTitle,			/* if the title should be centered */
+				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
+		public:
+			DynamicMenu(std::wstring title, bool generateUnicodeTitle = true, bool addExitEntry = true, bool centerTitle = true)
+			{
+				Title = title;
+				AddExitEntry = addExitEntry;
+				GenerateUnicodeTitle = generateUnicodeTitle;
+				CenterTitle = centerTitle;
+
+				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+			}
+
+			/// <summary>
+			/// Starts the menu
+			/// </summary>
+			void StartMenu()
+			{
+				MenuLoop = true; /* incase menu was quit before */
+
+				if (AddExitEntry && !AddedQuit)
+				{
+					AddMenuEntry(new MenuEntry(L"Quit", new NosStdLib::Functional::FunctionStore(&QuitMenu, this)));
+				}
+
+				int ch, exCh; /* for getting input data */
+				int currentIndex = 0; /* Which item is currently selected */
+				int oldIndex = currentIndex; /* Old index to know old position */
+				int titleSize = 0; /* title size (for calculations where actual menu entries start) */
+				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
+				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
+
+				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
+
+				while (MenuLoop)
+				{
+					ch = _getch(); /* first character input */
+					if (ch == ENTER)
+					{
+						EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter, false };
+						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+						if (InputPassStruct.Redraw)
+							DrawMenu(currentIndex, &titleSize);
+					}
+					else if (!(ch && ch != 224))
+					{
+						switch (exCh = _getch())
+						{
+						case ARROW_UP:
+							if (currentIndex > 0) /* Decrement only if larger the 0 */
+							{
+								currentIndex--; /* Decrement the Indenetation */
+							}
+							break;
+						case ARROW_DOWN:
+							if (currentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
+							{
+								currentIndex++; /* Increment the Indenetation */
+							}
+							break;
+						case ARROW_LEFT:
+							{
+								EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
+								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+								if (InputPassStruct.Redraw)
+									DrawMenu(currentIndex, &titleSize);
+								break;
+							}
+						case ARROW_RIGHT:
+							{
+								EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowRight, false };
+								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+								if (InputPassStruct.Redraw)
+									DrawMenu(currentIndex, &titleSize);
+								break;
+							}
+						}
+					}
+
+					/*
+						What needs to be redrawing depending on if its up for down
+						if the index goes down (bigger number), you need to clear above and current line
+						|| Old Selected Entry
+						\/ New Selected Entry <-- Here is Cursor
+						and if going up (smaller number)
+						/\ New Selected Entry <-- Here is Cursor
+						|| Old Selected Entry
+					*/
+
+					COORD finalPosition = {0,0};
+
+					if (currentIndex > oldIndex && oldIndex != currentIndex) /* Going Down */
+					{
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(titleSize + currentIndex - 1) });
+						wprintf((MenuEntryList[oldIndex]->EntryString(false) + MenuEntryList[currentIndex]->EntryString(true)).c_str());
+
+						if ((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
+							finalPosition = { 0,0 };
+						else if ((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+							finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + titleSize - 1) };
+						else
+							finalPosition = { 0, (SHORT)((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2)) };
+					}
+					else if(oldIndex != currentIndex)/* Going Up */
+					{
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(titleSize + currentIndex) });
+						wprintf((MenuEntryList[currentIndex]->EntryString(true) + MenuEntryList[oldIndex]->EntryString(false)).c_str());
+
+						if ((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
+							finalPosition = { 0,0 };
+						else if ((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+							finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
+						else
+							finalPosition = { 0, (SHORT)((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2)) };
+
+					}
+
+					SetConsoleCursorPosition(ConsoleHandle, finalPosition);
+
+					oldIndex = currentIndex;
+				}
+				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
+			}
+
+			/// <summary>
+			/// Draws the menu
+			/// </summary>
+			/// <param name="CurrentIndex">- currrent index</param>
+			/// <param name="TitleSize">- pointer to the title size int so it can be calculated</param>
+			void DrawMenu(const int& currentIndex, int* titleSize)
+			{
+				NosStdLib::Global::Console::ClearScreen();
+
+				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+
+				std::wstring outputString; /* string for full "display" as it is the most perfomace efficent method */
+
+				if (GenerateUnicodeTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title */
+					outputString = NosStdLib::UnicodeTextGenerator::BasicUnicodeTextGenerate(ConsoleHandle, Title, CenterTitle); // add title with "ascii generator"
+				else
+					if (CenterTitle)
+						outputString = std::wstring(((ConsoleSizeStruct.Columns / 2) - Title.length() / 2), ' ') + Title;
+					else
+						outputString = Title;
+
+				*titleSize = std::count(outputString.begin(), outputString.end(), L'\n');
+
+				// for loop using counter to get the index so to add the >< to the selected option
+				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
+				{
+					if (i == currentIndex)
+						outputString += MenuEntryList[i]->EntryString(true);
+					else
+						outputString += MenuEntryList[i]->EntryString(false);
+				}
+
+				wprintf(outputString.c_str());
+
+				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(currentIndex) });
+			}
+
+			/// <summary>
+			/// Adds entry to menu
+			/// </summary>
+			/// <param name="Entry">- the entry to add</param>
+			void AddMenuEntry(MenuEntryBase* Entry)
+			{
+				Entry->SetEntryVariables(&ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
+				MenuEntryList.Append(Entry);
+			}
+
+			/// <summary>
+			/// quits the menu
+			/// </summary>
+			static void QuitMenu(DynamicMenu* menuPointer)
+			{
+				menuPointer->MenuLoop = false;
+			}
+		};
+
 	#pragma region FunctionSpecialization
 	#pragma region bool
 		/// <summary>
@@ -285,7 +481,7 @@ namespace NosStdLib
 					}
 				}
 
-				SetConsoleCursorPosition(*MenuConsoleHandle, {0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
+				SetConsoleCursorPosition(*MenuConsoleHandle, { 0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
 				wprintf(EntryString(true).c_str());
 				break;
 			}
@@ -327,7 +523,9 @@ namespace NosStdLib
 			switch (inputStruct->inputType)
 			{
 			case EntryInputPassStruct::InputType::Enter:
-
+				NosStdLib::Global::Console::ClearScreen();
+				(*TypePointerStore).StartMenu();
+				inputStruct->Redraw = true;
 				break;
 			case EntryInputPassStruct::InputType::ArrowLeft:
 				break;
@@ -337,206 +535,6 @@ namespace NosStdLib
 		}
 	#pragma endregion
 	#pragma endregion
-
-		/// <summary>
-		/// the main Menu class which will be used to render and display menu
-		/// </summary>
-		class DynamicMenu
-		{
-		private:
-			std::wstring Title;												/* Menu Title */
-			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
-			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
-			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
-			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;			/* array of MenuEntries */
-
-			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
-				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
-				 AddExitEntry,			/* if to add a quit option/entry at the bottom */
-				 CenterTitle,			/* if the title should be centered */
-				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
-		public:
-			DynamicMenu(std::wstring title, bool generateUnicodeTitle = true, bool addExitEntry = true, bool centerTitle = true)
-			{
-				Title = title;
-				AddExitEntry = addExitEntry;
-				GenerateUnicodeTitle = generateUnicodeTitle;
-				CenterTitle = centerTitle;
-
-				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-			}
-			
-			/// <summary>
-			/// Starts the menu
-			/// </summary>
-			void StartMenu()
-			{
-				MenuLoop = true; /* incase menu was quit before */
-
-				if (AddExitEntry && !AddedQuit)
-				{
-					AddedQuit = true;
-					std::function<void()> Func = [this]()
-					{
-						return this->QuitMenu();
-					};
-					//MenuEntryList.Append(new MenuEntry(L"Quit", new NosStdLib::Functional::FunctionStore(&std::bind(&DynamicMenu::QuitMenu, this)))); TODO: add back adding the quit menu
-				}
-
-				int ch, exCh; /* for getting input data */
-				int currentIndex = 0; /* Which item is currently selected */
-				int oldIndex = currentIndex; /* Old index to know old position */
-				int titleSize = 0; /* title size (for calculations where actual menu entries start) */
-				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
-				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
-
-				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
-
-				while (MenuLoop)
-				{
-					ch = _getch(); /* first character input */
-					if (ch == ENTER)
-					{
-						EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter, false };
-						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
-						if (InputPassStruct.Redraw)
-							DrawMenu(currentIndex, &titleSize);
-					}
-					else if (!(ch && ch != 224))
-					{
-						switch (exCh = _getch())
-						{
-						case ARROW_UP:
-							if (currentIndex > 0) /* Decrement only if larger the 0 */
-							{
-								currentIndex--; /* Decrement the Indenetation */
-							}
-							break;
-						case ARROW_DOWN:
-							if (currentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
-							{
-								currentIndex++; /* Increment the Indenetation */
-							}
-							break;
-						case ARROW_LEFT:
-							{
-								EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
-								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
-								if (InputPassStruct.Redraw)
-									DrawMenu(currentIndex, &titleSize);
-								break;
-							}
-						case ARROW_RIGHT:
-							{
-								EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::ArrowRight, false };
-								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
-								if (InputPassStruct.Redraw)
-									DrawMenu(currentIndex, &titleSize);
-								break;
-							}
-						}
-					}
-
-					/*
-						What needs to be redrawing depending on if its up for down
-						if the index goes down (bigger number), you need to clear above and current line
-						|| Old Selected Entry
-						\/ New Selected Entry <-- Here is Cursor
-						and if going up (smaller number)
-						/\ New Selected Entry <-- Here is Cursor
-						|| Old Selected Entry
-					*/
-
-					COORD finalPosition;
-
-					if (currentIndex > oldIndex && oldIndex != currentIndex) /* Going Down */
-					{
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(titleSize + currentIndex - 1) });
-						wprintf((MenuEntryList[oldIndex]->EntryString(false) + MenuEntryList[currentIndex]->EntryString(true)).c_str());
-
-						if ((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
-							finalPosition = { 0,0 };
-						else if ((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
-							finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + titleSize - 1) };
-						else
-							finalPosition = { 0, (SHORT)((titleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2)) };
-					}
-					else if(oldIndex != currentIndex)/* Going Up */
-					{
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(titleSize + currentIndex) });
-						wprintf((MenuEntryList[currentIndex]->EntryString(true) + MenuEntryList[oldIndex]->EntryString(false)).c_str());
-
-						if ((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
-							finalPosition = { 0,0 };
-						else if ((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
-							finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
-						else
-							finalPosition = { 0, (SHORT)((titleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2)) };
-
-					}
-
-					SetConsoleCursorPosition(ConsoleHandle, finalPosition);
-
-					oldIndex = currentIndex;
-				}
-				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
-			}
-
-			/// <summary>
-			/// Draws the menu
-			/// </summary>
-			/// <param name="CurrentIndex">- currrent index</param>
-			/// <param name="TitleSize">- pointer to the title size int so it can be calculated</param>
-			void DrawMenu(const int& currentIndex, int* titleSize)
-			{
-				NosStdLib::Global::Console::ClearScreen();
-
-				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
-
-				std::wstring outputString; /* string for full "display" as it is the most perfomace efficent method */
-
-				if (GenerateUnicodeTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title */
-					outputString = NosStdLib::UnicodeTextGenerator::BasicUnicodeTextGenerate(ConsoleHandle, Title, CenterTitle); // add title with "ascii generator"
-				else
-					if (CenterTitle)
-						outputString = std::wstring(((ConsoleSizeStruct.Columns / 2) - Title.length() / 2), ' ') + Title;
-					else
-						outputString = Title;
-
-				*titleSize = std::count(outputString.begin(), outputString.end(), L'\n');
-
-				// for loop using counter to get the index so to add the >< to the selected option
-				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
-				{
-					if (i == currentIndex)
-						outputString += MenuEntryList[i]->EntryString(true);
-					else
-						outputString += MenuEntryList[i]->EntryString(false);
-				}
-
-				wprintf(outputString.c_str());
-
-				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(currentIndex) });
-			}
-
-			/// <summary>
-			/// Adds entry to menu
-			/// </summary>
-			/// <param name="Entry">- the entry to add</param>
-			void AddMenuEntry(MenuEntryBase* Entry)
-			{
-				Entry->SetEntryVariables(&ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
-				MenuEntryList.Append(Entry);
-			}
-
-			/// <summary>
-			/// quits the menu
-			/// </summary>
-			void QuitMenu()
-			{
-				MenuLoop = false;
-			}
-		};
 	}
 }
 
