@@ -267,7 +267,6 @@ namespace NosStdLib
 					{
 						oldConsoleSizeStruct = ConsoleSizeStruct; /* TODO: Fix issue of entries getting overwritten */
 						DrawMenu(currentIndex, &titleSize);
-						continue;
 					}
 
 					/*
