@@ -27,8 +27,6 @@ namespace NosStdLib
 
 		class DynamicMenu;
 
-		class MenuEntryBase;
-
 		struct EntryInputPassStruct
 		{
 			enum InputType : uint8_t
@@ -128,7 +126,9 @@ namespace NosStdLib
 
 				if constexpr (std::is_base_of_v<NosStdLib::Functional::FunctionStoreBase, EntryType>)
 				{
-					std::wstring output = std::wstring(SpaceLenght - (selected ? 3 : 0) , ' ') + (selected ? L">> " : L"") + EntryName + (selected ? L" <<" : L"");
+					std::wstring output = (selected ? 
+										   std::wstring(SpaceLenght - 3, ' ') + L">> " + EntryName + L" <<" :
+										   std::wstring(SpaceLenght - 0, ' ') + L"" + EntryName + L"");
 					output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
 					return output;
 				}
@@ -383,7 +383,9 @@ namespace NosStdLib
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-			std::wstring output = std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - (selected ? 3 : 0), ' ') + (selected ? L">> " : L"") + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + (selected ? L" <<" : L"");
+			std::wstring output = (selected ? 
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + L">> " + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") +L" <<" :
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 0, ' ') + L"" + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + L"");
 			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
 			return output;
 		}
@@ -419,7 +421,9 @@ namespace NosStdLib
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-			std::wstring output = std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(4, ' ') + (selected ? L"<" : L"") + std::to_wstring(*TypePointerStore) + (selected ? L">" : L"");
+			std::wstring output = (selected ? 
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(4, ' ') + L"<" + std::to_wstring(*TypePointerStore) + L">" :
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(4, ' ') + L"" + std::to_wstring(*TypePointerStore) + L"");
 			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
 			return output;
 		}
@@ -520,7 +524,9 @@ namespace NosStdLib
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-			std::wstring output = std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - (selected ? 3 : 0), ' ') + NosStdLib::TextColor::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + (selected ? L">> " : L"") + EntryName + (selected ? L" <<" : L"");
+			std::wstring output = (selected ? 
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + NosStdLib::TextColor::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L">> " + EntryName + L" <<" :
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 0, ' ') + NosStdLib::TextColor::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L"" + EntryName + L"");
 			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L"\033[0m\n";
 			return output;
 		}
@@ -548,5 +554,4 @@ namespace NosStdLib
 	#pragma endregion
 	}
 }
-
 #endif
