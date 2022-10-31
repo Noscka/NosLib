@@ -35,6 +35,32 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
+    NosStdLib::LoadingScreen::InitilizeFont();
+
+    std::wstring splash = LR"(
+                      ████████                ███████                            
+                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
+          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
+     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
+   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
+ ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
+██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
+██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
+▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
+  ▀██████████████▄███         ███        ████       ███          ███             
+    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
+   ███             ██▌        ██▌         ██       ███▌         ███              
+   ███             ▐██                            █████▄       ███               
+    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
+       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
+                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
+                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
+
+    std::wstring SomeVar(L"Some Text");
+
+    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
+    (&SomeFunction, &SomeVar);
+
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
     NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
@@ -59,6 +85,7 @@ int main()
     MainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();
+    NosStdLib::LoadingScreen::TerminateFont();
     return 0;
 }
 

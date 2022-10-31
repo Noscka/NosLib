@@ -204,6 +204,7 @@ namespace NosStdLib
 				if (AddExitEntry && !AddedQuit)
 				{
 					AddMenuEntry(new MenuEntry(L"Quit", new NosStdLib::Functional::FunctionStore(&QuitMenu, this)));
+					AddedQuit = true;
 				}
 
 				int ch, exCh; /* for getting input data */
