@@ -212,6 +212,7 @@ namespace NosStdLib
 				int titleSize = 0; /* title size (for calculations where actual menu entries start) */
 				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
 				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
+				NosStdLib::Global::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
 
 				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
 
@@ -260,6 +261,15 @@ namespace NosStdLib
 						}
 					}
 
+					ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+					/* if the console dimentions have changed (console window has increased or decreased). then redraw whole menu */
+					if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
+					{
+						oldConsoleSizeStruct = ConsoleSizeStruct; /* TODO: Fix issue of entries getting overwritten */
+						DrawMenu(currentIndex, &titleSize);
+						continue;
+					}
+
 					/*
 						What needs to be redrawing depending on if its up for down
 						if the index goes down (bigger number), you need to clear above and current line
@@ -306,6 +316,17 @@ namespace NosStdLib
 			}
 
 			/// <summary>
+			/// Adds entry to menu
+			/// </summary>
+			/// <param name="Entry">- the entry to add</param>
+			void AddMenuEntry(MenuEntryBase* Entry)
+			{
+				Entry->SetEntryVariables(&ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
+				MenuEntryList.Append(Entry);
+			}
+
+		private:
+			/// <summary>
 			/// Draws the menu
 			/// </summary>
 			/// <param name="CurrentIndex">- currrent index</param>
@@ -343,18 +364,9 @@ namespace NosStdLib
 			}
 
 			/// <summary>
-			/// Adds entry to menu
-			/// </summary>
-			/// <param name="Entry">- the entry to add</param>
-			void AddMenuEntry(MenuEntryBase* Entry)
-			{
-				Entry->SetEntryVariables(&ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
-				MenuEntryList.Append(Entry);
-			}
-
-			/// <summary>
 			/// quits the menu
 			/// </summary>
+			/// <param name="menuPointer">- a pointer to self</param>
 			static void QuitMenu(DynamicMenu* menuPointer)
 			{
 				menuPointer->MenuLoop = false;
