@@ -265,7 +265,7 @@ namespace NosStdLib
 					/* if the console dimentions have changed (console window has increased or decreased). then redraw whole menu */
 					if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
 					{
-						oldConsoleSizeStruct = ConsoleSizeStruct; /* TODO: Fix issue of entries getting overwritten */
+						oldConsoleSizeStruct = ConsoleSizeStruct;
 						DrawMenu(currentIndex, &titleSize);
 					}
 
