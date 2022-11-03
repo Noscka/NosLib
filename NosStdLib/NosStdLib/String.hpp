@@ -154,16 +154,16 @@ namespace NosStdLib
 		/// <param name="startPosition">- position to start looking from</param>
 		/// <param name="word">- pointer to string which will get modified to the word found</param>
 		/// <param name="wordStartPosition">- pointer to int which will get modified with start position of the word</param>
-		/// <param name="delimiters">- what character to ignore</param>
+		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
 		/// <returns>the word</returns>
 		template <typename CharT>
-		std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiters = L' ')
+		std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiter = L' ')
 		{
 			uint16_t wordRange = 0, wordStartPos = 0;
 			bool wordCounting = false;
 			for (int i = startPosition; i < string.length(); i++)
 			{
-				if (string[i] != delimiters && !wordCounting)
+				if (string[i] != delimiter && !wordCounting)
 				{
 					wordCounting = true;
 					wordStartPos = i;
@@ -171,12 +171,12 @@ namespace NosStdLib
 					wordRange++;
 				}
 
-				if (wordCounting && string[i] != delimiters)
+				if (wordCounting && string[i] != delimiter)
 				{
 					wordRange++;
 				}
 
-				if (wordCounting && string[i] == delimiters)
+				if (wordCounting && string[i] == delimiter)
 				{
 					break;
 				}
@@ -188,6 +188,65 @@ namespace NosStdLib
 			}
 
 			return *word;
+		}
+
+
+		/// <summary>
+		/// finds next word from position without pointer returns
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="string">- the string to look through</param>
+		/// <param name="startPosition">- position to start looking from</param>
+		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
+		/// <returns>the word</returns>
+		template <typename CharT>
+		std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, const CharT& delimiter = L' ')
+		{
+			std::basic_string<CharT> tmpString;
+			int tmpInt;
+			return FindNextWord<CharT>(string, startPosition, &tmpString, &tmpInt, delimiter);
+		}
+	#pragma endregion
+
+	#pragma region FindNthWord
+		/// <summary>
+		/// finds Nth word from position
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="string">- the string to look through</param>
+		/// <param name="startPosition">- position to start looking from</param>
+		/// <param name="wordCount">- how many words to go over</param>
+		/// <param name="word">- pointer to string which will get modified to the word found</param>
+		/// <param name="wordStartPosition">- pointer to int which will get modified with start position of the word</param>
+		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
+		/// <returns>the word</returns>
+		template <typename CharT>
+		std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiter = L' ')
+		{
+			FindNextWord<CharT>(string, startPosition, word, wordStartPosition, delimiter);
+			for (int i = 0; i < wordCount; i++)
+			{
+				FindNextWord<CharT>(string, ((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
+			}
+			return *word;
+		}
+
+		/// <summary>
+		/// finds Nth word from position without pointer returns
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="string">- the string to look through</param>
+		/// <param name="startPosition">- position to start looking from</param>
+		/// <param name="wordCount">- how many words to go over</param>
+		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
+		/// <returns>the word</returns>
+		template <typename CharT>
+		std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, const CharT& delimiter = L' ')
+		{
+			std::basic_string<CharT> tmpString;
+			int tmpInt;
+			FindNthWord<CharT>(string, startPosition, wordCount, &tmpString, &tmpInt, delimiter);
+			return tmpString;
 		}
 	#pragma endregion
 	}

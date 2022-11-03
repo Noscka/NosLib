@@ -7,6 +7,7 @@
 
 #include <NosStdLib/FileManagement.hpp>
 #include <NosStdLib/DynamicArray.hpp>
+#include <NosStdLib/String.hpp>
 
 class Item
 {
@@ -60,9 +61,9 @@ void ParseHeader(const std::wstring& filePath)
     {
         if (size_t point = line.find(L"namespace") != std::string::npos)
         {
-            //wprintf((L"namespace" + NextWord(line, point, point) + L"\n").c_str());
+            wprintf((L"namespace " + NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
 
-            Item *namespaceItem = new Item(Item::Type::Namespace, L"namespace", currentItem);
+            Item *namespaceItem = new Item(Item::Type::Namespace, NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' '), currentItem);
 
             if (currentItem != nullptr)
                 currentItem->AddChild(namespaceItem);
@@ -71,9 +72,9 @@ void ParseHeader(const std::wstring& filePath)
         }
         else if (line.find(L"class") != std::string::npos)
         {
-            wprintf(L"class\n");
+            wprintf((L"class " + NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
 
-            Item *classItem = new Item(Item::Type::Class, L"class", currentItem);
+            Item *classItem = new Item(Item::Type::Class, NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' '), currentItem);
 
             if (currentItem != nullptr)
                 currentItem->AddChild(classItem);
@@ -95,8 +96,6 @@ void ParseHeader(const std::wstring& filePath)
                 currentItem = currentItem->GetParent();
         }
     }
-
-    std::wcout << currentItem->GetName() << std::endl;
 }
 
 /// <summary>
