@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <conio.h>
+#include <regex>
 
 #include <NosStdLib/FileManagement.hpp>
 #include <NosStdLib/DynamicArray.hpp>
@@ -70,7 +72,7 @@ void ParseHeader(const std::wstring& filePath)
 
             currentItem = namespaceItem;
         }
-        else if (line.find(L"class") != std::string::npos)
+        else if (size_t point = line.find(L"class") != std::string::npos)
         {
             wprintf((L"class " + NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
 
@@ -81,11 +83,16 @@ void ParseHeader(const std::wstring& filePath)
 
             currentItem = classItem;
         }
-        //else if (line.find(L"") != std::string::npos)
-        //{
-        //
-        //}
-        //wprintf((line + L"\n").c_str());
+        else
+        {
+            std::wregex wideRegex(L"([A-Za-z0-9:]+) ([A-Za-z0-9]+)([()])");
+            std::wsmatch wideSmartMatch;
+
+            if (std::regex_search(line, wideSmartMatch, wideRegex))
+            {
+                std::wcout << wideSmartMatch[1].str() << L" | " << wideSmartMatch[2].str() << L" | " << wideSmartMatch[3].str() << std::endl;
+            }
+        }
 
         if (line.find(L"{") != std::string::npos)
             currentItem->BracketCloseCount++;
@@ -131,7 +138,7 @@ int main()
 
     ParseHeader(LR"(D:\NosStdLib\Build\Library Structure Parser\x64\Release\abc.hpp)");
 
-    wprintf(L"Press any button to continue"); getchar();
+    wprintf(L"Press any button to continue"); _getch();
     return 0;
 
     std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
