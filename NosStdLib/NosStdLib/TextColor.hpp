@@ -1,7 +1,9 @@
-﻿#ifndef _TEXTCOLOR_HPP_
-#define _TEXTCOLOR_HPP_
+﻿#ifndef _TEXTCOLOR_NOSSTDLIB_HPP_
+#define _TEXTCOLOR_NOSSTDLIB_HPP_
 
 #include "Global.hpp"
+#include "String.hpp"
+
 #include <codecvt>
 #include <stdint.h>
 #include <string>
@@ -25,7 +27,7 @@ namespace NosStdLib
 		std::basic_string<CharT> ConvertGlobal(const std::wstring& globalWString)
 		{
 			if constexpr (std::is_same_v<CharT, char>)
-				return NosStdLib::Global::String::ToString(globalWString);
+				return NosStdLib::String::ToString(globalWString);
 			else if constexpr (std::is_same_v<CharT, wchar_t>)
 				return std::wstring(globalWString);
 		}

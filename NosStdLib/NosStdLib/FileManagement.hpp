@@ -1,5 +1,5 @@
-#ifndef _FILEMANAGEMENT_HPP_
-#define _FILEMANAGEMENT_HPP_
+#ifndef _FILEMANAGEMENT_NOSSTDLIB_HPP_
+#define _FILEMANAGEMENT_NOSSTDLIB_HPP_
 
 #include <string>
 #include <filesystem>

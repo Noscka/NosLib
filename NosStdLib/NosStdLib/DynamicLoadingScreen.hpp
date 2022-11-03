@@ -1,8 +1,10 @@
-﻿#ifndef _DYNAMICLOADINGSCREEN_HPP_
-#define _DYNAMICLOADINGSCREEN_HPP_
+﻿#ifndef _DYNAMICLOADINGSCREEN_NOSSTDLIB_HPP_
+#define _DYNAMICLOADINGSCREEN_NOSSTDLIB_HPP_
 
 #include "Global.hpp"
 #include "FileManagement.hpp"
+#include "String.hpp"
+
 #include <Windows.h>
 #include <minmax.h>
 #include <string>
@@ -83,7 +85,7 @@ namespace NosStdLib
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 				wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-				wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
+				wprintf(CenterStatusMesage ? NosStdLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
 				MidOperationUpdate();
@@ -125,14 +127,14 @@ namespace NosStdLib
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveRight(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosStdLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 					MidPosition++;
 				}
 				else
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveLeft(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-					wprintf(CenterStatusMesage ? NosStdLib::Global::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosStdLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 					MidPosition--;
 				}
 
@@ -262,7 +264,7 @@ namespace NosStdLib
 		LoadingScreen(LoadType barType, std::wstring splashScreen = L"", bool centerString = true)
 		{
 			BarType = barType;
-			SplashScreen = centerString ? NosStdLib::Global::String::CenterString(splashScreen, true) : splashScreen;
+			SplashScreen = centerString ? NosStdLib::String::CenterString(splashScreen, true) : splashScreen;
 
 			PercentageDone = 0;
 			CrossThreadFinishBoolean = false;

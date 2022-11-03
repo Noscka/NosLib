@@ -1,5 +1,5 @@
-#ifndef _DYNAMICMENUSYSTEM_HPP_
-#define _DYNAMICMENUSYSTEM_HPP_
+#ifndef _DYNAMICMENUSYSTEM_NOSSTDLIB_HPP_
+#define _DYNAMICMENUSYSTEM_NOSSTDLIB_HPP_
 
 #include "Global.hpp"
 #include "DynamicArray.hpp"

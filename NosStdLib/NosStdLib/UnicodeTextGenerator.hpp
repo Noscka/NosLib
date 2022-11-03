@@ -1,10 +1,10 @@
-#ifndef _UNICODETEXTGENERATOR_HPP_
-#define _UNICODETEXTGENERATOR_HPP_
+#ifndef _UNICODETEXTGENERATOR_NOSSTDLIB_HPP_
+#define _UNICODETEXTGENERATOR_NOSSTDLIB_HPP_
 
 #include <string>
 #include <Windows.h>
 
-#include "Global.hpp"
+#include "String.hpp"
 
 /* TODO: Create UnicodeTextGenerator that will dynamically create the text (research and develop) */
 /* TODO: make functions use template (like in Global::String) */
@@ -935,7 +935,7 @@ namespace NosStdLib
 		/// <returns>Big ASCII text</returns>
 		std::string BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::string& input, const bool center)
 		{
-			return NosStdLib::Global::String::ToString(BasicUnicodeTextGenerate(consoleHandle, NosStdLib::Global::String::ToWstring(input), center));
+			return NosStdLib::String::ToString(BasicUnicodeTextGenerate(consoleHandle, NosStdLib::String::ToWstring(input), center));
 		}
 
 		/// <summary>
@@ -946,7 +946,7 @@ namespace NosStdLib
 		/// <returns>Big ASCII text</returns>
 		std::string BasicUnicodeTextGenerate(const std::string& input, bool center)
 		{
-			return NosStdLib::Global::String::ToString(BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), NosStdLib::Global::String::ToWstring(input), center));
+			return NosStdLib::String::ToString(BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), NosStdLib::String::ToWstring(input), center));
 		}
 	#pragma endregion
 	}

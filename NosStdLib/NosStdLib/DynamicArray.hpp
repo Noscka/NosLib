@@ -1,5 +1,5 @@
-#ifndef _DYNAMICARRAY_HPP_
-#define _DYNAMICARRAY_HPP_
+#ifndef _DYNAMICARRAY_NOSSTDLIB_HPP_
+#define _DYNAMICARRAY_NOSSTDLIB_HPP_
 
 #include <iostream>
 

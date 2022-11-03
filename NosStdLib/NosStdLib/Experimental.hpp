@@ -1,5 +1,5 @@
-#ifndef _EXPERIMENTAL_HPP_
-#define _EXPERIMENTAL_HPP_
+#ifndef _EXPERIMENTAL_NOSSTDLIB_HPP_
+#define _EXPERIMENTAL_NOSSTDLIB_HPP_
 
 #include "TextColor.hpp"
 #include "Global.hpp"

@@ -1,5 +1,5 @@
-#ifndef _FUNCTIONAL_HPP_
-#define _FUNCTIONAL_HPP_
+#ifndef _FUNCTIONAL_NOSSTDLIB_HPP_
+#define _FUNCTIONAL_NOSSTDLIB_HPP_
 
 namespace NosStdLib
 {
