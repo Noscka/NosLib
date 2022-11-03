@@ -1,8 +1,9 @@
 #ifndef _STRING_NOSSTDLIB_HPP_
 #define _STRING_NOSSTDLIB_HPP_
 
-#include <string>
+#include <Windows.h>
 #include <stringapiset.h>
+#include <string>
 #include <vector>
 
 namespace NosStdLib
@@ -141,6 +142,52 @@ namespace NosStdLib
 		std::basic_string<CharT> CenterString(std::basic_string<CharT> input, bool rightPadding = false, bool all = true)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
+		}
+	#pragma endregion
+
+	#pragma region FindNextWord
+		/// <summary>
+		/// finds next word from position
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="string">- the string to look through</param>
+		/// <param name="startPosition">- position to start looking from</param>
+		/// <param name="word">- pointer to string which will get modified to the word found</param>
+		/// <param name="wordStartPosition">- pointer to int which will get modified with start position of the word</param>
+		/// <param name="delimiters">- what character to ignore</param>
+		/// <returns>the word</returns>
+		template <typename CharT>
+		std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiters = L' ')
+		{
+			uint16_t wordRange = 0, wordStartPos = 0;
+			bool wordCounting = false;
+			for (int i = startPosition; i < string.length(); i++)
+			{
+				if (string[i] != delimiters && !wordCounting)
+				{
+					wordCounting = true;
+					wordStartPos = i;
+					*wordStartPosition = i;
+					wordRange++;
+				}
+
+				if (wordCounting && string[i] != delimiters)
+				{
+					wordRange++;
+				}
+
+				if (wordCounting && string[i] == delimiters)
+				{
+					break;
+				}
+			}
+
+			if (wordRange != 0)
+			{
+				*word = string.substr(wordStartPos, wordRange);
+			}
+
+			return *word;
 		}
 	#pragma endregion
 	}

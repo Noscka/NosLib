@@ -1,91 +1,28 @@
-﻿#include <NosStdLib/Global.hpp>
-#include <NosStdLib/TextColor.hpp>
-#include <NosStdLib/DynamicLoadingScreen.hpp>
-#include <NosStdLib/DynamicMenuSystem.hpp>
-#include <NosStdLib/Experimental.hpp>
+﻿#include <NosStdLib/String.hpp>
+#include <NosStdLib/Global.hpp>
 
+#include <Windows.h>
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
-#include <cstdio>
-
-bool SomeBool = true;
-int number = 100;
-
-void CheckBool()
-{
-    wprintf((SomeBool ? L"true\n" : L"false\n"));
-    system("Pause");
-}
-
-void CheckNumber()
-{
-    wprintf((std::to_wstring(number) + L"\n").c_str());
-    system("Pause");
-}
-
-void SomeFunction(int* param1, int* param2)
-{
-    std::wcout << L"Param1: " << *param1 <<  L" | Param2: " << *param2 << std::endl;
-    system("Pause");
-}
+#include <iostream> 
+#include <cstdio> 
+#include <conio.h>
 
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::LoadingScreen::InitilizeFont();
+    std::wstring sentence = L"abc           abc123";
+    std::wstring output;
+    int outputPos;
 
-    std::wstring splash = LR"(
-                      ████████                ███████                            
-                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
-          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
-     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
-   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
- ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
-██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
-██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
-▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
-  ▀██████████████▄███         ███        ████       ███          ███             
-    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
-   ███             ██▌        ██▌         ██       ███▌         ███              
-   ███             ▐██                            █████▄       ███               
-    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
-       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
-                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
-                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
+    NosStdLib::String::FindNextWord<wchar_t>(sentence, 4, &output, &outputPos, L' ');
 
-    std::wstring SomeVar(L"Some Text");
-
-    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
-    (&SomeFunction, &SomeVar);
-
-    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
-
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
-
-    int param1 = 0, param2 = 0;
-
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));
-
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Run Function", new NosStdLib::Functional::FunctionStore(&SomeFunction, &param1, &param2)));
-
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
-
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool",new NosStdLib::Functional::FunctionStore(&CheckBool)));
-
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number",new NosStdLib::Functional::FunctionStore(&CheckNumber)));
-
-    MainMenu.StartMenu();
+    std::wcout << L"word found: " << output << L" | Position: " << outputPos << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
-    NosStdLib::LoadingScreen::TerminateFont();
     return 0;
 }
 

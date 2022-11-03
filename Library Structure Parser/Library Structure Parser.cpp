@@ -47,20 +47,6 @@ public:
     }
 };
 
-std::wstring NextWord(const std::wstring& S, std::wstring::size_type& p1, std::wstring::size_type& p2)
-{
-    wchar_t delimiters[] = L" ";
-    std::wstring re;
-
-    p1 = S.find_first_not_of(delimiters, p1);
-    if (p1 == std::wstring::npos)
-        return L"";
-    p2 = S.find_first_of(delimiters, p1);
-    re = S.substr(p1, (p2 - p1));
-
-    return re;
-}
-
 /// <summary>
 /// Parse a specified header to get the library structer
 /// </summary>
@@ -74,7 +60,7 @@ void ParseHeader(const std::wstring& filePath)
     {
         if (size_t point = line.find(L"namespace") != std::string::npos)
         {
-            wprintf((L"namespace" + NextWord(line, point, point) + L"\n").c_str());
+            //wprintf((L"namespace" + NextWord(line, point, point) + L"\n").c_str());
 
             Item *namespaceItem = new Item(Item::Type::Namespace, L"namespace", currentItem);
 

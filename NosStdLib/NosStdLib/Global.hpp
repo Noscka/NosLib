@@ -2,12 +2,9 @@
 #define _GLOBAL_NOSSTDLIB_HPP_
 
 #include <Windows.h>
-#include <string>
-#include <stringapiset.h>
 #include <io.h>
 #include <fcntl.h>
 #include <sstream>
-#include <vector>
 #include <minmax.h>
 
 /*
