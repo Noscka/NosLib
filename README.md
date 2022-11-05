@@ -15,6 +15,8 @@ ExampleFolder
 <br />
 (Will need to create a another program to automatically parse library structure for me) <br />
 Here is the real structure <br />
+NOT UP TO DATE. NEED TO CREATE PARSER IN ORDER TO PARSE AND OUTPUT A STRUCTER TREE
+<br />
 
 ```
 NosStdLib
