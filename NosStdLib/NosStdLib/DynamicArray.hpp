@@ -44,20 +44,7 @@ namespace NosStdLib
 		/// </summary>
 		DynamicArray()
 		{
-			/* TODO: make this constructer run the other one. Requires testing
-			most likely is:
-
-			*this = DynamicArray(10,10);
-			
-			*/
-			
-			/* Default values, can be changed */
-			ArraySize = 10;
-			ArrayStepSize = 10;
-
-			/* !DO NOT CHANGE ! */
-			ArrayIndexPointer = 0;
-			MainArray = new ArrayDataType[ArraySize]();
+			new (this) DynamicArray<ArrayDataType>(10, 10);
 		}
 
 		/// Destroy array contained in object
@@ -109,7 +96,7 @@ namespace NosStdLib
 		/// <param name="ArrayToAdd"> - the array to append</param>
 		/// <param name="size"> - size of the array</param>
 		/// <param name="includeEscape">(default = false) -  !TEXT DATA TYPES ONLY! if escape characters should be appended as well</param>
-		void ArrayAppend(ArrayDataType arrayToAdd[], int size, bool includeEscape = false)
+		void ArrayAppend(ArrayDataType arrayToAdd[], int size, bool includeEscape = false) /* TODO: make this use pointer to begining and end of array instead of count */
 		{
 			if (std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) // For Text types only
 			{
@@ -236,7 +223,7 @@ namespace NosStdLib
 		/// <returns></returns>
 		friend std::wostream& operator<<(std::wostream& os, const DynamicArray& MainArray)
 		{
-			if (std::is_same<ArrayDataType, std::wstring>::value || std::is_same<ArrayDataType, wchar_t>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
+			if constexpr (std::is_same<ArrayDataType, std::wstring>::value || std::is_same<ArrayDataType, wchar_t>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
 			{
 				os << MainArray.MainArray;
 			}

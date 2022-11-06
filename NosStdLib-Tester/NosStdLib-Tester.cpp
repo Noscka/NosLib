@@ -1,4 +1,4 @@
-﻿#include <NosStdLib/String.hpp>
+﻿#include <NosStdLib/DynamicArray.hpp>
 #include <NosStdLib/Global.hpp>
 
 #include <Windows.h>
@@ -14,13 +14,13 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wstring sentence = L"abc           abc123";
-    std::wstring output;
-    int outputPos;
+    NosStdLib::DynamicArray<wchar_t> dArray;
 
-    NosStdLib::String::FindNextWord<wchar_t>(sentence, 4, &output, &outputPos, L' ');
+    dArray.Append('a');
+    dArray.Append('b');
+    dArray.Append('c');
 
-    std::wcout << L"word found: " << output << L" | Position: " << outputPos << std::endl;
+    std::wcout << dArray << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
