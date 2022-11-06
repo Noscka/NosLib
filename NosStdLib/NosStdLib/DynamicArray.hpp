@@ -29,7 +29,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="StartSize"> - Starting size of the array</param>
 		/// <param name="StepSize"> - how much the array will increase each time it reaches the limit</param>
-		DynamicArray(int startSize, int stepSize)
+		DynamicArray(const int& startSize, const int& stepSize)
 		{
 			ArraySize = startSize;
 			ArrayStepSize = stepSize;
@@ -59,7 +59,7 @@ namespace NosStdLib
 		/// Append single Object
 		/// </summary>
 		/// <param name="ObjectToAdd"> - Object to add</param>
-		void Append(ArrayDataType objectToAdd)
+		void Append(const ArrayDataType& objectToAdd)
 		{
 			if (ArrayIndexPointer >= ArraySize) // if Current Index pointer is more then the array size (trying to add to OutOfRange space)
 			{
@@ -96,7 +96,7 @@ namespace NosStdLib
 		/// <param name="ArrayToAdd"> - the array to append</param>
 		/// <param name="size"> - size of the array</param>
 		/// <param name="includeEscape">(default = false) -  !TEXT DATA TYPES ONLY! if escape characters should be appended as well</param>
-		void ArrayAppend(ArrayDataType arrayToAdd[], int size, bool includeEscape = false) /* TODO: make this use pointer to begining and end of array instead of count */
+		void ArrayAppend(const ArrayDataType& arrayToAdd[], const int& size, const bool& includeEscape = false) /* TODO: make this use pointer to begining and end of array instead of count */ /* TODO: This function will also require a rewrite */
 		{
 			if (std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) // For Text types only
 			{
@@ -126,7 +126,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="ReplaceObject"> - Object to place in the position</param>
 		/// <param name="position"> - position to put the Object in</param>
-		void Replace(ArrayDataType replaceObject, int position)
+		void Replace(const ArrayDataType& replaceObject, const int& position)
 		{
 			if (position >= (ArrayIndexPointer - 1) || position < 0)// check if the position to remove is in array range
 			{
@@ -141,7 +141,7 @@ namespace NosStdLib
 		/// Remove and move all Object infront, back 1 spot
 		/// </summary>
 		/// <param name="position"> - Position to remove</param>
-		void Remove(int position)
+		void Remove(const int& position)
 		{
 			if (position >= (ArrayIndexPointer - 1) || position < 0)// check if the position to remove is in array range
 			{
@@ -274,7 +274,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="position">- position of the value wanted</param>
 		/// <returns>value in the position</returns>
-		ArrayDataType& operator[](int position)
+		ArrayDataType& operator[](const int& position)
 		{
 			return MainArray[position];
 		}
