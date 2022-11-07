@@ -1,6 +1,7 @@
 ﻿#include <NosStdLib/DynamicArray.hpp>
 #include <NosStdLib/String.hpp>
 #include <NosStdLib/Global.hpp>
+#include <NosStdLib/TextColor.hpp>
 
 #include <Windows.h>
 #include <iostream>
@@ -12,20 +13,12 @@
 
 int main()
 {
-    //NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
+    NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
     
-    printf(NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"wide char: 𐐷 ").c_str());
-    printf("extra space check\n");
-    printf(NosStdLib::String::ToString(L"wide char: 𐐷\n").c_str());
-    printf("extra space check\n");
-
-    printf(NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Normal char: x ").c_str());
-    printf("extra space check\n");
-    printf(NosStdLib::String::ToString(L"Normal char: x\n").c_str());
-    printf("extra space check\n");
-
-    std::wstring abcc;
+    std::wcout << NosStdLib::TextColor::NosRGB(255, 255, 255).MakeANSICode<wchar_t>(false) << NosStdLib::TextColor::NosRGB(20, 120, 20).MakeANSICode<wchar_t>() << L"text 1" << L"\033[0m" << std::endl;
+    std::wcout << NosStdLib::TextColor::NosRGB(214, 48, 124).MakeANSICode<wchar_t>() << L"text 2" << L"\033[0m" << std::endl;
+    std::wcout <<NosStdLib::TextColor::NosRGB(140, 20, 30).MakeANSICode<wchar_t>() << L"abc" << L"\033[0m" << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

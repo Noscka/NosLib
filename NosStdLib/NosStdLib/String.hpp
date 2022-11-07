@@ -14,10 +14,16 @@ namespace NosStdLib
 	namespace String
 	{
 	#pragma region String Conversion
+		/// <summary>
+		/// Converts any string type to any other string type
+		/// </summary>
+		/// <typeparam name="StringFrom">- the string input type</typeparam>
+		/// <typeparam name="StringTo">- the string output type</typeparam>
+		/// <param name="strIn">- string input</param>
+		/// <returns>converted string</returns>
 		template<typename StringFrom, typename StringTo>
 		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn)
 		{
-			/* TODO: Add static_assert checks to make sure that at compile time, the types are correct */
 			if constexpr (std::is_same_v<StringFrom, StringTo>)
 			{
 				return strIn;
@@ -30,7 +36,7 @@ namespace NosStdLib
 			}
 		}
 
-		#define ToString ConvertStringTypes<wchar_t, char>
+		#define ToString ConvertStringTypes<wchar_t, char> 
 		#define ToWstring ConvertStringTypes<char, wchar_t>
 	#pragma endregion
 
