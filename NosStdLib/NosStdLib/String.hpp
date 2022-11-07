@@ -41,6 +41,15 @@ namespace NosStdLib
 			return strTo;
 		}
 
+#pragma region String Conversion
+		template<typename StringFrom, typename StringTo>
+		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& str)
+		{
+			return str;
+		}
+#pragma endregion
+
+
 	#pragma region IsNumber
 		/// <summary>
 		/// Check if wstring is number (with or without signs)
