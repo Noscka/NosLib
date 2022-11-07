@@ -96,7 +96,7 @@ namespace NosStdLib
 		/// <param name="ArrayToAdd"> - the array to append</param>
 		/// <param name="size"> - size of the array</param>
 		/// <param name="includeEscape">(default = false) -  !TEXT DATA TYPES ONLY! if escape characters should be appended as well</param>
-		void ArrayAppend(const ArrayDataType& arrayToAdd[], const int& size, const bool& includeEscape = false) /* TODO: make this use pointer to begining and end of array instead of count */ /* TODO: This function will also require a rewrite */
+		void ArrayAppend(ArrayDataType arrayToAdd[], const int& size, const bool& includeEscape = false) /* TODO: make this use pointer to begining and end of array instead of count */ /* TODO: This function will also require a rewrite */
 		{
 			if (std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) // For Text types only
 			{

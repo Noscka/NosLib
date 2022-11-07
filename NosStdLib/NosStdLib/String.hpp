@@ -29,7 +29,7 @@ namespace NosStdLib
 
 		/// <summary>
 		/// Converts wstring to string
-		/// </summary>
+		/// </summary> 
 		/// <param name="wstr">- wstring for converting</param>
 		/// <returns>string version of the string</returns>
 		std::string ToString(const std::wstring& wstr)
@@ -41,13 +41,25 @@ namespace NosStdLib
 			return strTo;
 		}
 
-#pragma region String Conversion
+	#pragma region String Conversion
 		template<typename StringFrom, typename StringTo>
 		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& str)
 		{
-			return str;
+			/* TODO: Add static_assert checks to make sure that at compile time, the types are correct */
+			if constexpr (std::is_same_v<StringFrom, StringTo>)
+			{
+				return str;
+			}
+			else if constexpr (std::is_same_v<StringTo, char> && std::is_same_v<StringFrom, wchar_t>)
+			{
+				return ToString(str);
+			}
+			else if constexpr (std::is_same_v<StringTo, wchar_t> && std::is_same_v<StringFrom, char>)
+			{
+				return ToWstring(str);
+			}
 		}
-#pragma endregion
+	#pragma endregion
 
 
 	#pragma region IsNumber
@@ -66,7 +78,7 @@ namespace NosStdLib
 			if (allowSigns)
 			{
 				/* if allowSigns is true, check if first character is either - or + or a number */
-				if ((str[0] != L'-' && str[0] != L'+') && !std::isdigit(str[0]))
+				if ((str[0] != NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(L'-') && str[0] != NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(L'+')) && !std::isdigit(str[0]))
 					return false;
 
 				Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */

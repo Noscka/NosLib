@@ -1,4 +1,5 @@
 ﻿#include <NosStdLib/DynamicArray.hpp>
+#include <NosStdLib/String.hpp>
 #include <NosStdLib/Global.hpp>
 
 #include <Windows.h>
@@ -13,6 +14,11 @@ int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+    
+    wprintf(NosStdLib::String::ConvertStringTypes<char, wchar_t>(std::string("outptingut\n")).c_str());
+
+    wprintf(L"Press any button to continue"); _getch();
+    return 0;
 
     NosStdLib::DynamicArray<wchar_t> dArray;
 
