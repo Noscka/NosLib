@@ -221,7 +221,7 @@ namespace NosStdLib
 		/// <param name="os">- output stream</param>
 		/// <param name="Array">- the array object</param>
 		/// <returns></returns>
-		friend std::wostream& operator<<(std::wostream& os, const DynamicArray& MainArray)
+		friend std::wostream& operator<<(std::wostream& os, const DynamicArray& MainArray) /* TODO: make wostream and ostream be 1 function which uses std::basic_stream */
 		{
 			if constexpr (std::is_same<ArrayDataType, std::wstring>::value || std::is_same<ArrayDataType, wchar_t>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
 			{
