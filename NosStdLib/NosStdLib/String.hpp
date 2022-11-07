@@ -9,38 +9,10 @@
 namespace NosStdLib
 {
 	/// <summary>
-		/// namespace for items which are related to strings (both string and wstring)
-		/// </summary>
+	/// namespace for items which are related to strings (both string and wstring)
+	/// </summary>
 	namespace String
 	{
-		/// <summary>
-		/// Converts string to wstring
-		/// </summary>
-		/// <param name="str">- string for converting</param>
-		/// <returns>wstring version of the string</returns>
-		std::wstring ToWstring(const std::string& str)
-		{
-			if (str.empty()) return std::wstring();
-			int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
-			std::wstring wstrTo(size_needed, 0);
-			MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
-			return wstrTo;
-		}
-
-		/// <summary>
-		/// Converts wstring to string
-		/// </summary> 
-		/// <param name="wstr">- wstring for converting</param>
-		/// <returns>string version of the string</returns>
-		std::string ToString(const std::wstring& wstr)
-		{
-			if (wstr.empty()) return std::string();
-			int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-			std::string strTo(size_needed, 0);
-			WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
-			return strTo;
-		}
-
 	#pragma region String Conversion
 		template<typename StringFrom, typename StringTo>
 		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn)
@@ -52,11 +24,14 @@ namespace NosStdLib
 			}
 			else
 			{
-				std::basic_string<StringTo> strOut(strIn.length(), ' ');
-				std::copy(strIn.begin(), strIn.end(), strOut.begin());
+				std::basic_string<StringTo> strOut;
+				std::copy(strIn.begin(), strIn.end(), std::back_inserter(strOut));
 				return strOut;
 			}
 		}
+
+		#define ToString ConvertStringTypes<wchar_t, char>
+		#define ToWstring ConvertStringTypes<char, wchar_t>
 	#pragma endregion
 
 

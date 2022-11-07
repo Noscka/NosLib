@@ -15,12 +15,18 @@ int main()
     //NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
     
-    printf(NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"wide char: 𐐷\n").c_str());
+    printf(NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"wide char: 𐐷 ").c_str());
+    printf("extra space check\n");
     printf(NosStdLib::String::ToString(L"wide char: 𐐷\n").c_str());
+    printf("extra space check\n");
 
-    printf(NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Normal char: x\n").c_str());
+    printf(NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Normal char: x ").c_str());
+    printf("extra space check\n");
     printf(NosStdLib::String::ToString(L"Normal char: x\n").c_str());
-    
+    printf("extra space check\n");
+
+    std::wstring abcc;
+
     wprintf(L"Press any button to continue"); _getch();
     return 0;
 
