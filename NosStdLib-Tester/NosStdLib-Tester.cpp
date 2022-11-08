@@ -18,7 +18,7 @@ int main()
     
     std::wcout << NosStdLib::TextColor::NosRGB(255, 255, 255).MakeANSICode<wchar_t>(false) << NosStdLib::TextColor::NosRGB(20, 120, 20).MakeANSICode<wchar_t>() << L"text 1" << L"\033[0m" << std::endl;
     std::wcout << NosStdLib::TextColor::NosRGB(214, 48, 124).MakeANSICode<wchar_t>() << L"text 2" << L"\033[0m" << std::endl;
-    std::wcout <<NosStdLib::TextColor::NosRGB(140, 20, 30).MakeANSICode<wchar_t>() << L"abc" << L"\033[0m" << std::endl;
+    std::wcout << NosStdLib::TextColor::NosRGB(140, 20, 30).MakeANSICode<wchar_t>() << L"abc" << L"\033[0m" << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
@@ -37,10 +37,9 @@ int main()
 
 /* ANSI TEST
 std::wcout << L"🯰" << std::endl;
-std::wcout << L"\033[48;2;255;255;255;38;2;20;120;20m" << L"text 1" << L"\033[0m" << std::endl;
-std::wcout << L"\033[38;5;214;48;5;124m" << L"text 2" << L"\033[0m"<< std::endl;
-std::wcout << L"\033[5m" << L"text 2" << L"\033[0m"<< std::endl;
-std::wcout << NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(140, 20, 30)) << L"abc" << L"\033[0m" << std::endl;
+std::wcout << NosStdLib::TextColor::NosRGB(255, 255, 255).MakeANSICode<wchar_t>(false) << NosStdLib::TextColor::NosRGB(20, 120, 20).MakeANSICode<wchar_t>() << L"text 1" << L"\033[0m" << std::endl;
+std::wcout << NosStdLib::TextColor::NosRGB(214, 48, 124).MakeANSICode<wchar_t>() << L"text 2" << L"\033[0m" << std::endl;
+std::wcout << NosStdLib::TextColor::NosRGB(140, 20, 30).MakeANSICode<wchar_t>() << L"abc" << L"\033[0m" << std::endl;
 */
 
 /* MENU TEST
