@@ -223,7 +223,7 @@ namespace NosStdLib
 				{
 					ch = _getch(); /* first character input */
 					if (ch == ENTER)
-					{
+					{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
 						EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter, false };
 						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
 						if (InputPassStruct.Redraw)
