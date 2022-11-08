@@ -1,7 +1,6 @@
-﻿#include <NosStdLib/DynamicArray.hpp>
-#include <NosStdLib/String.hpp>
-#include <NosStdLib/Global.hpp>
+﻿#include <NosStdLib/DynamicLoadingScreen.hpp>
 #include <NosStdLib/TextColor.hpp>
+#include <NosStdLib/String.hpp>
 
 #include <Windows.h>
 #include <iostream>
@@ -11,27 +10,81 @@
 #include <cstdio> 
 #include <conio.h>
 
+void LongFunctionTing(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+{
+    int total = 1000;
+    uint8_t R = 255, G = 0, B = 0;
+    uint8_t changeValue = 1;
+    for (int i = 0; i <= total; i++)
+    {
+        if (R > 0 && B == 0)
+        {
+            R -= changeValue;
+            G += changeValue;
+        }
+        if (G > 0 && R == 0)
+        {
+            G -= changeValue;
+            B += changeValue;
+        }
+        if (B > 0 && G == 0)
+        {
+            R += changeValue;
+            B -= changeValue;
+        }
+
+        Object->UpdateKnownProgressBar((float)i / (float)total, std::vformat((NosStdLib::TextColor::NosRGB(R, G, B).MakeANSICode<wchar_t>() + L"\n{}\nTesting Status\nExtra Line,\n Innit\n{}" + L"\033[0m"), std::make_wformat_args((float)i / (float)total, NosStdLib::FileManagement::GetFileExtension<wchar_t>(L"abc.txt"), true)));
+        Sleep(1);
+    }
+    *argue = L"Completed ting innit fam";
+}
+
+void ChangingProgressFunction(NosStdLib::LoadingScreen* Object, std::wstring* argue)
+{
+    int total = 1000;
+    Object->UpdateKnownProgressBar(0.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+    Object->UpdateKnownProgressBar(250.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+    Object->UpdateKnownProgressBar(100.0 / (float)total, L"Testing Status\nExtra Line,\n Innit", true);
+    Sleep(1000);
+
+    *argue = L"Completed ting innit fam";
+}
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
     
-    std::wcout << NosStdLib::TextColor::NosRGB(255, 255, 255).MakeANSICode<wchar_t>(false) << NosStdLib::TextColor::NosRGB(20, 120, 20).MakeANSICode<wchar_t>() << L"text 1" << L"\033[0m" << std::endl;
-    std::wcout << NosStdLib::TextColor::NosRGB(214, 48, 124).MakeANSICode<wchar_t>() << L"text 2" << L"\033[0m" << std::endl;
-    std::wcout << NosStdLib::TextColor::NosRGB(140, 20, 30).MakeANSICode<wchar_t>() << L"abc" << L"\033[0m" << std::endl;
+    NosStdLib::LoadingScreen::InitilizeFont();
 
-    wprintf(L"Press any button to continue"); _getch();
-    return 0;
+    std::wstring splash = LR"(
+                      ████████                ███████                            
+                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
+          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
+     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
+   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
+ ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
+██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
+██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
+▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
+  ▀██████████████▄███         ███        ████       ███          ███             
+    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
+   ███             ██▌        ██▌         ██       ███▌         ███              
+   ███             ▐██                            █████▄       ███               
+    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
+       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
+                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
+                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
 
-    NosStdLib::DynamicArray<wchar_t> dArray;
+    std::wstring SomeVar(L"Some Text");
 
-    dArray.Append('a');
-    dArray.Append('b');
-    dArray.Append('c');
+    NosStdLib::LoadingScreen LC(NosStdLib::LoadingScreen::LoadType::Known, splash);
+    LC.StartLoading(&LongFunctionTing, &SomeVar);
 
-    std::wcout << dArray << std::endl;
-
-    wprintf(L"Press any button to continue"); _getch();
+    wprintf(L"Press any button to continue"); getchar();
+    NosStdLib::LoadingScreen::TerminateFont();
     return 0;
 }
 
