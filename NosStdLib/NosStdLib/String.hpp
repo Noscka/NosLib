@@ -5,6 +5,7 @@
 #include <stringapiset.h>
 #include <string>
 #include <vector>
+#include <minmax.h>
 
 namespace NosStdLib
 {
