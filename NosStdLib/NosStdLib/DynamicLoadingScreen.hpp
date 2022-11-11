@@ -31,9 +31,9 @@ namespace NosStdLib
 		std::wstring StatusMessage;					/* Status message (Might need to move to local instead of global) */
 		bool CenterStatusMesage;					/* if the StatusMessage should get centered. takes stress off the work thread and gets done on the drawing thread */
 
-		static inline HANDLE ConsoleHandle;				/* global and static Console Handle */
-		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;	/* global and static Console ScreenBI */
-		static inline int columns, rows;				/* global and static colums and rows */
+		static inline HANDLE ConsoleHandle;												/* global and static Console Handle */
+		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;									/* global and static Console ScreenBI */
+		static inline NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* global and static colums and rows */
 
 		LoadType BarType; /* bar type of the object */
 
@@ -42,13 +42,11 @@ namespace NosStdLib
 		/// </summary>
 		void MidOperationUpdate()
 		{
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi); /* update console info */
-			rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1; /* recalculate rows */
-			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1; /* and columns */
+			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi);
 			PreviousWriteRow = CurrentWriteRow; /* before recalculating new writing row, save it incase its different and the old one needs clearing */
 
 			/* recalculate writing row, either 4 above the bottom (with status message) or right below the splash screen */
-			CurrentWriteRow = max((rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1));
+			CurrentWriteRow = max((ConsoleSizeStruct.Rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1));
 
 			if (CurrentWriteRow != PreviousWriteRow) /* if CurrentWriteRow and PreviousWriteRow are not equal (write position changed), clear previous */
 				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
@@ -68,15 +66,14 @@ namespace NosStdLib
 
 			std::thread FunctionThread([this](Func&& callable, VariadicArgs&& ... args) { this->ThreadingFunction(callable, std::forward<VariadicArgs>(args)...); }, callable, std::forward<VariadicArgs>(args)...);
 
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi);
 
 			std::wstring bar = L"";
 
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
-				int maxLenght = max(columns - 60, 20);
+				int maxLenght = max(ConsoleSizeStruct.Columns - 60, 20);
 				float left = PercentageDone * maxLenght;
 
 				bar += std::wstring((left / 1.0), L'█');
@@ -84,7 +81,7 @@ namespace NosStdLib
 				bar += std::wstring(fmod(left, 1.0)/ 0.5, L'▌');
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-				wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
+				wprintf((std::wstring(max(((ConsoleSizeStruct.Columns/ 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
 				wprintf(CenterStatusMesage ? NosStdLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
@@ -108,8 +105,7 @@ namespace NosStdLib
 			wprintf(SplashScreen.c_str());
 
 			std::thread FunctionThread([this](Func&& callable, VariadicArgs&& ... args) { this->ThreadingFunction(callable, std::forward<VariadicArgs>(args)...); }, callable, std::forward<VariadicArgs>(args)...);
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi);
 
 			std::wstring bar = L"▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▇ ▆ ▅ ▄ ▃ ▂ ▁";
 
@@ -126,14 +122,14 @@ namespace NosStdLib
 				if (GoingRight)
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveRight(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
+					wprintf((std::wstring(max(((ConsoleSizeStruct.Columns / 2) - maxLenght / 2), 0), L' ') + MoveRight(&bar) + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
 					wprintf(CenterStatusMesage ? NosStdLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 					MidPosition++;
 				}
 				else
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-					wprintf((std::wstring(max(((columns / 2) - maxLenght / 2), 0), L' ') + MoveLeft(&bar) + std::wstring(max((columns - (bar.size() + ((columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
+					wprintf((std::wstring(max(((ConsoleSizeStruct.Columns / 2) - maxLenght / 2), 0), L' ') + MoveLeft(&bar) + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
 					wprintf(CenterStatusMesage ? NosStdLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
 					MidPosition--;
 				}
@@ -281,13 +277,11 @@ namespace NosStdLib
 		template <typename Func, typename ... VariadicArgs>
 		void StartLoading(Func&& callable, VariadicArgs&& ... args)
 		{
-			GetConsoleScreenBufferInfo(ConsoleHandle, &csbi);
-			columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-			rows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi); /* Update the ConsoleSize first time */
 
 			CrossThreadFinishBoolean = false;
 
-			CurrentWriteRow = rows - 4;
+			CurrentWriteRow = ConsoleSizeStruct.Rows - 4;
 
 			switch (BarType)
 			{

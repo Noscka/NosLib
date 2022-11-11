@@ -217,15 +217,18 @@ namespace NosStdLib
 
 				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
 
+				NosStdLib::Global::Console::ShowCaret(false); /* Hide the caret */
+
 				while (MenuLoop)
 				{
 					ch = _getch(); /* first character input */
 					if (ch == ENTER)
-					{
+					{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
 						EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter, false };
 						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
 						if (InputPassStruct.Redraw)
 							DrawMenu(currentIndex, &titleSize);
+						NosStdLib::Global::Console::ShowCaret(false); /* hide the caret again */
 					}
 					else if (!(ch && ch != 224))
 					{
@@ -267,6 +270,7 @@ namespace NosStdLib
 					if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
 					{
 						oldConsoleSizeStruct = ConsoleSizeStruct;
+						NosStdLib::Global::Console::ShowCaret(false); /* hide the caret again */
 						DrawMenu(currentIndex, &titleSize);
 					}
 
@@ -313,6 +317,7 @@ namespace NosStdLib
 					oldIndex = currentIndex;
 				}
 				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
+				NosStdLib::Global::Console::ShowCaret(true); /* show the caret again */
 			}
 
 			/// <summary>
@@ -446,6 +451,7 @@ namespace NosStdLib
 				COORD NumberPosition = { (((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), (inputStruct->CurrentIndex + inputStruct->TitleSize) };
 
 				SetConsoleCursorPosition(*MenuConsoleHandle, NumberPosition);
+				NosStdLib::Global::Console::ShowCaret(true);
 
 				while (ContinueIntType)
 				{
@@ -499,6 +505,7 @@ namespace NosStdLib
 
 				SetConsoleCursorPosition(*MenuConsoleHandle, { 0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
 				wprintf(EntryString(true).c_str());
+				NosStdLib::Global::Console::ShowCaret(false); /* hide the caret again */
 				break;
 			}
 			case EntryInputPassStruct::InputType::ArrowLeft:
