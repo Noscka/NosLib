@@ -15,10 +15,11 @@ namespace NosStdLib
 	class DynamicArray
 	{
 	private:
-		int ArraySize;				// Array starting size and the size after it is resized
-		ArrayDataType* MainArray;	// Pointer to Array
-		int ArrayIndexPointer;		// keeps track amount of objects in array
-		int ArrayStepSize;			// how much the array will get increased by when it reaches the limit
+		int ArraySize;				/* Array starting sizeand the size after it is resized */
+		int ArrayDefaultSize;		/* Array starting size which doesn't change */
+		ArrayDataType* MainArray;	/* Pointer to Array */
+		int ArrayIndexPointer;		/* keeps track amount of objects in array */
+		int ArrayStepSize;			/* how much the array will get increased by when it reaches the limit */
 
 		typedef ArrayDataType* iterator;
 		typedef const ArrayDataType* const_iterator;
@@ -31,7 +32,7 @@ namespace NosStdLib
 		/// <param name="StepSize"> - how much the array will increase each time it reaches the limit</param>
 		DynamicArray(const int& startSize, const int& stepSize)
 		{
-			ArraySize = startSize;
+			ArrayDefaultSize = ArraySize = startSize;
 			ArrayStepSize = stepSize;
 
 			// ! DO NOT CHANGE !
@@ -90,35 +91,27 @@ namespace NosStdLib
 			ArrayIndexPointer++;
 		}
 
+		
+		
 		/// <summary>
-		/// Appends another array to the DynamicArray
+		/// Adds from the beginning address to the range to the end of current array
 		/// </summary>
-		/// <param name="ArrayToAdd"> - the array to append</param>
-		/// <param name="size"> - size of the array</param>
-		/// <param name="includeEscape">(default = false) -  !TEXT DATA TYPES ONLY! if escape characters should be appended as well</param>
-		void ArrayAppend(ArrayDataType arrayToAdd[], const int& size, const bool& includeEscape = false) /* TODO: make this use pointer to begining and end of array instead of count */ /* TODO: This function will also require a rewrite */
+		/// <param name="beginning">- the beginning address</param>
+		/// <param name="range">- the range of items wanted</param>
+		void MultiAppend(ArrayDataType* beginning, const int& range)
 		{
-			if (std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) // For Text types only
-			{
-				for (int i = 0; i < size; ++i) // for loop to get and append all character
-				{
-					if (includeEscape) // if IncludeEscape is true, append all character
-					{
-						Append(arrayToAdd[i]); // Append character to array
-					}
-					else if (!(arrayToAdd[i] == 0)) // if IncludeEscape is false, include all chars that aren't null
-					{
-						Append(arrayToAdd[i]); // Append character to array
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < size; ++i) // for loop to get and append all Array Objects
-				{
-					Append(arrayToAdd[i]);
-				}
-			}
+			for (int i = 0; i < range; i++){Append(beginning[i]);}
+		}
+
+		/// <summary>
+		/// Adds from beginning address to end address to the end of current array
+		/// </summary>
+		/// <param name="beginning">- the beginning address</param>
+		/// <param name="end">- the end address</param>
+		void MultiAppend(ArrayDataType* beginning, ArrayDataType* end) /* TODO: Allow for custom starting point */
+		{
+			int distance = std::distance(beginning, end);
+			MultiAppend(beginning, distance);
 		}
 
 		/// <summary>
@@ -162,9 +155,8 @@ namespace NosStdLib
 		/// </summary>
 		void Clear()
 		{
-			/* TODO: Return to original size */
 			ArrayIndexPointer = 0;
-			MainArray = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArrayDefaultSize]();
 		}
 	#pragma endregion
 
@@ -185,6 +177,15 @@ namespace NosStdLib
 		int GetArraySize()
 		{
 			return ArraySize;
+		}
+
+		/// <summary>
+		/// Returns the starting size and the size it will return to when clearing
+		/// </summary>
+		/// <returns>int of starting size and the size it will return to when clearing</returns>
+		int GetArrayDefaultSize()
+		{
+			return ArrayDefaultSize;
 		}
 
 		/// <summary>

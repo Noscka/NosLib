@@ -1,4 +1,4 @@
-﻿#include <NosStdLib/DynamicMenuSystem.hpp>
+﻿#include <NosStdLib/DynamicArray.hpp>
 #include <NosStdLib/TextColor.hpp>
 #include <NosStdLib/String.hpp>
 
@@ -10,57 +10,27 @@
 #include <cstdio> 
 #include <conio.h>
 
-bool SomeBool = false;
-int number = 1;
-
-void CheckBool()
-{
-    wprintf((SomeBool ? L"true\n" : L"false\n"));
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
-
-void CheckNumber()
-{
-    wprintf((std::to_wstring(number) + L"\n").c_str());
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
-
-void SomeFunction(int* param1, int* param2)
-{
-    std::wcout << L"Param1: " << *param1 << L" | Param2: " << *param2 << std::endl;
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
-
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
-    
-    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", new NosStdLib::Functional::FunctionStore(&CheckNumber)));
+    //std::wstring tempString = L"";
+    NosStdLib::DynamicArray<wchar_t> stringArray;
+    stringArray.Append(L'A');
+    stringArray.Append(L'B');
+    stringArray.Append(L'C');
+    stringArray.Append(L'D');
+    stringArray.Append(L'E');
+    stringArray.Append(L'F');
+    stringArray.Append(L'G');
 
-    int param1, param2;
+    NosStdLib::DynamicArray<wchar_t> DynArray;
+    DynArray.MultiAppend(stringArray.begin(), stringArray.end());
 
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));
+    std::wcout << stringArray << std::endl;
+    std::wcout << DynArray << std::endl;
 
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Run Function", new NosStdLib::Functional::FunctionStore(&SomeFunction, &param1, &param2)));
-
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
-
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool", new NosStdLib::Functional::FunctionStore(&CheckBool)));
-
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", new NosStdLib::Functional::FunctionStore(&CheckNumber)));
-
-    MainMenu.StartMenu();
     wprintf(L"Press any button to continue"); _getch();
     return 0;
 }
