@@ -26,7 +26,12 @@ int main()
     stringArray.Append(L'G');
 
     NosStdLib::DynamicArray<wchar_t> DynArray;
-    DynArray.MultiAppend(stringArray.begin(), stringArray.end());
+    DynArray.Append(L'K');
+    DynArray.Append(L'K');
+    DynArray.Append(L'K');
+
+    DynArray << stringArray;
+    DynArray += stringArray;
 
     std::wcout << stringArray << std::endl;
     std::wcout << DynArray << std::endl;

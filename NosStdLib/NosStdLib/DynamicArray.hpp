@@ -91,8 +91,6 @@ namespace NosStdLib
 			ArrayIndexPointer++;
 		}
 
-		
-		
 		/// <summary>
 		/// Adds from the beginning address to the range to the end of current array
 		/// </summary>
@@ -279,8 +277,29 @@ namespace NosStdLib
 		{
 			return MainArray[position];
 		}
+
+		/// <summary>
+		/// Inserts object into self
+		/// </summary>
+		/// <param name="insersationObject">- the object to insert</param>
+		/// <returns>combined objects</returns>
+		DynamicArray<ArrayDataType>& operator<<(DynamicArray<ArrayDataType>& insersationObject)
+		{
+			this->MultiAppend(insersationObject.begin(), insersationObject.end());
+			return *this;
+		}
+
+		/// <summary>
+		/// Inserts object into self
+		/// </summary>
+		/// <param name="insersationObject">- the object to insert</param>
+		/// <returns>combined objects</returns>
+		DynamicArray<ArrayDataType>& operator+=(DynamicArray<ArrayDataType>& insersationObject)
+		{
+			this->MultiAppend(insersationObject.begin(), insersationObject.end());
+			return *this;
+		}
 	#pragma endregion
 	};
 }
-
 #endif
