@@ -22,7 +22,7 @@ adding a charater to the chat logs from before would look like this `ChatLogs.Ap
 ---
 
 ### MultiAppend
-`DynamicArrayName.MultiAppend(ArrayDataType* beginning, int range)` - first parameter is a pointer to the first element of the array and second is the lenght that wants to get added
+`DynamicArrayName.MultiAppend(ArrayDataType* beginning, int range)` - first parameter is a pointer to the first element of the array and second is the lenght that wants to get added </br>
 `DynamicArrayName.MultiAppend(ArrayDataType* beginning, ArrayDataType* end)` - First parameter is a pointer to the first element of the array and then second pointer is a pointer to the last element
 
 #### Example
