@@ -154,6 +154,7 @@ namespace NosStdLib
 		void Clear()
 		{
 			ArrayIndexPointer = 0;
+			ArraySize = ArrayDefaultSize;
 			MainArray = new ArrayDataType[ArrayDefaultSize]();
 		}
 	#pragma endregion
