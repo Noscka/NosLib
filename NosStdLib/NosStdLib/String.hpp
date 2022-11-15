@@ -4,8 +4,12 @@
 #include <Windows.h>
 #include <stringapiset.h>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <minmax.h>
+#include <algorithm>
+#include <iterator>
+#include <set>
 
 namespace NosStdLib
 {
@@ -89,7 +93,7 @@ namespace NosStdLib
 			std::basic_string<CharT> tmp;
 			std::basic_stringstream<CharT> ss(*input);
 
-			while (getline(ss, tmp, delimiter))
+			while (std::getline(ss, tmp, delimiter))
 			{
 				result->push_back(tmp);
 			}
