@@ -27,7 +27,7 @@ namespace NosStdLib
 		/// <param name="strIn">- string input</param>
 		/// <returns>converted string</returns>
 		template<typename StringFrom, typename StringTo>
-		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn)
+		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn) /* TODO: Add a way to narrow down data */
 		{
 			if constexpr (std::is_same_v<StringFrom, StringTo>)
 			{
