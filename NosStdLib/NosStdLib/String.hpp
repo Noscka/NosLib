@@ -25,40 +25,19 @@ namespace NosStdLib
 		/// <typeparam name="StringFrom">- the string input type</typeparam>
 		/// <typeparam name="StringTo">- the string output type</typeparam>
 		/// <param name="strIn">- string input</param>
-		/// <param name="narrowChars">- If the function should narrow down characters or keep as is (might result in 1 char being expand to 2)</param>
 		/// <returns>converted string</returns>
 		template<typename StringFrom, typename StringTo>
-		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn, const bool& narrowChars = false)
+		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn)
 		{
 			if constexpr (std::is_same_v<StringFrom, StringTo>) /* if same character type, then just return string */
 			{
 				return strIn;
 			}
-			else /* else, check what type of conversion to do */
+			else /* else, do standard conversion*/
 			{
-				if (narrowChars) /* if true, narrow down characters to prevent 2 characters getting created from 1 wide character */
-				{
-					int maxValue = NosStdLib::Global::BinaryMaths::MaxByteValue(sizeof(StringTo));
-					std::basic_string<StringTo> strOut;
-
-					for (int i = 0; strIn.size() >  i; i++)
-					{
-						if ((int)(strIn[i]) > maxValue)
-						{
-							continue;
-						}
-						
-						std::copy(&strIn[i], &strIn[i], std::back_insert_iterator(strOut)); /* TODO: Search source code to check how to copy */
-					}
-
-					return strOut;
-				}
-				else /* else just convert it without narrowing */
-				{
-					std::basic_string<StringTo> strOut;
-					std::copy(strIn.begin(), strIn.end(), std::back_inserter(strOut));
-					return strOut;
-				}
+				std::basic_string<StringTo> strOut;
+				std::copy(strIn.begin(), strIn.end(), std::back_insert_iterator(strOut));
+				return strOut;
 			}
 		}
 

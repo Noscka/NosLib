@@ -13,42 +13,10 @@
 
 int main()
 {
-    std::cout << NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Ϩ abc ϨϨ", true) << std::endl;
-
-    wprintf(L"Press any button to continue"); _getch();
-    return 0;
-
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wcout << (wchar_t)L'Ϩ' << std::endl;
-    std::wcout << (char)L'Ϩ' << std::endl;
-    std::wcout << NosStdLib::Global::BinaryMaths::MaxByteValue(sizeof(wchar_t)) << std::endl;
-
-
-    wprintf(L"Press any button to continue"); _getch();
-    return 0;
-
-    //std::wstring tempString = L"";
-    NosStdLib::DynamicArray<wchar_t> stringArray;
-    stringArray.Append(L'A');
-    stringArray.Append(L'B');
-    stringArray.Append(L'C');
-    stringArray.Append(L'D');
-    stringArray.Append(L'E');
-    stringArray.Append(L'F');
-    stringArray.Append(L'G');
-
-    NosStdLib::DynamicArray<wchar_t> DynArray;
-    DynArray.Append(L'K');
-    DynArray.Append(L'K');
-    DynArray.Append(L'K');
-
-    DynArray << stringArray;
-    DynArray += stringArray;
-
-    std::wcout << stringArray << std::endl;
-    std::wcout << DynArray << std::endl;
+    std::wcout << NosStdLib::String::ConvertStringTypes<char, wchar_t>("Ɵ abc ƟƟ") << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
