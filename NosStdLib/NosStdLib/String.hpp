@@ -48,7 +48,7 @@ namespace NosStdLib
 							continue;
 						}
 						
-						strncpy(std::back_insert_iterator(strOut), &strIn[i], 1); /* TODO: Make work with copying single characters */
+						std::copy(&strIn[i], &strIn[i], std::back_insert_iterator(strOut));
 					}
 
 					return strOut;

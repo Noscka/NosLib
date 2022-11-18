@@ -13,7 +13,7 @@
 
 int main()
 {
-    std::cout << NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Ϩ abc ϨϨ") << std::endl;
+    std::cout << NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Ϩ abc ϨϨ", true) << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
