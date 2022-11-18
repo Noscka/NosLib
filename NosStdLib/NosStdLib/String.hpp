@@ -48,7 +48,7 @@ namespace NosStdLib
 							continue;
 						}
 						
-						std::copy(&strIn[i], &strIn[i], std::back_insert_iterator(strOut));
+						std::copy(&strIn[i], &strIn[i], std::back_insert_iterator(strOut)); /* TODO: Search source code to check how to copy */
 					}
 
 					return strOut;
