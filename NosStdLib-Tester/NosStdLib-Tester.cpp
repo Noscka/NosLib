@@ -1,6 +1,7 @@
 ﻿#include <NosStdLib/DynamicArray.hpp>
 #include <NosStdLib/TextColor.hpp>
 #include <NosStdLib/String.hpp>
+#include <NosStdLib/Global.hpp>
 
 #include <Windows.h>
 #include <iostream>
@@ -12,8 +13,21 @@
 
 int main()
 {
+    std::cout << NosStdLib::String::ConvertStringTypes<wchar_t, char>(L"Ϩ abc ϨϨ") << std::endl;
+
+    wprintf(L"Press any button to continue"); _getch();
+    return 0;
+
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+
+    std::wcout << (wchar_t)L'Ϩ' << std::endl;
+    std::wcout << (char)L'Ϩ' << std::endl;
+    std::wcout << NosStdLib::Global::BinaryMaths::MaxByteValue(sizeof(wchar_t)) << std::endl;
+
+
+    wprintf(L"Press any button to continue"); _getch();
+    return 0;
 
     //std::wstring tempString = L"";
     NosStdLib::DynamicArray<wchar_t> stringArray;
