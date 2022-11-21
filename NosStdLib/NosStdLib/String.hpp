@@ -48,7 +48,7 @@ namespace NosStdLib
 
 	#pragma region IsNumber
 		/// <summary>
-		/// Check if wstring is number (with or without signs)
+		/// Check if string is number (with or without signs)
 		/// </summary>
 		/// <typeparam name="CharT">- string type</typeparam>
 		/// <param name="str">- string to check</param>

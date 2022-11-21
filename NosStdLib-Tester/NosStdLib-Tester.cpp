@@ -1,7 +1,5 @@
-﻿#include <NosStdLib/DynamicArray.hpp>
-#include <NosStdLib/TextColor.hpp>
+﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/String.hpp>
-#include <NosStdLib/Global.hpp>
 
 #include <Windows.h>
 #include <iostream>
