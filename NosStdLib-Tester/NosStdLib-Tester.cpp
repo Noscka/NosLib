@@ -1,5 +1,5 @@
 ﻿#include <NosStdLib/Global.hpp>
-#include <NosStdLib/String.hpp>
+#include <NosStdLib/Vector.hpp>
 
 #include <Windows.h>
 #include <iostream>
@@ -14,7 +14,10 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wcout << NosStdLib::String::ConvertStringTypes<char, wchar_t>("Ɵ abc ƟƟ") << std::endl;
+    NosStdLib::Vector::VectorD3 a(1,2,34);
+    NosStdLib::Vector::VectorD3 b(4,5,6);
+
+    std::wcout << (a+b).str<wchar_t>() << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

@@ -30,6 +30,7 @@
     <ClInclude Include="NosStdLib\String.hpp" />
     <ClInclude Include="NosStdLib\TextColor.hpp" />
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
+    <ClInclude Include="NosStdLib\Vector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
