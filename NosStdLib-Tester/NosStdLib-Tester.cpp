@@ -1,7 +1,5 @@
-﻿#include <NosStdLib/DynamicArray.hpp>
-#include <NosStdLib/TextColor.hpp>
-#include <NosStdLib/String.hpp>
-#include <NosStdLib/Global.hpp>
+﻿#include <NosStdLib/Global.hpp>
+#include <NosStdLib/Vector.hpp>
 
 #include <Windows.h>
 #include <iostream>
@@ -16,14 +14,10 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wcout << (int)u8'$' << std::endl;
-    std::wcout << (int)u'$' << std::endl;
-    std::wcout << (int)L'$' << std::endl;
-    std::wcout << (int)'$' << std::endl;
+    NosStdLib::Vector::VectorD3 a(1,2,34);
+    NosStdLib::Vector::VectorD3 b(4,5,6);
 
-    std::wcout << NosStdLib::String::ConvertStringTypes<wchar_t, char>("Ɵ abc ƟƟ") << std::endl;
-
-
+    std::wcout << (a+b).str<wchar_t>() << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
