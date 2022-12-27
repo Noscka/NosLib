@@ -20,13 +20,13 @@ namespace NosStdLib
 	{
 	#pragma region String Conversion
 		/// <summary>
-		/// Converts any string type to any other string type
+		/// Converts any string type to any other string type. template <ToType, FromType>
 		/// </summary>
 		/// <typeparam name="StringFrom">- the string input type</typeparam>
 		/// <typeparam name="StringTo">- the string output type</typeparam>
 		/// <param name="strIn">- string input</param>
 		/// <returns>converted string</returns>
-		template<typename StringFrom, typename StringTo>
+		template< typename StringTo, typename StringFrom>
 		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn)
 		{
 			if constexpr (std::is_same_v<StringFrom, StringTo>) /* if same character type, then just return string */
@@ -41,8 +41,8 @@ namespace NosStdLib
 			}
 		}
 
-		#define ToString ConvertStringTypes<wchar_t, char> 
-		#define ToWstring ConvertStringTypes<char, wchar_t>
+		#define ToString ConvertStringTypes<char, wchar_t>
+		#define ToWstring ConvertStringTypes<wchar_t, char> 
 	#pragma endregion
 
 
@@ -62,7 +62,7 @@ namespace NosStdLib
 			if (allowSigns)
 			{
 				/* if allowSigns is true, check if first character is either - or + or a number */
-				if ((str[0] != NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(L'-') && str[0] != NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(L'+')) && !std::isdigit(str[0]))
+				if ((str[0] != NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(L'-') && str[0] != NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(L'+')) && !std::isdigit(str[0]))
 					return false;
 
 				Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */

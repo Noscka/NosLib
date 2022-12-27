@@ -52,7 +52,7 @@ namespace NosStdLib
 			template <typename CharT>
 			std::basic_string<CharT> MakeANSICode(const bool& foreGroundBackGround = true)
 			{
-				return std::vformat(NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(this->R, this->G, this->B));
+				return std::vformat(NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(this->R, this->G, this->B));
 			}
 		};
 
@@ -69,7 +69,7 @@ namespace NosStdLib
 			/* TODO: make this function use the above function */
 
 			//return value.MakeANSICode<CharT>(foreGroundBackGround);
-			return std::vformat(NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(value.R, value.G, value.B));
+			return std::vformat(NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(value.R, value.G, value.B));
 		}
 
 		/// <summary>

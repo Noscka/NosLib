@@ -16,7 +16,14 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    std::wcout << NosStdLib::String::ConvertStringTypes<char, wchar_t>("Ɵ abc ƟƟ") << std::endl;
+    std::wcout << (int)u8'$' << std::endl;
+    std::wcout << (int)u'$' << std::endl;
+    std::wcout << (int)L'$' << std::endl;
+    std::wcout << (int)'$' << std::endl;
+
+    std::wcout << NosStdLib::String::ConvertStringTypes<wchar_t, char>("Ɵ abc ƟƟ") << std::endl;
+
+
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
