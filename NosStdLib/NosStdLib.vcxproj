@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NosStdLib\DynamicArray.hpp" />
+    <ClInclude Include="NosStdLib\DynamicContextMenu.hpp" />
     <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp" />
     <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
