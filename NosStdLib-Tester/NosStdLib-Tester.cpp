@@ -1,5 +1,5 @@
 ﻿#include <NosStdLib/Global.hpp>
-#include <NosStdLib/Vector.hpp>
+#include <NosStdLib/DynamicMenuSystem.hpp>
 
 #include <Windows.h>
 #include <iostream>
@@ -9,15 +9,21 @@
 #include <cstdio> 
 #include <conio.h>
 
+
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
 
-    NosStdLib::Vector::VectorD3 a(1,2,34);
-    NosStdLib::Vector::VectorD3 b(4,5,6);
+    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
 
-    std::wcout << (a+b).str<wchar_t>() << std::endl;
+    int param1, param2;
+
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));
+
+    MainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
