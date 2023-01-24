@@ -23,11 +23,16 @@ namespace NosStdLib
 			int Y;
 
 			/// <summary>
+			/// Default VectorD2 Constructor
+			/// </summary>
+			VectorD2(){}
+
+			/// <summary>
 			/// Creates a 2 dimentional vector object
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
-			VectorD2(int x, int y)
+			VectorD2(const int& x, const int& y)
 			{
 				X = x;
 				Y = y;
@@ -66,12 +71,17 @@ namespace NosStdLib
 			int Z;
 
 			/// <summary>
+			/// Default VectorD3 Constructor
+			/// </summary>
+			VectorD3() {}
+
+			/// <summary>
 			/// Creates a 3 dimentional vector object
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
 			/// <param name="z">- z coord</param>
-			VectorD3(int x, int y, int z)
+			VectorD3(const int& x, const int& y, const int& z)
 			{
 				X = x;
 				Y = y;
