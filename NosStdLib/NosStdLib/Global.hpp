@@ -1,6 +1,8 @@
 ﻿#ifndef _GLOBAL_NOSSTDLIB_HPP_
 #define _GLOBAL_NOSSTDLIB_HPP_
 
+#include "OnClose/CloseHandle.hpp"
+
 #include <Windows.h>
 #include <io.h>
 #include <fcntl.h>
@@ -64,6 +66,12 @@ namespace NosStdLib
 					return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
 				}
 			#pragma endregion
+
+				/// <summary>
+				/// (Aliased) Creates hook for what to do when shutting down
+				/// </summary>
+				/// <returns>true for succesful and false for unsuccesful</returns>
+				bool (*InitializeCloseHandle)() = &NosStdLib::CloseHandle::InitializeCloseHandle;
 			}
 
 		#pragma region GetConsoleCaretPosition

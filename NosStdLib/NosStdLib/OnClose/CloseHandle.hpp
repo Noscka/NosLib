@@ -14,16 +14,16 @@ namespace NosStdLib
 	/// </summary>
 	namespace CloseHandle
 	{
-        NosStdLib::DynamicArray<void (*)(void)> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
+        static NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
 
         BOOL WINAPI HandlerRoutine(DWORD eventCode)
         {
             switch (eventCode)
             {
             case CTRL_CLOSE_EVENT:
-                for (void* function : ClosingCleanupFunctionArray)
+                for (int i = 0; i < ClosingCleanupFunctionArray.GetArrayIndexPointer(); i++)
                 {
-                    (*function)();
+                    ClosingCleanupFunctionArray[i]();
                 }
                 return TRUE;
                 break;
@@ -32,8 +32,14 @@ namespace NosStdLib
             return TRUE;
         }
 
-        //SetConsoleCtrlHandler(HandlerRoutine, TRUE);
-        
+        /// <summary>
+        /// Creates hook for what to do when shutting down
+        /// </summary>
+        /// <returns>true for succesful and false for unsuccesful</returns>
+        bool InitializeCloseHandle()
+        {
+            return SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+        }
 	}
 }
 

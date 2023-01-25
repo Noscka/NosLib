@@ -9,20 +9,26 @@
 #include <cstdio> 
 #include <conio.h>
 
-
+void BasicCleanUp()
+{
+    wprintf(L"Ran cleanup"); _getch();
+}
 
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+    NosStdLib::Global::Console::InitializeModifiers::InitializeCloseHandle();
+
+    NosStdLib::CloseHandle::ClosingCleanupFunctionArray.Append(*BasicCleanUp);
 
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-
+    
     int param1, param2;
-
+    
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));
-
+    
     MainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();
