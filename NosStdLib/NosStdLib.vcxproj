@@ -26,7 +26,7 @@
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Functional.hpp" />
     <ClInclude Include="NosStdLib\Global.hpp" />
-    <ClInclude Include="NosStdLib\OnClose\ClosingHandler.hpp" />
+    <ClInclude Include="NosStdLib\EventHandling\EventHandling.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\Experimental.hpp" />
     <ClInclude Include="NosStdLib\String.hpp" />

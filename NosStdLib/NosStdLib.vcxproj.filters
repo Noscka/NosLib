@@ -54,7 +54,7 @@
     <ClInclude Include="NosStdLib\DynamicContextMenu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\OnClose\ClosingHandler.hpp">
+    <ClInclude Include="NosStdLib\EventHandling\EventHandling.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

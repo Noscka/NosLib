@@ -12,7 +12,7 @@ namespace NosStdLib
 	/// <summary>
 	/// namespace which contains code for clean up once program gets shutdown
 	/// </summary>
-	namespace ClosingHandler
+	namespace EventHandling
 	{
         static NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
 
@@ -25,7 +25,7 @@ namespace NosStdLib
                 {
                     ClosingCleanupFunctionArray[i]();
                 }
-                return TRUE;
+                return FALSE;
                 break;
             }
 
@@ -33,10 +33,10 @@ namespace NosStdLib
         }
 
         /// <summary>
-        /// Creates hook for what to do in certain events
+        /// Creates hook which handles events
         /// </summary>
         /// <returns>true for succesful and false for unsuccesful</returns>
-        bool InitializeCloseHandle()
+        bool InitializeEventHandler()
         {
             return SetConsoleCtrlHandler(HandlerRoutine, TRUE);
         }
