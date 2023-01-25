@@ -12,7 +12,7 @@ namespace NosStdLib
 	/// <summary>
 	/// namespace which contains code for clean up once program gets shutdown
 	/// </summary>
-	namespace CloseHandle
+	namespace ClosingHandler
 	{
         extern NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
 

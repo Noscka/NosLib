@@ -1,7 +1,7 @@
 ﻿#ifndef _GLOBAL_NOSSTDLIB_HPP_
 #define _GLOBAL_NOSSTDLIB_HPP_
 
-#include "OnClose/CloseHandle.hpp"
+#include "OnClose/ClosingHandler.hpp"
 
 #include <Windows.h>
 #include <io.h>
@@ -71,7 +71,7 @@ namespace NosStdLib
 				/// (Aliased) Creates hook for what to do when shutting down
 				/// </summary>
 				/// <returns>true for succesful and false for unsuccesful</returns>
-				bool (*InitializeCloseHandle)() = &NosStdLib::CloseHandle::InitializeCloseHandle;
+				bool (*InitializeCloseHandle)() = &NosStdLib::ClosingHandler::InitializeCloseHandle;
 			}
 
 		#pragma region GetConsoleCaretPosition
