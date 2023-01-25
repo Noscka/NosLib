@@ -4,6 +4,7 @@
 #include "Global.hpp"
 #include "FileManagement.hpp"
 #include "String.hpp"
+#include "OnClose/ClosingHandler.hpp"
 
 #include <Windows.h>
 #include <minmax.h>
@@ -163,6 +164,7 @@ namespace NosStdLib
 			(CrossThreadFinishBoolean) = true;
 		}
 	public:
+	#pragma region InitilizeFont
 		/// <summary>
 		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory. uses FilePath for path to font
 		/// </summary>
@@ -219,6 +221,9 @@ namespace NosStdLib
 			wcscpy_s(cfi.FaceName, L"Custom Consolas");
 			SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &cfi);
 			/* Make console use font */
+
+			/* Add TerminateFont function to premature closing line up */
+			NosStdLib::ClosingHandler::ClosingCleanupFunctionArray.Append(*TerminateFont);
 		}
 
 		/// <summary>
@@ -235,6 +240,7 @@ namespace NosStdLib
 
 			InitilizeFont(NosStdLib::FileManagement::FilePath(Path, L"CustomConsola.ttf"));
 		}
+	#pragma endregion
 
 		/// <summary>
 		/// Remove font as resource (free it)

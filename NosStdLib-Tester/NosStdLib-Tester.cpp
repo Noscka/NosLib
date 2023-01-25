@@ -1,5 +1,6 @@
 ﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/DynamicMenuSystem.hpp>
+#include "NosStdLib/DynamicLoadingScreen.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -9,18 +10,11 @@
 #include <cstdio> 
 #include <conio.h>
 
-void BasicCleanUp()
-{
-    wprintf(L"Ran cleanup"); _getch();
-}
-
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
     NosStdLib::Global::Console::InitializeModifiers::InitializeCloseHandle();
-
-    NosStdLib::CloseHandle::ClosingCleanupFunctionArray.Append(*BasicCleanUp);
 
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
     

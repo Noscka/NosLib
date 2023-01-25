@@ -14,7 +14,7 @@ namespace NosStdLib
 	/// </summary>
 	namespace ClosingHandler
 	{
-        extern NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
+        static NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
 
         BOOL WINAPI HandlerRoutine(DWORD eventCode)
         {
@@ -33,7 +33,7 @@ namespace NosStdLib
         }
 
         /// <summary>
-        /// Creates hook for what to do when shutting down
+        /// Creates hook for what to do in certain events
         /// </summary>
         /// <returns>true for succesful and false for unsuccesful</returns>
         bool InitializeCloseHandle()
