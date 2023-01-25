@@ -14,7 +14,7 @@ namespace NosStdLib
 	/// </summary>
 	namespace CloseHandle
 	{
-        static NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
+        extern NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
 
         BOOL WINAPI HandlerRoutine(DWORD eventCode)
         {
