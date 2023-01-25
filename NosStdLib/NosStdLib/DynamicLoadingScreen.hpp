@@ -4,7 +4,7 @@
 #include "Global.hpp"
 #include "FileManagement.hpp"
 #include "String.hpp"
-#include "OnClose/ClosingHandler.hpp"
+#include "EventHandling/EventHandling.hpp"
 
 #include <Windows.h>
 #include <minmax.h>
