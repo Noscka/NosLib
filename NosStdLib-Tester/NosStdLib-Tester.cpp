@@ -10,11 +10,18 @@
 #include <cstdio> 
 #include <conio.h>
 
+void TestFunc()
+{
+    wprintf(L"Big L"); _getch();
+}
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
-    NosStdLib::Global::Console::InitializeModifiers::InitializeCloseHandle();
+    NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
+
+    NosStdLib::EventHandling::ClosingCleanupFunctionArray.Append(*TestFunc);
 
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
     
