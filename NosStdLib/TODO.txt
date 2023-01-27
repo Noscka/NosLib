@@ -7,3 +7,4 @@ text file for TODO, such as adding new features
 6. Make stob from (https://github.com/Noscka/SideWorkTool/blob/main/SWT/Options/Options.cpp) more efficient plus maybe rename/alias and add to Global::String
 7. Add MoveLeft and MoveRight from (https://github.com/Noscka/Console-Loading-Screen/blob/master/Console%20Loading%20Screen/ConsoleLoadingScreen/LoadingScreen.hpp)
 8. Add ability to have multiple consoles (most likely creating second child process)
+9. Finish DynamicContextMenu

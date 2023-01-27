@@ -57,6 +57,9 @@
     <ClInclude Include="NosStdLib\EventHandling\EventHandling.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

@@ -1,6 +1,7 @@
 ﻿#include <NosStdLib/Global.hpp>
 #include <NosStdLib/DynamicMenuSystem.hpp>
 #include "NosStdLib/DynamicLoadingScreen.hpp"
+#include "NosStdLib/MouseTracking/MouseTracking.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -10,27 +11,18 @@
 #include <cstdio> 
 #include <conio.h>
 
-void TestFunc()
-{
-    wprintf(L"Big L"); _getch();
-}
-
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
+    std::wcout << (NosStdLib::MouseTracking::InitializeMouseTracking() ? L"Full Succesful" : L"Full Failed") << std::endl;
 
-    NosStdLib::EventHandling::ClosingCleanupFunctionArray.Append(*TestFunc);
+    MSG msg;
+    while (GetMessage(&msg, 0, 0, 0))
+    {
 
-    NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-    
-    int param1, param2;
-    
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));
-    
-    MainMenu.StartMenu();
+    }
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
