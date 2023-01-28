@@ -22,7 +22,14 @@ namespace NosStdLib
 			{
 				PMSLLHOOKSTRUCT p = (PMSLLHOOKSTRUCT)lParam;
 
-				std::wcout << p->pt.x << L" | " << p->pt.y << std::endl;
+				//int y = NosStdLib::Global::Console::GetConsoleCursorPosition().Y;
+				NosStdLib::Global::Console::ShowCaret(false);
+				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
+
+				std::wstring output =  std::format(L"{} | {}", p->pt.x, p->pt.y);
+				output += std::wstring(NosStdLib::Global::Console::GetConsoleSize().Columns - output.size(), L' ');
+
+				wprintf(output.c_str());
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
@@ -31,16 +38,10 @@ namespace NosStdLib
 		bool InitializeMouseTracking()
 		{
 			DWORD prev_mode;
-			bool getConsoleStatus = GetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), &prev_mode);
-			bool setConsoleStatus = SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
-
-			wprintf(NosStdLib::Global::ErrorHandling::GetLastErrorAsString().c_str());
+			bool getConsoleStatus = GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &prev_mode);
+			bool setConsoleStatus = SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
 
 			bool MouseHookStatus = (MouseHook = SetWindowsHookEx(WH_MOUSE_LL, NosStdLib::MouseTracking::mouseHookProc, NULL, NULL));
-
-			wprintf(getConsoleStatus ? L"Succesful\n" : L"Failed\n");
-			wprintf(setConsoleStatus ? L"Succesful\n" : L"Failed\n");
-			wprintf(MouseHookStatus ? L"Succesful\n" : L"Failed\n");
 
 			return ((getConsoleStatus && setConsoleStatus) && MouseHookStatus);
 		}

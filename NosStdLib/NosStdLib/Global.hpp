@@ -109,13 +109,13 @@ namespace NosStdLib
 				bool (*InitializeEventHandler)() = &NosStdLib::EventHandling::InitializeEventHandler;
 			}
 
-		#pragma region GetConsoleCaretPosition
+		#pragma region GetConsoleCursorPosition
 			/// <summary>
 			/// Get position of console caret with Custom Console Handle
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <returns>COORD position of console caret</returns>
-			COORD GetConsoleCaretPosition(HANDLE consoleHandle)
+			COORD GetConsoleCursorPosition(HANDLE consoleHandle)
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				if (GetConsoleScreenBufferInfo(consoleHandle, &csbi))
@@ -133,9 +133,9 @@ namespace NosStdLib
 			/// Get position of console caret
 			/// </summary>
 			/// <returns>COORD position of console caret</returns>
-			COORD GetConsoleCaretPosition()
+			COORD GetConsoleCursorPosition()
 			{
-				return GetConsoleCaretPosition(GetStdHandle(STD_OUTPUT_HANDLE));
+				return GetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE));
 			}
 		#pragma endregion
 
