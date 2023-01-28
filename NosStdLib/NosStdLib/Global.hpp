@@ -241,6 +241,39 @@ namespace NosStdLib
 			}
 		#pragma endregion
 
+		#pragma region GetWindowPosition
+			/// <summary>
+			/// Get Window Position with custom console handle
+			/// </summary>
+			/// <param name="hWnd">- console handle</param>
+			/// <param name="x">- pointer to x int</param>
+			/// <param name="y">- pointer to y int</param>
+			/// <returns>if succesful or not</returns>
+			bool GetWindowPosition(HWND hWnd, int* x, int* y)
+			{
+				RECT rect = {NULL};
+				if (GetWindowRect(hWnd, &rect))
+				{
+					*x = rect.left;
+					*y = rect.top;
+					return true;
+				}
+				return false;
+			}
+
+			/// <summary>
+			/// Get Window Position
+			/// </summary>
+			/// <param name="x">- pointer to x int</param>
+			/// <param name="y">- pointer to y int</param>
+			/// <returns>if succesful or not</returns>
+			bool GetWindowPosition(int* x, int* y)
+			{
+				return GetWindowPosition(GetConsoleWindow(), x, y);
+			}
+		#pragma endregion
+
+
 			/// <summary>
 			/// a struct to represent ConsoleSize with Colums and Rows members
 			/// </summary>

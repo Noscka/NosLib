@@ -19,7 +19,7 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
     NosStdLib::MouseTracking::InitializeMouseTracking();
-    
+
     MSG msg;
     while (GetMessage(&msg, 0, 0, 0)){}
 
