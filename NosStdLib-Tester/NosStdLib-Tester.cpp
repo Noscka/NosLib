@@ -15,14 +15,15 @@ int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+    NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Test Console");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
-    std::wcout << (NosStdLib::MouseTracking::InitializeMouseTracking() ? L"Full Succesful" : L"Full Failed") << std::endl;
-
-    MSG msg;
-    while (GetMessage(&msg, 0, 0, 0))
-    {
-
-    }
+    //NosStdLib::MouseTracking::InitializeMouseTracking();
+    //
+    //MSG msg;
+    //while (GetMessage(&msg, 0, 0, 0))
+    //{
+    //
+    //}
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

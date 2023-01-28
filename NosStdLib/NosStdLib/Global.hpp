@@ -2,6 +2,7 @@
 #define _GLOBAL_NOSSTDLIB_HPP_
 
 #include "EventHandling/EventHandling.hpp"
+#include "String.hpp"
 
 #include <Windows.h>
 #include <io.h>
@@ -64,6 +65,40 @@ namespace NosStdLib
 				bool EnableANSI()
 				{
 					return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
+				}
+			#pragma endregion
+
+			#pragma region BeautifyConsole
+				/// <summary>
+				/// Makes the console loop more beatiful with a specified console window
+				/// </summary>
+				/// <typeparam name="CharT">- string char type</typeparam>
+				/// <param name="window">- specified window handle</param>
+				/// <param name="title">- what the window should be called</param>
+				/// <returns>if succesful</returns>
+				template <typename CharT>
+				bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
+				{
+					bool setTitle;
+				#ifdef UNICODE
+					setTitle = SetConsoleTitleW(NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(title).c_str());
+				#else
+					setTitle = SetConsoleTitleA(NosStdLib::String::ConvertStringTypes<char, CharT>(title).c_str());
+				#endif // !UNICODE
+					
+					return setTitle && ShowScrollBar(window, SB_BOTH, FALSE);
+				}
+
+				/// <summary>
+				/// Makes the console loop more beatiful
+				/// </summary>
+				/// <typeparam name="CharT">- string char type</typeparam>
+				/// <param name="title">- what the window should be called</param>
+				/// <returns>if succesful</returns>
+				template <typename CharT>
+				bool BeatifyConsole(const std::basic_string<CharT>& title)
+				{
+					return BeatifyConsole<CharT>(GetConsoleWindow(), title);
 				}
 			#pragma endregion
 

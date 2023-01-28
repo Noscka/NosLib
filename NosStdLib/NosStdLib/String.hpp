@@ -45,7 +45,6 @@ namespace NosStdLib
 		#define ToWstring ConvertStringTypes<wchar_t, char> 
 	#pragma endregion
 
-
 	#pragma region IsNumber
 		/// <summary>
 		/// Check if string is number (with or without signs)
