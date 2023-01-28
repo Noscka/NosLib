@@ -10,35 +10,52 @@
 namespace NosStdLib
 {
 	/// <summary>
+	/// namespace that contains mouse tracking functions which are "fun"
+	/// </summary>
+	namespace MouseTrackingFun
+	{
+		void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, HDC consoleContext)
+		{
+			if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0)
+			{
+				int x, y;
+
+				NosStdLib::Global::Console::GetWindowPosition(&x, &y);
+
+				int relX = mouseHookStruct->pt.x - x, relY = (mouseHookStruct->pt.y - y) - 30;
+
+				SetPixel(consoleContext, relX, relY, RGB(255, 255, 255));
+			}
+		}
+
+		void ConsoleMSPaintInit(HWND* consoleHandle, HDC* consoleContext)
+		{
+			*consoleHandle = GetConsoleWindow();
+			*consoleContext = GetDC(*consoleHandle);
+		}
+	}
+
+	/// <summary>
 	/// Namespace which tracks mouse position
 	/// </summary>
 	namespace MouseTracking
 	{
 		HHOOK MouseHook;
 
-		HWND myconsole;
-		HDC mydc;
+		HWND ConsoleHandle;
+		HDC ConsoleContext;
 
 		LRESULT CALLBACK mouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 		{
 			if (nCode <= 0)
 			{
-				PMSLLHOOKSTRUCT p = (PMSLLHOOKSTRUCT)lParam;
+				PMSLLHOOKSTRUCT mouseHookStruct = (PMSLLHOOKSTRUCT)lParam;
 
 				//int y = NosStdLib::Global::Console::GetConsoleCursorPosition().Y;
 				NosStdLib::Global::Console::ShowCaret(false);
 				//SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 
-				if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0)
-				{
-					int x, y;
-
-					NosStdLib::Global::Console::GetWindowPosition(myconsole, &x, &y);
-
-					int relX = p->pt.x - x, relY = (p->pt.y - y) - 30;
-
-					SetPixel(mydc, relX, relY, RGB(255, 255, 255));
-				}
+				NosStdLib::MouseTrackingFun::ConsoleMSPaint(mouseHookStruct, ConsoleContext);
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
@@ -46,8 +63,7 @@ namespace NosStdLib
 
 		bool InitializeMouseTracking()
 		{
-			myconsole = GetConsoleWindow();
-			mydc = GetDC(myconsole);
+			NosStdLib::MouseTrackingFun::ConsoleMSPaintInit(&ConsoleHandle, &ConsoleContext);
 
 			DWORD prev_mode;
 			bool getConsoleStatus = GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &prev_mode);
