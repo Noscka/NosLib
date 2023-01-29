@@ -18,6 +18,8 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking tests");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
+    wprintf(L"Press any button to enter NosPaint"); _getch();
+
     NosStdLib::MouseTracking::InitializeMouseTracking();
 
     MSG msg;

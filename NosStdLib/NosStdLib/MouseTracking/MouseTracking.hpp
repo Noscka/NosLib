@@ -22,7 +22,7 @@ namespace NosStdLib
 
 				NosStdLib::Global::Console::GetWindowPosition(&x, &y);
 
-				int relX = mouseHookStruct->pt.x - x, relY = (mouseHookStruct->pt.y - y) - 30;
+				int relX = mouseHookStruct->pt.x - x, relY = (mouseHookStruct->pt.y - y) - 31;
 
 				SetPixel(consoleContext, relX, relY, RGB(255, 255, 255));
 			}
@@ -61,6 +61,9 @@ namespace NosStdLib
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
 		}
 
+		/// <summary>
+		/// Initialize and create lowlevel Mouse callback
+		/// </summary>
 		bool InitializeMouseTracking()
 		{
 			NosStdLib::MouseTrackingFun::ConsoleMSPaintInit(&ConsoleHandle, &ConsoleContext);
