@@ -533,8 +533,8 @@ namespace NosStdLib
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
 			std::wstring output = (selected ? 
-								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + NosStdLib::TextColor::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L">> " + EntryName + L" <<" :
-								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 0, ' ') + NosStdLib::TextColor::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L"" + EntryName + L"");
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + NosStdLib::RGB::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L">> " + EntryName + L" <<" :
+								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 0, ' ') + NosStdLib::RGB::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L"" + EntryName + L"");
 			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L"\033[0m\n";
 			return output;
 		}

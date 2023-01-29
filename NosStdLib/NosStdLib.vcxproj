@@ -30,6 +30,7 @@
     <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\Experimental.hpp" />
+    <ClInclude Include="NosStdLib\RGB.hpp" />
     <ClInclude Include="NosStdLib\String.hpp" />
     <ClInclude Include="NosStdLib\TextColor.hpp" />
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
