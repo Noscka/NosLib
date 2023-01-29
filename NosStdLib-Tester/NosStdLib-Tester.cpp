@@ -19,14 +19,10 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking tests");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
-    //wprintf(L"Press any button to enter NosPaint"); _getch();
-    //
-    //NosStdLib::MouseTracking::InitializeMouseTracking();
-    //
-    //MSG msg;
-    //while (GetMessage(&msg, 0, 0, 0)){}
-
-    wprintf((NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::RGB::NosRGB(200, 1, 200), true) + L"abc").c_str());
+    NosStdLib::MouseTracking::InitializeMouseTracking();
+    
+    MSG msg;
+    while (GetMessage(&msg, 0, 0, 0)){}
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

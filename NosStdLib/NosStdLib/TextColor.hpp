@@ -50,7 +50,7 @@ namespace NosStdLib
 			/// <returns>a row with a color</returns>
 			std::wstring ColorRow(const int& columnCount,const NosStdLib::RGB::NosRGB& rgbValue = NosStdLib::RGB::NosRGB(20, 180, 170))
 			{
-				return  NosStdLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
+				return NosStdLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
 			}
 
 			/// <summary>

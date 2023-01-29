@@ -2,6 +2,7 @@
 #define _MOUSETRACKING_NOSSTDLIB_HPP_
 
 #include "../Global.hpp"
+#include "../RGB.hpp"
 
 #include <Windows.h>
 #include <stdio.h>
@@ -14,7 +15,15 @@ namespace NosStdLib
 	/// </summary>
 	namespace MouseTrackingFun
 	{
-		void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, HDC consoleContext)
+		NosStdLib::RGB::NosRGB paintColor(255, 0, 0, 1);
+
+		enum BrushType : uint8_t
+		{
+			square = 0,
+			star = 1,
+		};
+
+		void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, const HDC& consoleContext, const int& thickness, const BrushType& brushType = BrushType::square)
 		{
 			if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0)
 			{
@@ -22,14 +31,40 @@ namespace NosStdLib
 
 				NosStdLib::Global::Console::GetWindowPosition(&x, &y);
 
-				int relX = mouseHookStruct->pt.x - x, relY = (mouseHookStruct->pt.y - y) - 31;
+				int relX = (mouseHookStruct->pt.x - x) - 6, relY = (mouseHookStruct->pt.y - y) - 31;
 
-				SetPixel(consoleContext, relX, relY, RGB(255, 255, 255));
+				paintColor.Iterate();
+
+				switch (brushType)
+				{
+				case BrushType::square:
+					for (int i = (-1 * thickness) / 2; i <= thickness / 2; i++)
+					{
+						for (int j = (-1 * thickness) / 2; j <= thickness / 2; j++)
+						{
+							SetPixel(consoleContext, relX + i, relY + j, paintColor);
+						}
+					}
+					break;
+
+				case BrushType::star:
+					for (int i = (-1 * thickness)/2; i <= thickness/2; i++)
+					{
+						SetPixel(consoleContext, relX+i, relY, paintColor);
+					}
+					for (int i = (-1 * thickness)/2; i <= thickness/2; i++)
+					{
+						SetPixel(consoleContext, relX, relY + i, paintColor);
+					}
+					break;
+				}
 			}
 		}
 
 		void ConsoleMSPaintInit(HWND* consoleHandle, HDC* consoleContext)
 		{
+			wprintf(L"Press any button to enter NosPaint"); _getch();
+
 			*consoleHandle = GetConsoleWindow();
 			*consoleContext = GetDC(*consoleHandle);
 		}
@@ -51,11 +86,9 @@ namespace NosStdLib
 			{
 				PMSLLHOOKSTRUCT mouseHookStruct = (PMSLLHOOKSTRUCT)lParam;
 
-				//int y = NosStdLib::Global::Console::GetConsoleCursorPosition().Y;
 				NosStdLib::Global::Console::ShowCaret(false);
-				//SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 
-				NosStdLib::MouseTrackingFun::ConsoleMSPaint(mouseHookStruct, ConsoleContext);
+				NosStdLib::MouseTrackingFun::ConsoleMSPaint(mouseHookStruct, ConsoleContext, 10, NosStdLib::MouseTrackingFun::BrushType::star);
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
