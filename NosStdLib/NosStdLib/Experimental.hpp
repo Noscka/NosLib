@@ -51,7 +51,7 @@ namespace NosStdLib
 
             std::wstring DrawSquare(int position, int columnCount)
             {
-                std::wstring ANSIEscapeCodeStart = NosStdLib::TextColor::MakeANSICode<wchar_t>(NosStdLib::TextColor::NosRGB(20, 180, 170));
+                std::wstring ANSIEscapeCodeStart = NosStdLib::RGB::NosRGB(20, 180, 170).MakeANSICode<wchar_t>();
                 std::wstring LeftPadding = std::wstring(max(position - 1, 0), L' ');
                 std::wstring BoxCharacter = L"|";
                 std::wstring RightPadding = std::wstring(max(columnCount - position, 0), L' ');

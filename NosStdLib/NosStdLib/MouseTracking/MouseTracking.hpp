@@ -23,7 +23,14 @@ namespace NosStdLib
 			star = 1,
 		};
 
-		void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, const HDC& consoleContext, const int& thickness, const BrushType& brushType = BrushType::square)
+		/// <summary>
+		/// Function which actually makes the "MSPaint" work. gets put inside the mouse hook callback function.
+		/// </summary>
+		/// <param name="mouseHookStruct">- mouse hook struct (gotten from casting lParam)</param>
+		/// <param name="consoleContext">- consoleContext (has to be the same one that was used in the ConsoleMSPaintInit function)</param>
+		/// <param name="brushThickness">- how thick the brush is</param>
+		/// <param name="brushType">(default = BrushType::square) - the brush type</param>
+		void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, const HDC& consoleContext, const int& brushThickness, const BrushType& brushType = BrushType::square)
 		{
 			if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0)
 			{
@@ -38,9 +45,9 @@ namespace NosStdLib
 				switch (brushType)
 				{
 				case BrushType::square:
-					for (int i = (-1 * thickness) / 2; i <= thickness / 2; i++)
+					for (int i = (-1 * brushThickness) / 2; i <= brushThickness / 2; i++)
 					{
-						for (int j = (-1 * thickness) / 2; j <= thickness / 2; j++)
+						for (int j = (-1 * brushThickness) / 2; j <= brushThickness / 2; j++)
 						{
 							SetPixel(consoleContext, relX + i, relY + j, paintColor);
 						}
@@ -48,11 +55,11 @@ namespace NosStdLib
 					break;
 
 				case BrushType::star:
-					for (int i = (-1 * thickness)/2; i <= thickness/2; i++)
+					for (int i = (-1 * brushThickness)/2; i <= brushThickness /2; i++)
 					{
 						SetPixel(consoleContext, relX+i, relY, paintColor);
 					}
-					for (int i = (-1 * thickness)/2; i <= thickness/2; i++)
+					for (int i = (-1 * brushThickness)/2; i <= brushThickness /2; i++)
 					{
 						SetPixel(consoleContext, relX, relY + i, paintColor);
 					}
@@ -61,6 +68,11 @@ namespace NosStdLib
 			}
 		}
 
+		/// <summary>
+		/// Function needed to make ConsoleMSPaint actually run
+		/// </summary>
+		/// <param name="consoleHandle">- pointer to consoleHandle (can be uninitialize as in unassigned)</param>
+		/// <param name="consoleContext">- pointer to consoleContext (can be uninitialize as in unassigned)</param>
 		void ConsoleMSPaintInit(HWND* consoleHandle, HDC* consoleContext)
 		{
 			wprintf(L"Press any button to enter NosPaint"); _getch();
