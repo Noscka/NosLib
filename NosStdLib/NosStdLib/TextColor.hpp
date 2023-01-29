@@ -66,28 +66,13 @@ namespace NosStdLib
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
 
-				uint8_t R = 255, G = 0, B = 0;
-				uint8_t changeValue = 1; /* 85 for lego mode */
+				NosStdLib::RGB::NosRGB currentColor(255, 0, 0, 1); /* make last one 85 for lego mode */
 
 				while (true)
 				{
-					if (R > 0 && B == 0)
-					{
-						R -= changeValue;
-						G += changeValue;
-					}
-					if (G > 0 && R == 0)
-					{
-						G -= changeValue;
-						B += changeValue;
-					}
-					if (B > 0 && G == 0)
-					{
-						R += changeValue;
-						B -= changeValue;
-					}
+					currentColor.Iterate();
 
-					wprintf(ColorRow(csbi.srWindow.Right - csbi.srWindow.Left + 1, NosStdLib::RGB::NosRGB(R, G, B)).c_str());
+					wprintf(ColorRow(csbi.srWindow.Right - csbi.srWindow.Left + 1, currentColor).c_str());
 					if(singleRow)
 						SetConsoleCursorPosition(consoleHandle, { 0, 0 });
 					Sleep(sleepSpeed);
