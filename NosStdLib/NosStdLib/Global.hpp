@@ -273,6 +273,37 @@ namespace NosStdLib
 			}
 		#pragma endregion
 
+		#pragma region GetWindowSize
+			/// <summary>
+			/// Get Window Size with custom console handle
+			/// </summary>
+			/// <param name="hWnd">- console handle</param>
+			/// <param name="x">- pointer to x int</param>
+			/// <param name="y">- pointer to y int</param>
+			/// <returns>if succesful or not</returns>
+			bool GetWindowSize(HWND hWnd, int* x, int* y)
+			{
+				RECT rect = {NULL};
+				if (GetWindowRect(hWnd, &rect))
+				{
+					*x = rect.right - rect.left;
+					*y = rect.bottom - rect.top;
+					return true;
+				}
+				return false;
+			}
+
+			/// <summary>
+			/// Get Window Size
+			/// </summary>
+			/// <param name="x">- pointer to x int</param>
+			/// <param name="y">- pointer to y int</param>
+			/// <returns>if succesful or not</returns>
+			bool GetWindowSize(int* x, int* y)
+			{
+				return GetWindowSize(GetConsoleWindow(), x, y);
+			}
+		#pragma endregion
 
 			/// <summary>
 			/// a struct to represent ConsoleSize with Colums and Rows members
