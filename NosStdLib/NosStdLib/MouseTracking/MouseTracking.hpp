@@ -101,7 +101,7 @@ namespace NosStdLib
 
 				NosStdLib::Global::Console::ShowCaret(false);
 
-				NosStdLib::MouseTrackingFun::ConsoleMSPaint(mouseHookStruct, ConsoleContext, 1, NosStdLib::MouseTrackingFun::BrushType::square);
+				NosStdLib::MouseTrackingFun::ConsoleMSPaint(mouseHookStruct, ConsoleContext, 10, NosStdLib::MouseTrackingFun::BrushType::square);
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
@@ -115,12 +115,9 @@ namespace NosStdLib
 			NosStdLib::MouseTrackingFun::ConsoleMSPaintInit(&ConsoleHandle, &ConsoleContext);
 
 			DWORD prev_mode;
-			bool getConsoleStatus = GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &prev_mode);
-			bool setConsoleStatus = SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE));
-
-			bool MouseHookStatus = (MouseHook = SetWindowsHookEx(WH_MOUSE_LL, NosStdLib::MouseTracking::mouseHookProc, NULL, NULL));
-
-			return ((getConsoleStatus && setConsoleStatus) && MouseHookStatus);
+			return ((GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &prev_mode) &&
+					SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE))) &&
+					(MouseHook = SetWindowsHookEx(WH_MOUSE_LL, NosStdLib::MouseTracking::mouseHookProc, NULL, NULL)));
 		}
 	}
 }
