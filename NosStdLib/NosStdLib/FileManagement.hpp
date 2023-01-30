@@ -34,7 +34,7 @@ namespace NosStdLib
             /// </summary>
             /// <param name="relativePath">- path from current/absolute path</param>
             /// <param name="filename">- filename</param>
-            FilePath(const std::wstring relativePath, const std::wstring filename)
+            FilePath(const std::wstring& relativePath, const std::wstring& filename)
             {
                 RelativePath = relativePath;
                 Filename = filename;
@@ -73,7 +73,7 @@ namespace NosStdLib
             /// </summary>
             /// <param name="newFilename">- the new filename</param>
             /// <returns>filename</returns>
-            std::wstring SetFilename(std::wstring newFilename)
+            std::wstring SetFilename(const std::wstring& newFilename)
             {
                 Filename = newFilename;
                 return Filename;

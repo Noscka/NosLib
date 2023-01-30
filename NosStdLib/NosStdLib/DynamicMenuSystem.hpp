@@ -59,7 +59,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="selected">- if the entry is selected or not</param>
 			/// <returns>wstring which shows the Entry name, value and is also centered</returns>
-			virtual std::wstring EntryString(bool selected)
+			virtual std::wstring EntryString(const bool& selected)
 			{
 				return EntryName;
 			}
@@ -107,7 +107,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="name">- entry name</param>
 			/// <param name="typePointerStore">- pointer to variable of type</param>
-			MenuEntry(std::wstring name, EntryType* typePointerStore)
+			MenuEntry(const std::wstring& name, EntryType* typePointerStore)
 			{
 				EntryName = name;
 				TypePointerStore = typePointerStore;
@@ -118,7 +118,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="selected">- if the entry is selected or not</param>
 			/// <returns>wstring which shows the Entry name, value and is also centered</returns>
-			std::wstring EntryString(bool selected)
+			std::wstring EntryString(const bool& selected)
 			{
 				*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
@@ -184,7 +184,7 @@ namespace NosStdLib
 				 CenterTitle,			/* if the title should be centered */
 				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
 		public:
-			DynamicMenu(std::wstring title, bool generateUnicodeTitle = true, bool addExitEntry = true, bool centerTitle = true)
+			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
 				Title = title;
 				AddExitEntry = addExitEntry;
@@ -385,7 +385,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="selected">- if the entry is selected or not</param>
 		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
-		std::wstring MenuEntry<bool>::EntryString(bool selected)
+		std::wstring MenuEntry<bool>::EntryString(const bool& selected)
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
@@ -423,7 +423,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="selected">- if the entry is selected or not</param>
 		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
-		std::wstring MenuEntry<int>::EntryString(bool selected)
+		std::wstring MenuEntry<int>::EntryString(const bool& selected)
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
@@ -528,7 +528,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="selected">- if the entry is selected or not</param>
 		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
-		std::wstring MenuEntry<DynamicMenu>::EntryString(bool selected)
+		std::wstring MenuEntry<DynamicMenu>::EntryString(const bool& selected)
 		{
 			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 

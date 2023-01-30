@@ -46,7 +46,7 @@ namespace NosStdLib
 				/// </summary>
 				/// <param name="consoleHandle">- Custom Console Handle</param>
 				/// <returns>if operation was succesful</returns>
-				bool EnableANSI(HANDLE consoleHandle)
+				bool EnableANSI(const HANDLE& consoleHandle)
 				{
 					DWORD consoleMode;
 					bool getOperationResults = GetConsoleMode(consoleHandle, &consoleMode);
@@ -109,13 +109,13 @@ namespace NosStdLib
 				bool (*InitializeEventHandler)() = &NosStdLib::EventHandling::InitializeEventHandler;
 			}
 
-		#pragma region GetConsoleCursorPosition
+		#pragma region GetCaretPosition
 			/// <summary>
 			/// Get position of console caret with Custom Console Handle
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <returns>COORD position of console caret</returns>
-			COORD GetConsoleCursorPosition(HANDLE consoleHandle)
+			COORD GetCaretPosition(const HANDLE& consoleHandle)
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				if (GetConsoleScreenBufferInfo(consoleHandle, &csbi))
@@ -133,9 +133,9 @@ namespace NosStdLib
 			/// Get position of console caret
 			/// </summary>
 			/// <returns>COORD position of console caret</returns>
-			COORD GetConsoleCursorPosition()
+			COORD GetCaretPosition()
 			{
-				return GetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE));
+				return GetCaretPosition(GetStdHandle(STD_OUTPUT_HANDLE));
 			}
 		#pragma endregion
 
@@ -147,7 +147,7 @@ namespace NosStdLib
 			/// <param name="position">- position from which to start clearing</param>
 			/// <param name="range">- range to which clear</param>
 			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-			void ClearRange(HANDLE consoleHandle, int position, int range, wchar_t fillChar = L' ')
+			void ClearRange(const HANDLE& consoleHandle, const int& position, const int& range, const wchar_t& fillChar = L' ')
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				COORD tl = { 0, (SHORT)(position) };
@@ -164,7 +164,7 @@ namespace NosStdLib
 			/// <param name="position">- position from which to start clearing</param>
 			/// <param name="range">- range to which clear</param>
 			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-			void ClearRange(int position, int range, wchar_t fillChar = L' ')
+			void ClearRange(const int& position, const int& range, const wchar_t& fillChar = L' ')
 			{
 				ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
 			}
@@ -177,7 +177,7 @@ namespace NosStdLib
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="position">- position to clear</param>
 			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-			void ClearLine(HANDLE consoleHandle, int position, wchar_t fillChar = L' ')
+			void ClearLine(const HANDLE& consoleHandle, const int& position, const wchar_t& fillChar = L' ')
 			{
 				ClearRange(consoleHandle, position, 0, fillChar);
 			}
@@ -187,7 +187,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="position">- position to clear</param>
 			/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-			void ClearLine(int position, wchar_t fillChar = L' ')
+			void ClearLine(const int& position, const wchar_t& fillChar = L' ')
 			{
 				ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
 			}
@@ -199,7 +199,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="fillChar">(default = L' ') - character to clear with</param>
-			void ClearScreen(HANDLE consoleHandle, wchar_t fillChar = L' ')
+			void ClearScreen(const HANDLE& consoleHandle, const wchar_t& fillChar = L' ')
 			{
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
 				GetConsoleScreenBufferInfo(consoleHandle, &csbi);
@@ -210,7 +210,7 @@ namespace NosStdLib
 			/// clear the whole console
 			/// </summary>
 			/// <param name="fillChar">(default = L' ') - character to clear with</param>
-			void ClearScreen(wchar_t fillChar = L' ')
+			void ClearScreen(const wchar_t& fillChar = L' ')
 			{
 				ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
 			}
@@ -222,7 +222,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <param name="showFlag">- if caret will be shown or hidden</param>
-			void ShowCaret(HANDLE consoleHandle, bool showFlag)
+			void ShowCaret(const HANDLE& consoleHandle, const bool& showFlag)
 			{
 				CONSOLE_CURSOR_INFO cursorInfo;
 
@@ -235,7 +235,7 @@ namespace NosStdLib
 			/// Show or hide Console Caret
 			/// </summary>
 			/// <param name="showFlag">- if caret will be shown or hidden</param>
-			void ShowCaret(bool showFlag)
+			void ShowCaret(const bool& showFlag)
 			{
 				ShowCaret(GetStdHandle(STD_OUTPUT_HANDLE), showFlag);
 			}
@@ -249,7 +249,7 @@ namespace NosStdLib
 			/// <param name="x">- pointer to x int</param>
 			/// <param name="y">- pointer to y int</param>
 			/// <returns>if succesful or not</returns>
-			bool GetWindowPosition(HWND hWnd, int* x, int* y)
+			bool GetWindowPosition(const HWND& hWnd, int* x, int* y)
 			{
 				RECT rect = {NULL};
 				if (GetWindowRect(hWnd, &rect))
@@ -281,7 +281,7 @@ namespace NosStdLib
 			/// <param name="x">- pointer to x int</param>
 			/// <param name="y">- pointer to y int</param>
 			/// <returns>if succesful or not</returns>
-			bool GetWindowSize(HWND hWnd, int* x, int* y)
+			bool GetWindowSize(const HWND& hWnd, int* x, int* y)
 			{
 				RECT rect = {NULL};
 				if (GetWindowRect(hWnd, &rect))
@@ -399,7 +399,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="bitCount">- the amout of bits</param>
 			/// <returns>the max value that can be stored</returns>
-			int MaxBitValue(int bitCount)
+			int MaxBitValue(const int& bitCount)
 			{
 				int maxValue = 0;
 				for (int i = 0; bitCount > i; i++)
@@ -414,7 +414,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="byteCount">- the amount of bytes</param>
 			/// <returns>the max value that can be stored</returns>
-			int MaxByteValue(int byteCount)
+			int MaxByteValue(const int& byteCount)
 			{
 				return MaxBitValue(byteCount * 8);
 			}

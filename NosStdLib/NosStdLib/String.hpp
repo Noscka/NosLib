@@ -54,7 +54,7 @@ namespace NosStdLib
 		/// <param name="allowSigns">(default = true) - if it should allow signs at the start of the string (-123 or +123)</param>
 		/// <returns>if string is valid number</returns>
 		template <typename CharT>
-		bool IsNumber(const std::basic_string<CharT>& str, bool allowSigns = true)
+		bool IsNumber(const std::basic_string<CharT>& str, const bool& allowSigns = true)
 		{
 			/* Iterator int, allows for changing start position */
 			int Iteration = 0;
@@ -111,7 +111,7 @@ namespace NosStdLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(HANDLE consoleHandle, std::basic_string<CharT> input, bool rightPadding = false, bool all = true)
+		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi; /* TODO: change from using consoleHandle or add overload to use ConsoleSizeStruct */
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
@@ -143,7 +143,7 @@ namespace NosStdLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered wstring</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(std::basic_string<CharT> input, bool rightPadding = false, bool all = true)
+		std::basic_string<CharT> CenterString(const std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
 		}

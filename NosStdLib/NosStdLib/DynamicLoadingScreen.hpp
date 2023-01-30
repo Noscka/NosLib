@@ -263,7 +263,7 @@ namespace NosStdLib
 		/// <param name="barType">- the bar type which will be displayed when started</param>
 		/// <param name="splashScreen">(default = L"") - what the should display above the bar</param>
 		/// <param name="centerString">(default = true) - if the splashScreen should be centered</param>
-		LoadingScreen(LoadType barType, std::wstring splashScreen = L"", bool centerString = true)
+		LoadingScreen(const LoadType& barType, const std::wstring& splashScreen = L"", const bool& centerString = true)
 		{
 			BarType = barType;
 			SplashScreen = centerString ? NosStdLib::String::CenterString(splashScreen, true) : splashScreen;
@@ -306,7 +306,7 @@ namespace NosStdLib
 		/// <param name="percentageDone">- Percent done in decimal form</param>
 		/// <param name="statusMessage">(default = L"") - status message that gets displayed below the loading bar</param>
 		/// <param name="centerStatusMessage">(default = true) - if statusMessage should get centered, if yes. will get centered in the drawing thread</param>
-		void UpdateKnownProgressBar(float percentageDone, std::wstring statusMessage = L"", bool centerStatusMessage = true)
+		void UpdateKnownProgressBar(const float& percentageDone, const std::wstring& statusMessage = L"", const bool& centerStatusMessage = true)
 		{
 			PercentageDone = percentageDone;
 			StatusMessage = statusMessage;
