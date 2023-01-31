@@ -263,7 +263,7 @@ namespace NosStdLib
 		/// <param name="barType">- the bar type which will be displayed when started</param>
 		/// <param name="splashScreen">(default = L"") - what the should display above the bar</param>
 		/// <param name="centerString">(default = true) - if the splashScreen should be centered</param>
-		LoadingScreen(const LoadType& barType, const std::wstring& splashScreen = L"", const bool& centerString = true)
+		LoadingScreen(const LoadType& barType, std::wstring splashScreen = L"", const bool& centerString = true)
 		{
 			BarType = barType;
 			SplashScreen = centerString ? NosStdLib::String::CenterString(splashScreen, true) : splashScreen;
