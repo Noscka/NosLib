@@ -14,18 +14,26 @@
 
 #include <type_traits>
 
-void CreateMemoryPointer()
+class PointerDestruction
 {
-    int* a = new int[] { 1, 2, 3 };
+private:
+    int* ptr;
 
-    std::wcout << a[0] << std::endl;
-    std::wcout << a[1] << std::endl;
-    std::wcout << a[2] << std::endl;
+public:
 
-    std::wcout << &(a[0]) << std::endl;
-    std::wcout << &(a[1]) << std::endl;
-    std::wcout << &(a[2]) << std::endl;
-}
+    PointerDestruction()
+    {
+        ptr = new int(1);
+
+        std::wcout << ptr << std::endl;
+    }
+
+    ~PointerDestruction()
+    {
+        delete ptr;
+        std::wcout << L"Destroyed" << std::endl;
+    }
+};
 
 int main()
 {
@@ -39,18 +47,24 @@ int main()
     //MSG msg;
     //while (GetMessage(&msg, 0, 0, 0)){}
 
-    CreateMemoryPointer();
+    PointerDestruction basic;
 
-    while (true)
-    {
-        wprintf(L"put in a memory address: ");
-        std::wstring input;
-        std::getline(std::wcin, input);
+    wprintf(L"put in a memory address: ");
+    std::wstring input;
+    std::getline(std::wcin, input);
 
-        int* a = (int*)std::stoull(input, 0, 16);
-        std::wcout << *a << std::endl;
-        std::wcout << a << std::endl;
-    }
+    int* a = (int*)std::stoull(input, 0, 16);
+    std::wcout << *a << std::endl;
+    std::wcout << a << std::endl;
+
+    basic.~PointerDestruction();
+
+    wprintf(L"put in a memory address: ");
+    std::getline(std::wcin, input);
+
+    a = (int*)std::stoull(input, 0, 16);
+    std::wcout << *a << std::endl;
+    std::wcout << a << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
