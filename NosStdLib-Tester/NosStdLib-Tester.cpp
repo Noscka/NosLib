@@ -11,25 +11,48 @@
 
 #include <format>
 
+template<typename T>
+struct is_pointer { static const bool value = false; };
+
+template<typename T>
+struct is_pointer<T*> { static const bool value = true; };
+
+template<typename T>
+void Release(T& v)
+{
+    if (is_pointer<T>::value)
+    {
+        Release<T>(v);
+    }
+    else
+    {
+        delete[] v;
+    }
+}
+
 class destructionTesting
 {
 private:
-    int SomeInt;
+    int FirstIndex;
+    int SecondIndex;
+    std::wstring MemoryHolder;
 public:
     destructionTesting()
     {
         wprintf(L"Created Default\n");
     }
 
-    destructionTesting(int someInt)
+    destructionTesting(int firstIndex, int secondIndex)
     {
-        SomeInt = someInt;
-        wprintf(L"Created with int\n");
+        FirstIndex = firstIndex;
+        SecondIndex = secondIndex;
+        MemoryHolder = std::wstring(1000, L'A');
+        wprintf(std::format(L"Created: {},{}\n", FirstIndex, SecondIndex).c_str());
     }
 
     ~destructionTesting()
     {
-        wprintf(std::format(L"destroying {}\n", SomeInt).c_str());
+        wprintf(std::format(L"destroyed: {},{}\n", FirstIndex, SecondIndex).c_str());
     }
 };
 
@@ -45,19 +68,33 @@ int main()
     //MSG msg;
     //while (GetMessage(&msg, 0, 0, 0)){}
 
-    int amount = 5;
+    wprintf(L"Press any button to start"); _getch();
+
+    int amount = 100;
 
     destructionTesting*** ptr = new destructionTesting**[amount]();
 
     for (int i = 0; i <= amount; i++)
     {
-        ptr[i] = &(new destructionTesting(i));
+        ptr[i] = new destructionTesting*[amount]();
+
+        for (int j = 0; j <= amount; j++)
+        {
+            ptr[i][j] = new destructionTesting(i, j);
+        }
     }
 
-    for (int i = 0; i <= amount; i++)
-    {
-        delete ptr[i];
-    }
+    wprintf(L"Press any button to continue"); _getch();
+
+    Release<destructionTesting***>(ptr);
+
+    //for (int i = 0; i <= amount; i++)
+    //{
+    //    for (int j = 0; j <= amount; j++)
+    //    {
+    //        delete ptr[i][j];
+    //    }
+    //}
 
     /*NosStdLib::DynamicArray<destructionTesting*> simpleArray(100, 100);
 
