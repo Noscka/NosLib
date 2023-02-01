@@ -12,6 +12,21 @@
 #include <cstdio> 
 #include <conio.h>
 
+#include <type_traits>
+
+void CreateMemoryPointer()
+{
+    int* a = new int[] { 1, 2, 3 };
+
+    std::wcout << a[0] << std::endl;
+    std::wcout << a[1] << std::endl;
+    std::wcout << a[2] << std::endl;
+
+    std::wcout << &(a[0]) << std::endl;
+    std::wcout << &(a[1]) << std::endl;
+    std::wcout << &(a[2]) << std::endl;
+}
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
@@ -19,10 +34,23 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking tests");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::MouseTracking::InitializeMouseTracking();
-    
-    MSG msg;
-    while (GetMessage(&msg, 0, 0, 0)){}
+    //NosStdLib::MouseTracking::InitializeMouseTracking();
+    //
+    //MSG msg;
+    //while (GetMessage(&msg, 0, 0, 0)){}
+
+    CreateMemoryPointer();
+
+    while (true)
+    {
+        wprintf(L"put in a memory address: ");
+        std::wstring input;
+        std::getline(std::wcin, input);
+
+        int* a = (int*)std::stoull(input, 0, 16);
+        std::wcout << *a << std::endl;
+        std::wcout << a << std::endl;
+    }
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
