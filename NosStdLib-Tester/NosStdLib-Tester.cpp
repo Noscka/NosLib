@@ -1,8 +1,5 @@
-﻿#include <NosStdLib/Global.hpp>
-#include <NosStdLib/DynamicMenuSystem.hpp>
-#include "NosStdLib/DynamicLoadingScreen.hpp"
-#include "NosStdLib/MouseTracking/MouseTracking.hpp"
-#include "NosStdLib/TextColor.hpp"
+﻿#include "NosStdLib/Global.hpp"
+#include "NosStdLib/DynamicArray.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -12,26 +9,27 @@
 #include <cstdio> 
 #include <conio.h>
 
-#include <type_traits>
+#include <format>
 
-class PointerDestruction
+class destructionTesting
 {
 private:
-    int* ptr;
-
+    int SomeInt;
 public:
-
-    PointerDestruction()
+    destructionTesting()
     {
-        ptr = new int(1);
-
-        std::wcout << ptr << std::endl;
+        wprintf(L"Created Default\n");
     }
 
-    ~PointerDestruction()
+    destructionTesting(int someInt)
     {
-        delete ptr;
-        std::wcout << L"Destroyed" << std::endl;
+        SomeInt = someInt;
+        wprintf(L"Created with int\n");
+    }
+
+    ~destructionTesting()
+    {
+        wprintf(std::format(L"destroying {}\n", SomeInt).c_str());
     }
 };
 
@@ -47,24 +45,29 @@ int main()
     //MSG msg;
     //while (GetMessage(&msg, 0, 0, 0)){}
 
-    PointerDestruction basic;
+    int amount = 5;
 
-    wprintf(L"put in a memory address: ");
-    std::wstring input;
-    std::getline(std::wcin, input);
+    destructionTesting*** ptr = new destructionTesting**[amount]();
 
-    int* a = (int*)std::stoull(input, 0, 16);
-    std::wcout << *a << std::endl;
-    std::wcout << a << std::endl;
+    for (int i = 0; i <= amount; i++)
+    {
+        ptr[i] = &(new destructionTesting(i));
+    }
 
-    basic.~PointerDestruction();
+    for (int i = 0; i <= amount; i++)
+    {
+        delete ptr[i];
+    }
 
-    wprintf(L"put in a memory address: ");
-    std::getline(std::wcin, input);
+    /*NosStdLib::DynamicArray<destructionTesting*> simpleArray(100, 100);
 
-    a = (int*)std::stoull(input, 0, 16);
-    std::wcout << *a << std::endl;
-    std::wcout << a << std::endl;
+    for (int i = 0; i < 100000000; i++)
+    {
+        simpleArray.Append(new destructionTesting(i));
+    }
+
+    std::wcout << simpleArray.GetArrayIndexPointer() << std::endl;
+    std::wcout << simpleArray.GetArraySize() << std::endl;*/
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
