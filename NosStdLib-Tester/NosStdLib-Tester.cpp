@@ -12,30 +12,15 @@
 #include <format>
 
 template<typename T>
-struct is_pointer { static const bool value = false; };
-
-template<typename T>
-struct is_pointer<T*> { static const bool value = true; };
-
-template<typename T>
-void PrintRoot(T& v)
+void RootRelease(T& v)
 {
-    wprintf(L"found\n");
-    std::wcout << v << std::endl;
-}
-
-template<typename T>
-void RootFinder(T& v)
-{
-    wprintf(L"finding\n");
-    if constexpr (is_pointer<T>::value)
+    if constexpr (std::is_pointer_v<std::remove_pointer_t<T>>)
     {
-        wprintf(L"going deeper\n");
-        RootFinder<std::remove_pointer_t<T>>(*v);
+        RootRelease<std::remove_pointer_t<T>>(*v);
     }
     else
     {
-        PrintRoot<T>(v);
+        delete v;
     }
 }
 
@@ -69,14 +54,14 @@ int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
-    NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking tests");
+    NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Root Release");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
     int* ptr1 = new int(2);
     int** ptr2 = &ptr1;
     int*** ptr3 = &ptr2;
 
-    RootFinder<int***>(ptr3);
+    RootRelease<int***>(ptr3);
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
