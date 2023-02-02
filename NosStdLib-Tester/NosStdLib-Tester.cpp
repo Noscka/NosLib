@@ -18,15 +18,24 @@ template<typename T>
 struct is_pointer<T*> { static const bool value = true; };
 
 template<typename T>
-void Release(T& v)
+void PrintRoot(T& v)
 {
-    if (is_pointer<T>::value)
+    wprintf(L"found\n");
+    std::wcout << v << std::endl;
+}
+
+template<typename T>
+void RootFinder(T& v)
+{
+    wprintf(L"finding\n");
+    if constexpr (is_pointer<T>::value)
     {
-        Release<T>(v);
+        wprintf(L"going deeper\n");
+        RootFinder<std::remove_pointer_t<T>>(*v);
     }
     else
     {
-        delete[] v;
+        PrintRoot<T>(v);
     }
 }
 
@@ -63,48 +72,11 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking tests");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
-    //NosStdLib::MouseTracking::InitializeMouseTracking();
-    //
-    //MSG msg;
-    //while (GetMessage(&msg, 0, 0, 0)){}
+    int* ptr1 = new int(2);
+    int** ptr2 = &ptr1;
+    int*** ptr3 = &ptr2;
 
-    wprintf(L"Press any button to start"); _getch();
-
-    int amount = 100;
-
-    destructionTesting*** ptr = new destructionTesting**[amount]();
-
-    for (int i = 0; i <= amount; i++)
-    {
-        ptr[i] = new destructionTesting*[amount]();
-
-        for (int j = 0; j <= amount; j++)
-        {
-            ptr[i][j] = new destructionTesting(i, j);
-        }
-    }
-
-    wprintf(L"Press any button to continue"); _getch();
-
-    Release<destructionTesting***>(ptr);
-
-    //for (int i = 0; i <= amount; i++)
-    //{
-    //    for (int j = 0; j <= amount; j++)
-    //    {
-    //        delete ptr[i][j];
-    //    }
-    //}
-
-    /*NosStdLib::DynamicArray<destructionTesting*> simpleArray(100, 100);
-
-    for (int i = 0; i < 100000000; i++)
-    {
-        simpleArray.Append(new destructionTesting(i));
-    }
-
-    std::wcout << simpleArray.GetArrayIndexPointer() << std::endl;
-    std::wcout << simpleArray.GetArraySize() << std::endl;*/
+    RootFinder<int***>(ptr3);
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
