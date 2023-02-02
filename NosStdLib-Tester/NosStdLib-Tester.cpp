@@ -59,23 +59,25 @@ int main()
 
     wprintf(L"Press any button to start"); _getch();
 
-    int amount = 10;
+    int amount = 100;
 
-    destructionTesting*** ptr = new destructionTesting**[amount]();
+    destructionTesting** ptr = new destructionTesting*[amount]();
 
     for (int i = 0; i <= amount; i++)
     {
-        ptr[i] = new destructionTesting * [amount]();
-
-        for (int j = 0; j <= amount; j++)
-        {
-            ptr[i][j] = new destructionTesting(i, j);
-        }
+        ptr[i] = new destructionTesting(0, i);
     }
 
     wprintf(L"Press any button to destroy"); _getch();
 
-    RootRelease<destructionTesting***>(ptr);
+    delete[] ptr;
+
+    //for (int i = 0; i <= amount; i++)
+    //{
+    //    delete ptr[i];
+    //}
+
+    //RootRelease<destructionTesting***>(ptr);
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
