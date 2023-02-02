@@ -57,11 +57,25 @@ int main()
     NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Root Release");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
-    int* ptr1 = new int(2);
-    int** ptr2 = &ptr1;
-    int*** ptr3 = &ptr2;
+    wprintf(L"Press any button to start"); _getch();
 
-    RootRelease<int***>(ptr3);
+    int amount = 10;
+
+    destructionTesting*** ptr = new destructionTesting**[amount]();
+
+    for (int i = 0; i <= amount; i++)
+    {
+        ptr[i] = new destructionTesting * [amount]();
+
+        for (int j = 0; j <= amount; j++)
+        {
+            ptr[i][j] = new destructionTesting(i, j);
+        }
+    }
+
+    wprintf(L"Press any button to destroy"); _getch();
+
+    RootRelease<destructionTesting***>(ptr);
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
