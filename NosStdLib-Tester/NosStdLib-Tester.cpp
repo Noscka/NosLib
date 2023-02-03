@@ -38,24 +38,17 @@ int main()
 
     wprintf(L"Press any button to start\n"); _getch();
 
-    //NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>* simpleArray = new NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>;
-
-
     int amount = 1000;
 
-    NosStdLib::TestEnv::PointerRoots::destructionTesting* ptrArray = new NosStdLib::TestEnv::PointerRoots::destructionTesting[amount];
+    NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>* simpleArray = new NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>;
 
     for (int i = 0; i < amount; i++)
     {
-        ptrArray[i] = NosStdLib::TestEnv::PointerRoots::destructionTesting(0,i);
-
-        //simpleArray->Append(new NosStdLib::TestEnv::PointerRoots::destructionTesting(0,i));
+        simpleArray->Append(new NosStdLib::TestEnv::PointerRoots::destructionTesting(0, i));
     }
     wprintf(L"Press any button to delete\n"); _getch();
 
-    DeleteArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>(ptrArray, amount);
-
-    //delete[] ptrArray;
+    delete simpleArray;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
