@@ -51,7 +51,18 @@ namespace NosStdLib
 		/// Destroy array contained in object
 		~DynamicArray()
 		{
+			//if constexpr (std::is_pointer_v<ArrayDataType>)
+			//{
+			//	for (int i = 0; i <= ArrayIndexPointer; i++)
+			//	{
+			//		delete MainArray[i];
+			//	}
+			//}
+			//else
+			//{
 			delete[] MainArray;
+			//}
+			
 		}
 	#pragma endregion
 
@@ -70,6 +81,8 @@ namespace NosStdLib
 				{
 					TempArray[i] = MainArray[i];
 				}
+
+				delete[] MainArray;
 
 				ArraySize += ArrayStepSize; // expand the Array size
 				MainArray = new ArrayDataType[ArraySize](); // over ride MainArray with new, bigger, array

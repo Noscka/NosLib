@@ -40,6 +40,73 @@ namespace NosStdLib
             }
         };
 
+        namespace PointerRoots
+        {
+            template<typename T>
+            void RootRelease(T& v)
+            {
+                if constexpr (std::is_pointer_v<std::remove_pointer_t<T>>)
+                {
+                    RootRelease<std::remove_pointer_t<T>>(*v);
+                }
+                else
+                {
+                    delete v;
+                }
+            }
+
+            class destructionTesting
+            {
+            private:
+                int FirstIndex;
+                int SecondIndex;
+                std::wstring MemoryHolder;
+            public:
+                destructionTesting()
+                {
+                    wprintf(L"Created Default\n");
+                }
+
+                destructionTesting(int firstIndex, int secondIndex)
+                {
+                    FirstIndex = firstIndex;
+                    SecondIndex = secondIndex;
+                    MemoryHolder = std::wstring(1000, L'A');
+                    wprintf(std::format(L"Created: {},{}\n", FirstIndex, SecondIndex).c_str());
+                }
+
+                ~destructionTesting()
+                {
+                    wprintf(std::format(L"destroyed: {},{}\n", FirstIndex, SecondIndex).c_str());
+                }
+            };
+
+            void Running()
+            {
+                wprintf(L"Press any button to start"); _getch();
+
+                int amount = 100;
+
+                destructionTesting** ptr = new destructionTesting * [amount]();
+
+                for (int i = 0; i <= amount; i++)
+                {
+                    ptr[i] = new destructionTesting(0, i);
+                }
+
+                wprintf(L"Press any button to destroy"); _getch();
+
+                delete[] ptr;
+
+                //for (int i = 0; i <= amount; i++)
+                //{
+                //    delete ptr[i];
+                //}
+
+                RootRelease<destructionTesting**>(ptr);
+            }
+        }
+
         namespace Fun
         {
             LPPOINT GetCaretPositionReturn()

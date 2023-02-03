@@ -1,5 +1,6 @@
 ﻿#include "NosStdLib/Global.hpp"
 #include "NosStdLib/DynamicArray.hpp"
+#include "NosStdLib/Experimental.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -11,73 +12,26 @@
 
 #include <format>
 
-template<typename T>
-void RootRelease(T& v)
-{
-    if constexpr (std::is_pointer_v<std::remove_pointer_t<T>>)
-    {
-        RootRelease<std::remove_pointer_t<T>>(*v);
-    }
-    else
-    {
-        delete v;
-    }
-}
-
-class destructionTesting
-{
-private:
-    int FirstIndex;
-    int SecondIndex;
-    std::wstring MemoryHolder;
-public:
-    destructionTesting()
-    {
-        wprintf(L"Created Default\n");
-    }
-
-    destructionTesting(int firstIndex, int secondIndex)
-    {
-        FirstIndex = firstIndex;
-        SecondIndex = secondIndex;
-        MemoryHolder = std::wstring(1000, L'A');
-        wprintf(std::format(L"Created: {},{}\n", FirstIndex, SecondIndex).c_str());
-    }
-
-    ~destructionTesting()
-    {
-        wprintf(std::format(L"destroyed: {},{}\n", FirstIndex, SecondIndex).c_str());
-    }
-};
-
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
-    NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Root Release");
+    NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Memory Management");
     NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
 
-    wprintf(L"Press any button to start"); _getch();
+    wprintf(L"Press any button to start\n"); _getch();
 
-    int amount = 100;
+    NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>* simpleArray = new NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>;
 
-    destructionTesting** ptr = new destructionTesting*[amount]();
+    int amount = 1000;
 
     for (int i = 0; i <= amount; i++)
     {
-        ptr[i] = new destructionTesting(0, i);
+        simpleArray->Append(new NosStdLib::TestEnv::PointerRoots::destructionTesting(0,i));
     }
+    wprintf(L"Press any button to delete\n"); _getch();
 
-    wprintf(L"Press any button to destroy"); _getch();
-
-    delete[] ptr;
-
-    //for (int i = 0; i <= amount; i++)
-    //{
-    //    delete ptr[i];
-    //}
-
-    //RootRelease<destructionTesting***>(ptr);
+    delete simpleArray;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
