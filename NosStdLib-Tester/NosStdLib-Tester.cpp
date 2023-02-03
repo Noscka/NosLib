@@ -12,6 +12,23 @@
 
 #include <format>
 
+template<class DataType>
+void DeleteArray(DataType dataArray, int count)
+{
+    if constexpr (std::is_pointer_v<std::remove_pointer_t<DataType>>)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            delete dataArray[i];
+        }
+    }
+    else
+    {
+        delete[] dataArray;
+    }
+}
+
+
 int main()
 {
     NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
@@ -21,17 +38,24 @@ int main()
 
     wprintf(L"Press any button to start\n"); _getch();
 
-    NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>* simpleArray = new NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>;
+    //NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>* simpleArray = new NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>;
+
 
     int amount = 1000;
 
-    for (int i = 0; i <= amount; i++)
+    NosStdLib::TestEnv::PointerRoots::destructionTesting* ptrArray = new NosStdLib::TestEnv::PointerRoots::destructionTesting[amount];
+
+    for (int i = 0; i < amount; i++)
     {
-        simpleArray->Append(new NosStdLib::TestEnv::PointerRoots::destructionTesting(0,i));
+        ptrArray[i] = NosStdLib::TestEnv::PointerRoots::destructionTesting(0,i);
+
+        //simpleArray->Append(new NosStdLib::TestEnv::PointerRoots::destructionTesting(0,i));
     }
     wprintf(L"Press any button to delete\n"); _getch();
 
-    delete simpleArray;
+    DeleteArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>(ptrArray, amount);
+
+    //delete[] ptrArray;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

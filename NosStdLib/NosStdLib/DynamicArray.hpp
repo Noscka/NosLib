@@ -51,17 +51,17 @@ namespace NosStdLib
 		/// Destroy array contained in object
 		~DynamicArray()
 		{
-			//if constexpr (std::is_pointer_v<ArrayDataType>)
-			//{
-			//	for (int i = 0; i <= ArrayIndexPointer; i++)
-			//	{
-			//		delete MainArray[i];
-			//	}
-			//}
-			//else
-			//{
-			delete[] MainArray;
-			//}
+			if constexpr (std::is_pointer_v<std::remove_pointer_t<ArrayDataType>>)
+			{
+				for (int i = 0; i <= ArrayIndexPointer; i++)
+				{
+					delete MainArray[i];
+				}
+			}
+			else
+			{
+				delete[] MainArray;
+			}
 			
 		}
 	#pragma endregion
