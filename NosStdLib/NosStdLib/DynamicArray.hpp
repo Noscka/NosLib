@@ -61,11 +61,7 @@ namespace NosStdLib
 					delete MainArray[i];
 				}
 			}
-			else
-			{
-				delete[] MainArray;
-			}
-			
+			delete[] MainArray;
 		}
 	#pragma endregion
 
