@@ -11,16 +11,6 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
-void printReference(const std::wstring& reference)
-{
-    wprintf(reference.c_str());
-}
-
-void printReference(const std::wstring&& reference)
-{
-    wprintf(reference.c_str());
-}
-
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
@@ -31,13 +21,8 @@ int main()
     NosStdLib::DynamicArray<std::wstring> SomeArray;
     std::wstring tempString = L"some text innit bruv\nbruv\ncunt";
 
-
-    printReference(tempString);
-    printReference(L"some text innit bruv\nbruv\ncunt");
-
-
-
-    //wprintf(NosStdLib::String::CenterString<wchar_t>(tempString).c_str());
+    wprintf(NosStdLib::String::CenterString<wchar_t>(GetStdHandle(STD_OUTPUT_HANDLE), tempString).c_str());
+    wprintf(NosStdLib::String::CenterString<wchar_t>(GetStdHandle(STD_OUTPUT_HANDLE), L"some text innit bruv\nbruv\ncunt").c_str());
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

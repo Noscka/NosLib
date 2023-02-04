@@ -1,6 +1,8 @@
 #ifndef _STRING_NOSSTDLIB_HPP_
 #define _STRING_NOSSTDLIB_HPP_
 
+#include "DynamicArray.hpp"
+
 #include <Windows.h>
 #include <stringapiset.h>
 #include <string>
@@ -99,6 +101,28 @@ namespace NosStdLib
 
 			return result;
 		}
+
+		/// <summary>
+		/// Split a string into a DynamicArray Entries using a delimiter
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="result">- the DynamicArray that will get modified</param>
+		/// <param name="input">- the input that will get split</param>
+		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
+		/// <returns>pointer to modified DynamicArray</returns>
+		template <typename CharT>
+		NosStdLib::DynamicArray<std::basic_string<CharT>>* Split(NosStdLib::DynamicArray<std::basic_string<CharT>>* result, std::basic_string<CharT>* input, const CharT& delimiter = L' ')
+		{
+			std::basic_string<CharT> tmp;
+			std::basic_stringstream<CharT> ss(*input);
+
+			while (std::getline(ss, tmp, delimiter))
+			{
+				result->Append(tmp);
+			}
+
+			return result;
+		}
 	#pragma endregion
 
 	#pragma region CenterString
@@ -107,7 +131,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <typeparam name="CharT">- string type</typeparam>
 		/// <param name="consoleHandle">- Custom Console Handle</param>
-		/// <param name="input">- wstring to center</param>
+		/// <param name="input">- string to center</param>
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
@@ -118,7 +142,7 @@ namespace NosStdLib
 			int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 			if (all)
 			{
-				std::vector<std::basic_string<CharT>> inputSplit;
+				NosStdLib::DynamicArray<std::basic_string<CharT>> inputSplit;
 				std::basic_string<CharT> output;
 				NosStdLib::String::Split<CharT>(&inputSplit, &input, L'\n');
 
@@ -136,14 +160,41 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Center wstring 
+		/// Center rvalue string with custom console Handle
 		/// </summary>
 		/// <typeparam name="CharT">- string type</typeparam>
-		/// <param name="input">- wstring to center</param>
+		/// <param name="consoleHandle">- Custom Console Handle</param>
+		/// <param name="input">- rvalue string to center</param>
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
-		/// <returns>centered wstring</returns>
+		/// <returns>centered string</returns>
+		template <typename CharT>
+		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
+		{
+			return CenterString<CharT>(consoleHandle, input, rightPadding, all);
+		}
+
+		/// <summary>
+		/// Center string 
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="input">- string to center</param>
+		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
+		/// <returns>centered string</returns>
 		template <typename CharT>
 		std::basic_string<CharT> CenterString(std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
+		{
+			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
+		}
+
+		/// <summary>
+		/// Center rvalue string
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="input">- rvalue string to center</param>
+		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
+		/// <returns>centered string</returns>
+		template <typename CharT>
+		std::basic_string<CharT> CenterString(std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
 		}
