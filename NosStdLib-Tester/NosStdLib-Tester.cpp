@@ -1,6 +1,5 @@
 ﻿#include "NosStdLib/Console.hpp"
-#include "NosStdLib/DynamicArray.hpp"
-#include "NosStdLib/Experimental.hpp"
+#include "NosStdLib/String.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -12,26 +11,33 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
+void printReference(const std::wstring& reference)
+{
+    wprintf(reference.c_str());
+}
+
+void printReference(const std::wstring&& reference)
+{
+    wprintf(reference.c_str());
+}
+
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Console::InitializeModifiers::EnableANSI();
-    NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Memory Management");
+    NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Splitting with DynamicArray");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    wprintf(L"Press any button to start\n"); _getch();
+    NosStdLib::DynamicArray<std::wstring> SomeArray;
+    std::wstring tempString = L"some text innit bruv\nbruv\ncunt";
 
-    int amount = 1000;
 
-    NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>* simpleArray = new NosStdLib::DynamicArray<NosStdLib::TestEnv::PointerRoots::destructionTesting*>;
+    printReference(tempString);
+    printReference(L"some text innit bruv\nbruv\ncunt");
 
-    for (int i = 0; i < amount; i++)
-    {
-        simpleArray->Append(new NosStdLib::TestEnv::PointerRoots::destructionTesting(0, i));
-    }
-    wprintf(L"Press any button to delete\n"); _getch();
 
-    delete simpleArray;
+
+    //wprintf(NosStdLib::String::CenterString<wchar_t>(tempString).c_str());
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
