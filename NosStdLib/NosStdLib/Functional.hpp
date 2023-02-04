@@ -17,7 +17,7 @@ namespace NosStdLib
             /// <summary>
             /// Function only defined to allow for outside classes to run the child function
             /// </summary>
-            virtual void RunFunction(){/* Does nothing this class */ }
+            virtual void RunFunction(){ /* Does nothing this class */ }
         };
 
         /// <summary>

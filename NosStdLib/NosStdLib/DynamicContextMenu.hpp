@@ -1,7 +1,7 @@
 #ifndef _DYNAMICCONTEXTMENU_NOSSTDLIB_HPP_
 #define _DYNAMICCONTEXTMENU_NOSSTDLIB_HPP_
 
-#include "Global.hpp"
+#include "Console.hpp"
 #include "String.hpp"
 #include "Vector.hpp"
 

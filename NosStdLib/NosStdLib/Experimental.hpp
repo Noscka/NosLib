@@ -23,23 +23,6 @@ namespace NosStdLib
 
         }*/
 
-        class StoringFunctionTest
-        {
-        private:
-            NosStdLib::Functional::FunctionStoreBase* Pointer;
-        public:
-
-            StoringFunctionTest(NosStdLib::Functional::FunctionStoreBase* pointer)
-            {
-                Pointer = pointer;
-            }
-
-            void RunFunction()
-            {
-                Pointer->RunFunction();
-            }
-        };
-
         namespace PointerRoots
         {
             template<typename T>
