@@ -56,7 +56,7 @@ namespace NosStdLib
 			template <typename CharT>
 			std::basic_string<CharT> str()
 			{
-				return NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(std::format(L"({}, {})", this->X, this->Y));
+				return NosStdLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {})", this->X, this->Y));
 			}
 		};
 
@@ -106,7 +106,7 @@ namespace NosStdLib
 			template <typename CharT>
 			std::basic_string<CharT> str()
 			{
-				return NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(std::format(L"({}, {}, {})", this->X, this->Y, this->Z));
+				return NosStdLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {}, {})", this->X, this->Y, this->Z));
 			}
 		};
 	}

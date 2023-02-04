@@ -70,9 +70,9 @@ namespace NosStdLib
 			{
 				bool setTitle;
 			#ifdef UNICODE
-				setTitle = SetConsoleTitleW(NosStdLib::String::ConvertStringTypes<wchar_t, CharT>(title).c_str());
+				setTitle = SetConsoleTitleW(NosStdLib::String::ConvertString<wchar_t, CharT>(title).c_str());
 			#else
-				setTitle = SetConsoleTitleA(NosStdLib::String::ConvertStringTypes<char, CharT>(title).c_str());
+				setTitle = SetConsoleTitleA(NosStdLib::String::ConvertString<char, CharT>(title).c_str());
 			#endif // !UNICODE
 
 				return setTitle && ShowScrollBar(window, SB_BOTH, FALSE);

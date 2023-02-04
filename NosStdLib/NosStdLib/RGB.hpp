@@ -69,7 +69,7 @@ namespace NosStdLib
 			template <typename CharT>
 			std::basic_string<CharT> MakeANSICode(const bool& foreGroundBackGround = true) const
 			{
-				return std::vformat(NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(this->R, this->G, this->B));
+				return std::vformat(NosStdLib::String::ConvertString<CharT, wchar_t>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(this->R, this->G, this->B));
 			}
 
 			/// <summary>

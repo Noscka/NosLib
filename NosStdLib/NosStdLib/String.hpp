@@ -29,7 +29,7 @@ namespace NosStdLib
 		/// <param name="strIn">- string input</param>
 		/// <returns>converted string</returns>
 		template< typename StringTo, typename StringFrom>
-		std::basic_string<StringTo> ConvertStringTypes(const std::basic_string<StringFrom>& strIn)
+		std::basic_string<StringTo> ConvertString(const std::basic_string<StringFrom>& strIn)
 		{
 			if constexpr (std::is_same_v<StringFrom, StringTo>) /* if same character type, then just return string */
 			{
@@ -43,8 +43,8 @@ namespace NosStdLib
 			}
 		}
 
-		#define ToString ConvertStringTypes<char, wchar_t>
-		#define ToWstring ConvertStringTypes<wchar_t, char> 
+		#define ToString ConvertString<char, wchar_t>
+		#define ToWstring ConvertString<wchar_t, char> 
 	#pragma endregion
 
 	#pragma region IsNumber
@@ -63,7 +63,7 @@ namespace NosStdLib
 			if (allowSigns)
 			{
 				/* if allowSigns is true, check if first character is either - or + or a number */
-				if ((str[0] != NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(L'-') && str[0] != NosStdLib::String::ConvertStringTypes<CharT, wchar_t>(L'+')) && !std::isdigit(str[0]))
+				if ((str[0] != (CharT)(L'-') && str[0] != (CharT)(L'+')) && !std::isdigit(str[0]))
 					return false;
 
 				Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */
