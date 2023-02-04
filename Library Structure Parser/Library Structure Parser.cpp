@@ -1,3 +1,8 @@
+#include <NosStdLib/FileManagement.hpp>
+#include <NosStdLib/DynamicArray.hpp>
+#include <NosStdLib/String.hpp>
+#include <NosStdLib/Console.hpp>
+
 #include <iostream>
 #include <io.h>
 #include <fcntl.h>
@@ -6,10 +11,6 @@
 #include <fstream>
 #include <conio.h>
 #include <regex>
-
-#include <NosStdLib/FileManagement.hpp>
-#include <NosStdLib/DynamicArray.hpp>
-#include <NosStdLib/String.hpp>
 
 class Item
 {
@@ -133,8 +134,8 @@ void RecureThrouDir(const std::wstring& root)
 
 int main()
 {
-    NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
-    NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+    NosStdLib::Console::InitializeModifiers::EnableUnicode();
+    NosStdLib::Console::InitializeModifiers::EnableANSI();
 
     ParseHeader(LR"(D:\NosStdLib\Build\Library Structure Parser\x64\Release\abc.hpp)");
 

@@ -1,7 +1,7 @@
 ﻿#ifndef _TEXTCOLOR_NOSSTDLIB_HPP_
 #define _TEXTCOLOR_NOSSTDLIB_HPP_
 
-#include "Global.hpp"
+#include "Console.hpp"
 #include "RGB.hpp"
 #include "String.hpp"
 
@@ -13,12 +13,6 @@
 
 namespace NosStdLib
 {
-	/// <summary>
-	/// namespace contains items which are experimental (require more testing)
-	/// </summary>
-	namespace Experimental
-	{}
-
 	/// <summary>
 	/// This namespace contains items which are related to text coloring (mostly using ANSI)
 	/// </summary>
@@ -60,7 +54,7 @@ namespace NosStdLib
 			/// <param name="sleepSpeed">(default = 1) - the speed to output at</param>
 			void IterateRainbow(const bool& singleRow = false, const int& sleepSpeed = 1)
 			{
-				NosStdLib::Global::Console::ShowCaret(false);
+				NosStdLib::Console::ShowCaret(false);
 
 				HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 				CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -78,7 +72,7 @@ namespace NosStdLib
 					Sleep(sleepSpeed);
 				}
 
-				NosStdLib::Global::Console::ShowCaret(true);
+				NosStdLib::Console::ShowCaret(true);
 			}
 		}
 	}

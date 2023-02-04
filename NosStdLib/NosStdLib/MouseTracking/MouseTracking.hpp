@@ -1,7 +1,7 @@
 #ifndef _MOUSETRACKING_NOSSTDLIB_HPP_
 #define _MOUSETRACKING_NOSSTDLIB_HPP_
 
-#include "../Global.hpp"
+#include "../Console.hpp"
 #include "../RGB.hpp"
 
 #include <Windows.h>
@@ -35,7 +35,7 @@ namespace NosStdLib
 			if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0) /* check if left mouse button is pressed */
 			{
 				int windowX, windowY;
-				NosStdLib::Global::Console::GetWindowPosition(&windowX, &windowY); /* get the coords of the window */
+				NosStdLib::Console::GetWindowPosition(&windowX, &windowY); /* get the coords of the window */
 
 				/* position inside the display (black text area) */
 				int consoleDisplayX = (mouseHookStruct->pt.x - windowX) - 6,  /* x coord */
@@ -99,7 +99,7 @@ namespace NosStdLib
 			{
 				PMSLLHOOKSTRUCT mouseHookStruct = (PMSLLHOOKSTRUCT)lParam;
 
-				NosStdLib::Global::Console::ShowCaret(false);
+				NosStdLib::Console::ShowCaret(false);
 
 				NosStdLib::MouseTrackingFun::ConsoleMSPaint(mouseHookStruct, ConsoleContext, 10, NosStdLib::MouseTrackingFun::BrushType::square);
 			}

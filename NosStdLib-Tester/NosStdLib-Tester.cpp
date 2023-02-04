@@ -1,4 +1,4 @@
-﻿#include "NosStdLib/Global.hpp"
+﻿#include "NosStdLib/Console.hpp"
 #include "NosStdLib/DynamicArray.hpp"
 #include "NosStdLib/Experimental.hpp"
 
@@ -14,10 +14,10 @@
 
 int main()
 {
-    NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
-    NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
-    NosStdLib::Global::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Memory Management");
-    NosStdLib::Global::Console::InitializeModifiers::InitializeEventHandler();
+    NosStdLib::Console::InitializeModifiers::EnableUnicode();
+    NosStdLib::Console::InitializeModifiers::EnableANSI();
+    NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Memory Management");
+    NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
     wprintf(L"Press any button to start\n"); _getch();
 
@@ -70,8 +70,8 @@ void SomeFunction(int* param1, int* param2)
 }
 
 ====MAIN====
-NosStdLib::Global::Console::InitializeModifiers::EnableUnicode();
-NosStdLib::Global::Console::InitializeModifiers::EnableANSI();
+NosStdLib::Console::InitializeModifiers::EnableUnicode();
+NosStdLib::Console::InitializeModifiers::EnableANSI();
 
 NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
 NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);

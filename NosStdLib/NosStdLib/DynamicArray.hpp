@@ -8,6 +8,7 @@
 namespace NosStdLib
 {
 	/* TODO: Add modes (such as double mode were the array doubles in size instead of increasing by stepsize) */
+	/* TODO: (Aly's Idea), add continues array. instead of moving full area to a bigger area, just continue the area in a empty place */
 
 	/// <summary>
 	/// Class which allows for making arrays that can self increase on data overflow

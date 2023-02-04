@@ -19,15 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="NosStdLib\BinaryMath.hpp" />
+    <ClInclude Include="NosStdLib\Console.hpp" />
     <ClInclude Include="NosStdLib\DynamicArray.hpp" />
     <ClInclude Include="NosStdLib\DynamicContextMenu.hpp" />
     <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp" />
     <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
+    <ClInclude Include="NosStdLib\ErrorHandling.hpp" />
     <ClInclude Include="NosStdLib\EventHandling\EventHandling.hpp" />
     <ClInclude Include="NosStdLib\Experimental.hpp" />
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Functional.hpp" />
-    <ClInclude Include="NosStdLib\Global.hpp" />
     <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\RGB.hpp" />
@@ -48,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="NosStdLib\Resource\CustomConsola.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="definitions.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

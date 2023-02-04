@@ -1,7 +1,7 @@
 #ifndef _DYNAMICMENUSYSTEM_NOSSTDLIB_HPP_
 #define _DYNAMICMENUSYSTEM_NOSSTDLIB_HPP_
 
-#include "Global.hpp"
+#include "Console.hpp"
 #include "DynamicArray.hpp"
 #include "UnicodeTextGenerator.hpp"
 #include "Functional.hpp"
@@ -52,7 +52,7 @@ namespace NosStdLib
 
 			HANDLE* MenuConsoleHandle;												/* a pointer to the menu's MenuConsoleHandle, so its synced */
 			CONSOLE_SCREEN_BUFFER_INFO* MenuConsoleScreenBI;						/* a pointer to the menu's MenuConsoleScreenBI, so its synced */
-			NosStdLib::Global::Console::ConsoleSizeStruct* MenuConsoleSizeStruct;	/* a pointer to the menu's MenuConsoleSizeStruct, so its synced */
+			NosStdLib::Console::ConsoleSizeStruct* MenuConsoleSizeStruct;	/* a pointer to the menu's MenuConsoleSizeStruct, so its synced */
 		public:
 			/// <summary>
 			/// create a wstring which shows the Entry name, value and is also centered
@@ -77,7 +77,7 @@ namespace NosStdLib
 			/// Update/set the variables such as pointers to ConsoleHandle, ConsoleScreenBI and ConsoleSizeStruct
 			/// </summary>
 			/// <returns></returns>
-			void SetEntryVariables(HANDLE* menuConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* menuConsoleScreenBI, NosStdLib::Global::Console::ConsoleSizeStruct* menuConsoleSizeStruct)
+			void SetEntryVariables(HANDLE* menuConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* menuConsoleScreenBI, NosStdLib::Console::ConsoleSizeStruct* menuConsoleSizeStruct)
 			{
 				MenuConsoleHandle = menuConsoleHandle;
 				MenuConsoleScreenBI = menuConsoleScreenBI;
@@ -120,7 +120,7 @@ namespace NosStdLib
 			/// <returns>wstring which shows the Entry name, value and is also centered</returns>
 			std::wstring EntryString(const bool& selected)
 			{
-				*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+				*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
 				int SpaceLenght = ((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
 
@@ -149,7 +149,7 @@ namespace NosStdLib
 					switch (inputStruct->inputType)
 					{
 					case EntryInputPassStruct::InputType::Enter:
-						NosStdLib::Global::Console::ClearScreen();
+						NosStdLib::Console::ClearScreen();
 						TypePointerStore->RunFunction();
 						inputStruct->Redraw = true;
 						break;
@@ -172,11 +172,11 @@ namespace NosStdLib
 		class DynamicMenu
 		{
 		private:
-			std::wstring Title;												/* Menu Title */
-			HANDLE ConsoleHandle;											/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
-			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;						/* global ConsoleScreenBI so it is synced across all operations */
-			NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
-			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;			/* array of MenuEntries */
+			std::wstring Title;										/* Menu Title */
+			HANDLE ConsoleHandle;									/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
+			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;				/* global ConsoleScreenBI so it is synced across all operations */
+			NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
+			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;	/* array of MenuEntries */
 
 			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
 				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
@@ -212,12 +212,12 @@ namespace NosStdLib
 				int oldIndex = currentIndex; /* Old index to know old position */
 				int titleSize = 0; /* title size (for calculations where actual menu entries start) */
 				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
-				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
-				NosStdLib::Global::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
+				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
+				NosStdLib::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
 
 				DrawMenu(currentIndex, &titleSize); /* Draw menu first time */
 
-				NosStdLib::Global::Console::ShowCaret(false); /* Hide the caret */
+				NosStdLib::Console::ShowCaret(false); /* Hide the caret */
 
 				while (MenuLoop)
 				{
@@ -228,7 +228,7 @@ namespace NosStdLib
 						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
 						if (InputPassStruct.Redraw)
 							DrawMenu(currentIndex, &titleSize);
-						NosStdLib::Global::Console::ShowCaret(false); /* hide the caret again */
+						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 					}
 					else if (!(ch && ch != 224))
 					{
@@ -265,12 +265,12 @@ namespace NosStdLib
 						}
 					}
 
-					ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+					ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
 					/* if the console dimentions have changed (console window has increased or decreased). then redraw whole menu */
 					if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
 					{
 						oldConsoleSizeStruct = ConsoleSizeStruct;
-						NosStdLib::Global::Console::ShowCaret(false); /* hide the caret again */
+						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 						DrawMenu(currentIndex, &titleSize);
 					}
 
@@ -316,8 +316,8 @@ namespace NosStdLib
 
 					oldIndex = currentIndex;
 				}
-				NosStdLib::Global::Console::ClearScreen(); /* Clear the screen to remove the menu */
-				NosStdLib::Global::Console::ShowCaret(true); /* show the caret again */
+				NosStdLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
+				NosStdLib::Console::ShowCaret(true); /* show the caret again */
 			}
 
 			/// <summary>
@@ -338,9 +338,9 @@ namespace NosStdLib
 			/// <param name="TitleSize">- pointer to the title size int so it can be calculated</param>
 			void DrawMenu(const int& currentIndex, int* titleSize)
 			{
-				NosStdLib::Global::Console::ClearScreen();
+				NosStdLib::Console::ClearScreen();
 
-				ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
 
 				std::wstring outputString; /* string for full "display" as it is the most perfomace efficent method */
 
@@ -387,7 +387,7 @@ namespace NosStdLib
 		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
 		std::wstring MenuEntry<bool>::EntryString(const bool& selected)
 		{
-			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+			*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
 			std::wstring output = (selected ? 
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + L">> " + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") +L" <<" :
@@ -425,7 +425,7 @@ namespace NosStdLib
 		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
 		std::wstring MenuEntry<int>::EntryString(const bool& selected)
 		{
-			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+			*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
 			std::wstring output = (selected ? 
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(4, ' ') + L"<" + std::to_wstring(*TypePointerStore) + L">" :
@@ -451,7 +451,7 @@ namespace NosStdLib
 				COORD NumberPosition = { (((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), (inputStruct->CurrentIndex + inputStruct->TitleSize) };
 
 				SetConsoleCursorPosition(*MenuConsoleHandle, NumberPosition);
-				NosStdLib::Global::Console::ShowCaret(true);
+				NosStdLib::Console::ShowCaret(true);
 
 				while (ContinueIntType)
 				{
@@ -468,7 +468,7 @@ namespace NosStdLib
 
 						if (!NewInt.empty())
 						{
-							*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI);
+							*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI);
 
 							NewCoord = { (SHORT)(MenuConsoleScreenBI->dwCursorPosition.X - 1), MenuConsoleScreenBI->dwCursorPosition.Y }; // create new coord with x-1 and same y
 							SetConsoleCursorPosition(*MenuConsoleHandle, NewCoord); // use new coord
@@ -505,7 +505,7 @@ namespace NosStdLib
 
 				SetConsoleCursorPosition(*MenuConsoleHandle, { 0, (SHORT)(inputStruct->CurrentIndex + inputStruct->TitleSize) });
 				wprintf(EntryString(true).c_str());
-				NosStdLib::Global::Console::ShowCaret(false); /* hide the caret again */
+				NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 				break;
 			}
 			case EntryInputPassStruct::InputType::ArrowLeft:
@@ -530,7 +530,7 @@ namespace NosStdLib
 		/// <returns>wstring which shows the Entry name, value and is also centered</returns>
 		std::wstring MenuEntry<DynamicMenu>::EntryString(const bool& selected)
 		{
-			*MenuConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+			*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
 			std::wstring output = (selected ? 
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + NosStdLib::RGB::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L">> " + EntryName + L" <<" :
@@ -548,7 +548,7 @@ namespace NosStdLib
 			switch (inputStruct->inputType)
 			{
 			case EntryInputPassStruct::InputType::Enter:
-				NosStdLib::Global::Console::ClearScreen();
+				NosStdLib::Console::ClearScreen();
 				(*TypePointerStore).StartMenu();
 				inputStruct->Redraw = true;
 				break;

@@ -1,7 +1,7 @@
 ﻿#ifndef _DYNAMICLOADINGSCREEN_NOSSTDLIB_HPP_
 #define _DYNAMICLOADINGSCREEN_NOSSTDLIB_HPP_
 
-#include "Global.hpp"
+#include "Console.hpp"
 #include "FileManagement.hpp"
 #include "String.hpp"
 #include "EventHandling/EventHandling.hpp"
@@ -34,7 +34,7 @@ namespace NosStdLib
 
 		static inline HANDLE ConsoleHandle;												/* global and static Console Handle */
 		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;									/* global and static Console ScreenBI */
-		static inline NosStdLib::Global::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* global and static colums and rows */
+		static inline NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* global and static colums and rows */
 
 		LoadType BarType; /* bar type of the object */
 
@@ -43,14 +43,14 @@ namespace NosStdLib
 		/// </summary>
 		void MidOperationUpdate()
 		{
-			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi);
+			ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &csbi);
 			PreviousWriteRow = CurrentWriteRow; /* before recalculating new writing row, save it incase its different and the old one needs clearing */
 
 			/* recalculate writing row, either 4 above the bottom (with status message) or right below the splash screen */
 			CurrentWriteRow = max((ConsoleSizeStruct.Rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1));
 
 			if (CurrentWriteRow != PreviousWriteRow) /* if CurrentWriteRow and PreviousWriteRow are not equal (write position changed), clear previous */
-				NosStdLib::Global::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosStdLib::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace NosStdLib
 
 			std::thread FunctionThread([this](Func&& callable, VariadicArgs&& ... args) { this->ThreadingFunction(callable, std::forward<VariadicArgs>(args)...); }, callable, std::forward<VariadicArgs>(args)...);
 
-			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi);
+			ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &csbi);
 
 			std::wstring bar = L"";
 
@@ -106,7 +106,7 @@ namespace NosStdLib
 			wprintf(SplashScreen.c_str());
 
 			std::thread FunctionThread([this](Func&& callable, VariadicArgs&& ... args) { this->ThreadingFunction(callable, std::forward<VariadicArgs>(args)...); }, callable, std::forward<VariadicArgs>(args)...);
-			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi);
+			ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &csbi);
 
 			std::wstring bar = L"▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▇ ▆ ▅ ▄ ▃ ▂ ▁";
 
@@ -283,7 +283,7 @@ namespace NosStdLib
 		template <typename Func, typename ... VariadicArgs>
 		void StartLoading(Func&& callable, VariadicArgs&& ... args)
 		{
-			ConsoleSizeStruct = NosStdLib::Global::Console::GetConsoleSize(ConsoleHandle, &csbi); /* Update the ConsoleSize first time */
+			ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &csbi); /* Update the ConsoleSize first time */
 
 			CrossThreadFinishBoolean = false;
 

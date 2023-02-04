@@ -4,8 +4,6 @@
 #include <string>
 #include <filesystem>
 
-#include "Global.hpp"
-
 namespace NosStdLib
 {
     /// <summary>

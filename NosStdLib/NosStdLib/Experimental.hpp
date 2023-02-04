@@ -2,7 +2,7 @@
 #define _EXPERIMENTAL_NOSSTDLIB_HPP_
 
 #include "TextColor.hpp"
-#include "Global.hpp"
+#include "Console.hpp"
 
 #include "Functional.hpp"
 #include <Windows.h>
@@ -129,7 +129,7 @@ namespace NosStdLib
 
             void IterateSquare(int sleepSpeed = 15)
             {
-                NosStdLib::Global::Console::ShowCaret(false);
+                NosStdLib::Console::ShowCaret(false);
 
                 HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
                 CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -157,7 +157,7 @@ namespace NosStdLib
                     Sleep(sleepSpeed);
                 }
 
-                NosStdLib::Global::Console::ShowCaret(true);
+                NosStdLib::Console::ShowCaret(true);
             }
         }
     }
