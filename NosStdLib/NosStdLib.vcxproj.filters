@@ -18,49 +18,52 @@
     <ClInclude Include="NosStdLib\Global.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\FileManagement.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NosStdLib\DynamicArray.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\Experimental.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\Resource\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\TextColor.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\Functional.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NosStdLib\String.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\Vector.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NosStdLib\DynamicContextMenu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\EventHandling\EventHandling.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp">
+    <ClInclude Include="NosStdLib\DynamicContextMenu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\Experimental.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\FileManagement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\Functional.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\RGB.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\TextColor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\Vector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\TypeTraits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
