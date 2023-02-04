@@ -1,13 +1,13 @@
 #ifndef _UNICODETEXTGENERATOR_NOSSTDLIB_HPP_
 #define _UNICODETEXTGENERATOR_NOSSTDLIB_HPP_
 
+#include "String.hpp"
+
 #include <string>
 #include <Windows.h>
 
-#include "String.hpp"
-
 /* TODO: Create UnicodeTextGenerator that will dynamically create the text (research and develop) */
-/* TODO: make functions use template (like in Global::String) */
+/* TODO: make functions use template (like in String.hpp) */
 
 namespace NosStdLib
 {
