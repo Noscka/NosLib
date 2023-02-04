@@ -1,6 +1,8 @@
 #ifndef _DYNAMICARRAY_NOSSTDLIB_HPP_
 #define _DYNAMICARRAY_NOSSTDLIB_HPP_
 
+#include "TypeTraits.hpp"
+
 #include <iostream>
 
 namespace NosStdLib
@@ -51,9 +53,10 @@ namespace NosStdLib
 		/// Destroy array contained in object
 		~DynamicArray()
 		{
-			if constexpr (std::is_pointer_v<ArrayDataType>)
+			/* if a pointer and not a function, go through all entries and delete */
+			if constexpr (std::is_pointer<ArrayDataType>::value && !std::is_function< NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value)
 			{
-				for (int i = 0; i <= ArrayIndexPointer; i++)
+				for (int i = 0; i < ArrayIndexPointer; i++)
 				{
 					delete MainArray[i];
 				}

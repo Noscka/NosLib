@@ -10,24 +10,7 @@
 #include <cstdio> 
 #include <conio.h>
 
-#include <format>
-
-template<class DataType>
-void DeleteArray(DataType dataArray, int count)
-{
-    if constexpr (std::is_pointer_v<std::remove_pointer_t<DataType>>)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            delete dataArray[i];
-        }
-    }
-    else
-    {
-        delete[] dataArray;
-    }
-}
-
+/* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
 int main()
 {
