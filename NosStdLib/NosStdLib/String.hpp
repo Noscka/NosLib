@@ -2,6 +2,7 @@
 #define _STRING_NOSSTDLIB_HPP_
 
 #include "DynamicArray.hpp"
+#include "TypeTraits.hpp"
 
 #include <Windows.h>
 #include <stringapiset.h>
@@ -31,7 +32,7 @@ namespace NosStdLib
 		template< typename StringTo, typename StringFrom>
 		std::basic_string<StringTo> ConvertString(const std::basic_string<StringFrom>& strIn)
 		{
-			if constexpr (std::is_same_v<StringFrom, StringTo>) /* if same character type, then just return string */
+			if constexpr (std::is_same_v<StringTo, StringFrom>) /* if same character type, then just return string */
 			{
 				return strIn;
 			}
@@ -45,6 +46,24 @@ namespace NosStdLib
 
 		#define ToString ConvertString<char, wchar_t>
 		#define ToWstring ConvertString<wchar_t, char> 
+	#pragma endregion
+
+	#pragma region Character Conversion
+		template<typename CharTo, typename CharFrom>
+		CharTo ConvertCharacter(const CharFrom& charIn)
+		{
+			static_assert(NosStdLib::TypeTraits::is_character<CharTo>::value, "type getting converted into must be character type");
+			static_assert(NosStdLib::TypeTraits::is_character<CharFrom>::value, "type getting converted from must be character type");
+
+			if constexpr (std::is_same_v<CharTo, CharFrom>)
+			{
+				return charIn;
+			}
+			else
+			{
+				return (CharTo)charIn;
+			}
+		}
 	#pragma endregion
 
 	#pragma region IsNumber
@@ -63,7 +82,7 @@ namespace NosStdLib
 			if (allowSigns)
 			{
 				/* if allowSigns is true, check if first character is either - or + or a number */
-				if ((str[0] != (CharT)(L'-') && str[0] != (CharT)(L'+')) && !std::isdigit(str[0]))
+				if ((str[0] != NosStdLib::String::ConvertCharacter<CharT, wchar_t>(L'-') && str[0] != NosStdLib::String::ConvertCharacter<CharT, wchar_t>(L'+')) && !std::isdigit(str[0]))
 					return false;
 
 				Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */

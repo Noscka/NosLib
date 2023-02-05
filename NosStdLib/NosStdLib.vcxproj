@@ -51,9 +51,6 @@
   <ItemGroup>
     <Font Include="NosStdLib\Resource\CustomConsola.ttf" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="definitions.md" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

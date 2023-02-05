@@ -89,7 +89,4 @@
   <ItemGroup>
     <Font Include="NosStdLib\Resource\CustomConsola.ttf" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="definitions.md" />
-  </ItemGroup>
 </Project>
