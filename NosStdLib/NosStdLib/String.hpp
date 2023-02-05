@@ -25,8 +25,8 @@ namespace NosStdLib
 		/// <summary>
 		/// Converts any string type to any other string type. template <ToType, FromType>
 		/// </summary>
-		/// <typeparam name="StringFrom">- the string input type</typeparam>
 		/// <typeparam name="StringTo">- the string output type</typeparam>
+		/// <typeparam name="StringFrom">- the string input type</typeparam>
 		/// <param name="strIn">- string input</param>
 		/// <returns>converted string</returns>
 		template< typename StringTo, typename StringFrom>
@@ -49,6 +49,13 @@ namespace NosStdLib
 	#pragma endregion
 
 	#pragma region Character Conversion
+		/// <summary>
+		/// Converts single characters using casting
+		/// </summary>
+		/// <typeparam name="CharTo">- Character output type</typeparam>
+		/// <typeparam name="CharFrom">- Character input type</typeparam>
+		/// <param name="charIn">- character input</param>
+		/// <returns>converted character</returns>
 		template<typename CharTo, typename CharFrom>
 		CharTo ConvertCharacter(const CharFrom& charIn)
 		{

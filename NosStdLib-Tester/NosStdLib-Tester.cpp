@@ -18,12 +18,7 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Splitting with DynamicArray");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    //std::wstring tempString = L"-123";
-
     std::wcout << NosStdLib::String::ConvertCharacter<wchar_t, char>('a') << std::endl;
-
-    //std::wcout << NosStdLib::String::CenterString<wchar_t>(tempString) << std::endl;
-    //std::wcout << NosStdLib::String::CenterString<wchar_t>(L"-12a3") << std::endl;
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
