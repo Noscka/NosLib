@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NosStdLib\BinaryMath.hpp" />
+    <ClInclude Include="NosStdLib\Cast.hpp" />
     <ClInclude Include="NosStdLib\Console.hpp" />
     <ClInclude Include="NosStdLib\DynamicArray.hpp" />
     <ClInclude Include="NosStdLib\DynamicContextMenu.hpp" />

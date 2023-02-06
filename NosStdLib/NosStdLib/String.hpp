@@ -3,6 +3,7 @@
 
 #include "DynamicArray.hpp"
 #include "TypeTraits.hpp"
+#include "Cast.hpp"
 
 #include <Windows.h>
 #include <stringapiset.h>
@@ -62,14 +63,7 @@ namespace NosStdLib
 			static_assert(NosStdLib::TypeTraits::is_character<CharTo>::value, "type getting converted into must be character type");
 			static_assert(NosStdLib::TypeTraits::is_character<CharFrom>::value, "type getting converted from must be character type");
 
-			if constexpr (std::is_same_v<CharTo, CharFrom>)
-			{
-				return charIn;
-			}
-			else
-			{
-				return (CharTo)charIn;
-			}
+			return NosStdLib::Cast::Cast<CharTo, CharFrom>(charIn);
 		}
 	#pragma endregion
 
