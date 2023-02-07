@@ -1,6 +1,6 @@
 ﻿#include "NosStdLib/Console.hpp"
 #include "NosStdLib/String.hpp"
-#include "NosStdLib/TextColor.hpp"
+#include "NosStdLib/MouseTracking/MouseTracking.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -19,44 +19,8 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    wprintf((NosStdLib::RGB::NosRGB(255, 0, 255).MakeANSICode<wchar_t>() + L"█\033[0m").c_str());
-    wprintf((NosStdLib::RGB::NosRGB(0, 255, 255).MakeANSICode<wchar_t>() + L"█\033[0m\n").c_str());
+    NosStdLib::MouseTracking::InitializeMouseTracking();
 
-
-    CONSOLE_FONT_INFOEX consoleFontInfo;
-    consoleFontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
-
-    GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
-
-    std::wcout << consoleFontInfo.dwFontSize.X << L" | " << consoleFontInfo.dwFontSize.Y << L" | " << consoleFontInfo.FontWeight << std::endl;
-
-    //consoleFontInfo.dwFontSize.X /= 2;
-    //consoleFontInfo.dwFontSize.Y /= 2;
-
-    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
-    std::wcout << consoleFontInfo.dwFontSize.X << L" | " << consoleFontInfo.dwFontSize.Y << L" | " << consoleFontInfo.FontWeight << std::endl;
-
-    NosStdLib::Console::ShowCaret(false);
-
-    HDC ConsoleContext = GetDC(GetConsoleWindow());
-    Sleep(20);
-    
-    for (int i = 0; i < consoleFontInfo.dwFontSize.X; i++)
-    {
-        for (int j = 0; j < consoleFontInfo.dwFontSize.Y; j++)
-        {
-            SetPixel(ConsoleContext, i+(consoleFontInfo.dwFontSize.X*2), j, RGB(255, 255, 0));
-        }
-    }
-
-    for (int i = 0; i < consoleFontInfo.dwFontSize.X; i++)
-    {
-        for (int j = 0; j < consoleFontInfo.dwFontSize.Y; j++)
-        {
-            SetPixel(ConsoleContext, i + (consoleFontInfo.dwFontSize.X * 3), j, RGB(0, 255, 255));
-        }
-    }
-    
     MSG msg;
     while (GetMessage(&msg, 0, 0, 0)) {}
 
