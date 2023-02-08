@@ -96,7 +96,11 @@ namespace NosStdLib
 		{
 			NosStdLib::Console::ConsoleSizeStruct size = NosStdLib::Console::GetConsoleSize();
 
-			if ((currentPosition.X < 0 || currentPosition.Y < 0) || (currentPosition.X > size.Columns || currentPosition.Y > size.Rows))
+			if (LastPosition.X == currentPosition.X && LastPosition.Y == currentPosition.Y)
+			{
+				return;
+			}
+			else if ((currentPosition.X < 0 || currentPosition.Y < 0) || (currentPosition.X > size.Columns || currentPosition.Y > size.Rows))
 			{
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), LastPosition);
 				wprintf(L" ");
