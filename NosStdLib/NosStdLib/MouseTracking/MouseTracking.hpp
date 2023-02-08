@@ -8,6 +8,7 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <iostream>
+#include <future>
 
 namespace NosStdLib
 {
@@ -92,15 +93,16 @@ namespace NosStdLib
 		{
 			NosStdLib::Console::ConsoleSizeStruct size = NosStdLib::Console::GetConsoleSize();
 
-			std::wstring output;
+			if ((x <= 0 || y <= 0) || (x >= size.Columns || y >= size.Rows))
+			{
+				return std::wstring(size.Columns * size.Rows, L' ');
+			}
 
-			output += std::wstring(size.Columns * (y - 1), L'X');
-			output += std::wstring(x-1, L'X');
-			output += std::wstring(1, L'█');
-			output += std::wstring(size.Columns-x, L'X');
-			output += std::wstring(((size.Columns - (y + 1)) * size.Rows), L'X');
-
-			return output;
+			return (std::wstring(size.Columns * (y - 1), L' ') +
+					std::wstring(x - 1, L' ') +
+					std::wstring(1, L'█') +
+					std::wstring(size.Columns - x, L' ') +
+					std::wstring(((size.Columns * size.Rows) - (size.Columns * y)), L' '));
 		}
 
 		/// <summary>
@@ -121,12 +123,12 @@ namespace NosStdLib
 
 			GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
 
-			int charX = (consoleDisplayX / consoleFontInfo.dwFontSize.X),
-				charY = (consoleDisplayY / consoleFontInfo.dwFontSize.Y);
-
-			wprintf(CharCoordPrint(max(charX, 0), max(charY, 0)).c_str());
+			int charX = (consoleDisplayX / consoleFontInfo.dwFontSize.X)+1,
+				charY = (consoleDisplayY / consoleFontInfo.dwFontSize.Y)+1;
 
 			//wprintf(NosStdLib::String::CenterString<wchar_t>(std::format(L"{} | {}", charX, charY), true, true).c_str());
+
+			wprintf(CharCoordPrint(charX, charY).c_str());
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 		}
 
@@ -140,7 +142,7 @@ namespace NosStdLib
 
 				NosStdLib::Console::ShowCaret(false);
 
-				CalcCharPixel(mouseHookStruct);
+				std::async(std::launch::async, CalcCharPixel, mouseHookStruct);
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);

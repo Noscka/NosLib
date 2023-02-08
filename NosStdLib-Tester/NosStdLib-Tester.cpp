@@ -19,9 +19,9 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    //NosStdLib::MouseTracking::InitializeMouseTracking();
+    NosStdLib::MouseTracking::InitializeMouseTracking();
 
-    wprintf(NosStdLib::MouseTracking::CharCoordPrint(2, 2).c_str());
+    //wprintf(NosStdLib::MouseTracking::CharCoordPrint(10, 10).c_str());
 
     MSG msg;
     while (GetMessage(&msg, 0, 0, 0)) {}
