@@ -1,4 +1,4 @@
-#ifndef _MOUSETRACKING_NOSSTDLIB_HPP_
+﻿#ifndef _MOUSETRACKING_NOSSTDLIB_HPP_
 #define _MOUSETRACKING_NOSSTDLIB_HPP_
 
 #include "../Console.hpp"
@@ -88,7 +88,26 @@ namespace NosStdLib
 	/// </summary>
 	namespace MouseTracking
 	{
-		void CalcCharPixel(const PMSLLHOOKSTRUCT& mouseHookStruct) /* REWRITE/Check, wrote while kinda drunk */
+		std::wstring CharCoordPrint(const int& x, const int& y)
+		{
+			NosStdLib::Console::ConsoleSizeStruct size = NosStdLib::Console::GetConsoleSize();
+
+			std::wstring output;
+
+			output += std::wstring(size.Columns * (y - 1), L'X');
+			output += std::wstring(x-1, L'X');
+			output += std::wstring(1, L'█');
+			output += std::wstring(size.Columns-x, L'X');
+			output += std::wstring(((size.Columns - (y + 1)) * size.Rows), L'X');
+
+			return output;
+		}
+
+		/// <summary>
+		/// Calculates the position of the mouse in character terms
+		/// </summary>
+		/// <param name="mouseHookStruct">- for finding mouse position</param>
+		void CalcCharPixel(const PMSLLHOOKSTRUCT& mouseHookStruct)
 		{
 			int windowX, windowY;
 			NosStdLib::Console::GetWindowPosition(&windowX, &windowY); /* get the coords of the window */
@@ -101,13 +120,13 @@ namespace NosStdLib
 			consoleFontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
 
 			GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
-			consoleFontInfo.dwFontSize.X;
-			consoleFontInfo.dwFontSize.Y;
 
 			int charX = (consoleDisplayX / consoleFontInfo.dwFontSize.X),
 				charY = (consoleDisplayY / consoleFontInfo.dwFontSize.Y);
 
-			wprintf(NosStdLib::String::CenterString<wchar_t>(std::format(L"{} | {}", charX, charY), true, true).c_str());
+			wprintf(CharCoordPrint(max(charX, 0), max(charY, 0)).c_str());
+
+			//wprintf(NosStdLib::String::CenterString<wchar_t>(std::format(L"{} | {}", charX, charY), true, true).c_str());
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 		}
 

@@ -168,14 +168,14 @@ namespace NosStdLib
 
 				for (std::basic_string<CharT> Singleinput : inputSplit)
 				{
-					output += (std::basic_string<CharT>(((columns / 2) - Singleinput.size() / 2), ' ') + Singleinput + (rightPadding ? std::wstring(max((columns - (Singleinput.size() + ((columns / 2) - Singleinput.size() / 2))), 0), L' ') : L"") + (CharT)(L'\n'));
+					output += (std::basic_string<CharT>(((columns / 2) - Singleinput.size() / 2), ' ') + Singleinput + (rightPadding ? std::wstring(max((columns - (Singleinput.size() + ((columns / 2) - Singleinput.size() / 2))), 0), L' ') : L"") + NosStdLib::String::ConvertCharacter<CharT, wchar_t>(L'\n'));
 				}
 
 				return output;
 			}
 			else
 			{
-				return (std::basic_string<CharT>(((columns / 2) - input.size() / 2), ' ') + input + (rightPadding ? std::wstring(max((columns - (input.size() + ((columns / 2) - input.size() / 2))), 0), L' ') : L"") + (CharT)(L'\n'));
+				return (std::basic_string<CharT>(((columns / 2) - input.size() / 2), ' ') + input + (rightPadding ? std::wstring(max((columns - (input.size() + ((columns / 2) - input.size() / 2))), 0), L' ') : L"") + NosStdLib::String::ConvertCharacter<CharT, wchar_t>(L'\n'));
 			}
 		}
 
