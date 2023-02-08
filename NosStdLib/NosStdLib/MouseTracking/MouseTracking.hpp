@@ -4,6 +4,7 @@
 #include "../Console.hpp"
 #include "../RGB.hpp"
 #include "../String.hpp"
+#include "../Cast.hpp"
 
 #include <Windows.h>
 #include <stdio.h>
@@ -89,22 +90,27 @@ namespace NosStdLib
 	/// </summary>
 	namespace MouseTracking
 	{
-		std::wstring CharCoordPrint(const int& x, const int& y)
+		COORD LastPosition;
+
+		void CharCoordPrint(const COORD& currentPosition)
 		{
 			NosStdLib::Console::ConsoleSizeStruct size = NosStdLib::Console::GetConsoleSize();
 
-			if ((x <= 0 || y <= 0) || (x >= size.Columns || y >= size.Rows))
+			if ((currentPosition.X < 0 || currentPosition.Y < 0) || (currentPosition.X > size.Columns || currentPosition.Y > size.Rows))
 			{
-				return std::wstring(size.Columns * size.Rows, L' ');
+				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), LastPosition);
+				wprintf(L" ");
+				return;
 			}
 
-			return (std::wstring(size.Columns * (y - 1), L' ') +
-					std::wstring(x - 1, L' ') +
-					std::wstring(1, L'█') +
-					std::wstring(size.Columns - x, L' ') +
-					std::wstring(((size.Columns * size.Rows) - (size.Columns * y)), L' '));
-		}
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), LastPosition);
+			wprintf(L" ");
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), currentPosition);
+			wprintf(L"█");
 
+			LastPosition = currentPosition;
+		}
+		
 		/// <summary>
 		/// Calculates the position of the mouse in character terms
 		/// </summary>
@@ -123,12 +129,9 @@ namespace NosStdLib
 
 			GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
 
-			int charX = (consoleDisplayX / consoleFontInfo.dwFontSize.X)+1,
-				charY = (consoleDisplayY / consoleFontInfo.dwFontSize.Y)+1;
-
 			//wprintf(NosStdLib::String::CenterString<wchar_t>(std::format(L"{} | {}", charX, charY), true, true).c_str());
 
-			wprintf(CharCoordPrint(charX, charY).c_str());
+			CharCoordPrint({NosStdLib::Cast::Cast<SHORT, int>((consoleDisplayX / consoleFontInfo.dwFontSize.X)), NosStdLib::Cast::Cast<SHORT, int>((consoleDisplayY / consoleFontInfo.dwFontSize.Y))});
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 		}
 
@@ -142,7 +145,7 @@ namespace NosStdLib
 
 				NosStdLib::Console::ShowCaret(false);
 
-				std::async(std::launch::async, CalcCharPixel, mouseHookStruct);
+				CalcCharPixel(mouseHookStruct);
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
