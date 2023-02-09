@@ -142,12 +142,12 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Remove and move all Object infront, back 1 spot
+		/// Remove object in position and move all Object infront, back 1 spot
 		/// </summary>
-		/// <param name="position"> - Position to remove</param>
+		/// <param name="position">- Position to remove</param>
 		void Remove(const int& position)
 		{
-			if (position >= (ArrayIndexPointer - 1) || position < 0)// check if the position to remove is in array range
+			if (position >= ArrayIndexPointer || position < 0)// check if the position to remove is in array range
 			{
 				throw std::out_of_range("position was out of range of the array");
 				return;
@@ -159,6 +159,19 @@ namespace NosStdLib
 			}
 			MainArray[ArrayIndexPointer - 1] = NULL; // make last character blank
 			ArrayIndexPointer--;
+		}
+
+		/// <summary>
+		/// Remove object from array and move all objects infront back 1 spot (has to have a different name incase DataType is int)
+		/// </summary>
+		/// <param name="object">- object to find and remove</param>
+		/// <param name="checkAll">(default = false) - if the for loop should check for all instances</param>
+		void ObjectRemove(const ArrayDataType& object, const bool& checkAll = false)
+		{
+			for (int i = 0; i <= ArrayIndexPointer; i++)
+			{
+				if (object == MainArray[i]) { Remove(i); if (!checkAll) { return; } }
+			}
 		}
 
 		/// <summary>
