@@ -1,6 +1,7 @@
 ﻿#include "NosStdLib/Console.hpp"
 #include "NosStdLib/String.hpp"
 #include "NosStdLib/MouseTracking/MouseTracking.hpp"
+#include "NosStdLib/MouseTracking/Button.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -12,6 +13,11 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
+void SomeEventFunction(std::wstring toPrint)
+{
+    wprintf(std::format(L"printing event + {}\n", toPrint).c_str());
+}
+
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
@@ -19,12 +25,14 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::MouseTracking::InitializeMouseTracking();
 
-    //wprintf(NosStdLib::MouseTracking::CharCoordPrint(10, 10).c_str());
+    NosStdLib::Button::Event smallEvent(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"abc"));
+    smallEvent.TriggerEvent();
 
-    MSG msg;
-    while (GetMessage(&msg, 0, 0, 0)) {}
+    //NosStdLib::MouseTracking::InitializeMouseTracking();
+
+    //MSG msg;
+    //while (GetMessage(&msg, 0, 0, 0)) {}
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

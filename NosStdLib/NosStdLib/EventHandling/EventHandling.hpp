@@ -24,20 +24,6 @@ namespace NosStdLib
             static inline bool Initialized = false;
         }
 
-        /// <summary>
-        /// Add function to cleanup array
-        /// </summary>
-        /// <param name="functionPointer">- pointer to function</param>
-        void AddCleanupFunction(void(*functionPointer)())
-        {
-            if (!Initialized) /* if not Initialized, initialize so it works */
-            {
-                InitializeEventHandler();
-            }
-
-            ClosingCleanupFunctionArray.Append(functionPointer);
-        }
-
         BOOL WINAPI HandlerRoutine(DWORD eventCode)
         {
             switch (eventCode)
@@ -62,6 +48,20 @@ namespace NosStdLib
         {
             Initialized = SetConsoleCtrlHandler(HandlerRoutine, TRUE);
             return Initialized;
+        }
+
+        /// <summary>
+        /// Add function to cleanup array
+        /// </summary>
+        /// <param name="functionPointer">- pointer to function</param>
+        void AddCleanupFunction(void(*functionPointer)())
+        {
+            if (!Initialized) /* if not Initialized, initialize so it works */
+            {
+                InitializeEventHandler();
+            }
+
+            ClosingCleanupFunctionArray.Append(functionPointer);
         }
 	}
 }

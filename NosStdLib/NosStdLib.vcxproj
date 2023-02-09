@@ -31,6 +31,7 @@
     <ClInclude Include="NosStdLib\Experimental.hpp" />
     <ClInclude Include="NosStdLib\FileManagement.hpp" />
     <ClInclude Include="NosStdLib\Functional.hpp" />
+    <ClInclude Include="NosStdLib\MouseTracking\Button.hpp" />
     <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\RGB.hpp" />
