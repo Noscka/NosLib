@@ -14,7 +14,29 @@ namespace NosStdLib
 	/// </summary>
 	namespace EventHandling
 	{
-        static NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
+        /// <summary>
+        /// Privated namespace
+        /// </summary>
+        namespace
+        {
+            static NosStdLib::DynamicArray<void(*)()> ClosingCleanupFunctionArray; /* Array with list of functions to run when cleaning up */
+
+            static inline bool Initialized = false;
+        }
+
+        /// <summary>
+        /// Add function to cleanup array
+        /// </summary>
+        /// <param name="functionPointer">- pointer to function</param>
+        void AddCleanupFunction(void(*functionPointer)())
+        {
+            if (!Initialized) /* if not Initialized, initialize so it works */
+            {
+                InitializeEventHandler();
+            }
+
+            ClosingCleanupFunctionArray.Append(functionPointer);
+        }
 
         BOOL WINAPI HandlerRoutine(DWORD eventCode)
         {
@@ -38,7 +60,8 @@ namespace NosStdLib
         /// <returns>true for succesful and false for unsuccesful</returns>
         bool InitializeEventHandler()
         {
-            return SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+            Initialized = SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+            return Initialized;
         }
 	}
 }

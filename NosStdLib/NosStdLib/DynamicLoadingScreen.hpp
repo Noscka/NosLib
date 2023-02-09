@@ -223,7 +223,7 @@ namespace NosStdLib
 			/* Make console use font */
 
 			/* Add TerminateFont function to premature closing line up */
-			NosStdLib::EventHandling::ClosingCleanupFunctionArray.Append(*TerminateFont);
+			NosStdLib::EventHandling::AddCleanupFunction(*TerminateFont);
 		}
 
 		/// <summary>

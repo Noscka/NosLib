@@ -133,8 +133,6 @@ namespace NosStdLib
 
 			GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
 
-			//wprintf(NosStdLib::String::CenterString<wchar_t>(std::format(L"{} | {}", charX, charY), true, true).c_str());
-
 			CharCoordPrint({NosStdLib::Cast::Cast<SHORT, int>((consoleDisplayX / consoleFontInfo.dwFontSize.X)), NosStdLib::Cast::Cast<SHORT, int>((consoleDisplayY / consoleFontInfo.dwFontSize.Y))});
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 		}
