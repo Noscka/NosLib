@@ -18,6 +18,8 @@ void SomeEventFunction(std::wstring toPrint)
     wprintf(std::format(L"printing event + {}\n", toPrint).c_str());
 }
 
+
+
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
@@ -25,9 +27,11 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-
-    NosStdLib::Button::Event smallEvent(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"abc"));
-    smallEvent.TriggerEvent();
+    NosStdLib::Button::Button testButton(L"correct", RECT{1,1,3,3});
+    
+    testButton.OnHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"abc"));
+    
+    NosStdLib::Button::Button::CheckButtonAtPosition(COORD{2,2})->OnHover->TriggerEvent();
 
     //NosStdLib::MouseTracking::InitializeMouseTracking();
 
