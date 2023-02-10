@@ -1,9 +1,11 @@
-#ifndef _BUTTON_NOSSTDLIB_HPP_
+﻿#ifndef _BUTTON_NOSSTDLIB_HPP_
 #define _BUTTON_NOSSTDLIB_HPP_
 
 #include "../Functional.hpp"
 #include "../Cast.hpp"
 #include "../DynamicArray.hpp"
+
+#include <math.h>
 
 namespace NosStdLib
 {
@@ -112,13 +114,14 @@ namespace NosStdLib
 			{
 				int neededLenght = (Position.right - Position.left)-4;
 				std::wstring output = name;
-				if (name.length() > neededLenght)
+				if ((name.length()-4) > neededLenght)
 				{
 					output = (L" " + name.substr(0, neededLenght).append(L".. "));
 				}
-				else if (name.length() < neededLenght)
+				else if ((name.length() - 4) < neededLenght)
 				{
-					output = (std::wstring((neededLenght - (name.length() - 3))/2, L' ') + name + std::wstring((neededLenght - (name.length() - 3)) / 2, L' '));
+					float spacing = (neededLenght - (name.length() - 4));
+					output = (std::wstring(std::floorf(spacing / 2), L' ') + name + std::wstring(std::ceilf(spacing / 2), L' '));
 				}
 				return output;
 			}
@@ -127,18 +130,18 @@ namespace NosStdLib
 			{
 				int middleSection = (Position.bottom - Position.top)/2;
 
-				std::wstring buttonString = std::wstring(Position.right - Position.left, L'=');
+				std::wstring buttonString = (L'┌' + std::wstring((Position.right - Position.left), L'─') + L'┐');
 				buttonString += L"\n";
 
 				for (int i = 0; i < Position.bottom - Position.top; i++)
 				{
-					buttonString += std::wstring(Position.left-1, L' ');
-					buttonString += L"|";
+					buttonString += std::wstring(Position.left, L' ');
+					buttonString += L"│";
 					buttonString += (i == middleSection ? ModifyName(ButtonText) : std::wstring((Position.right - Position.left), L' '));
-					buttonString += L"|\n";
+					buttonString += L"│\n";
 				}
 				buttonString += std::wstring(Position.left, L' ');
-				buttonString += std::wstring(Position.right - Position.left, L'=');
+				buttonString += (L'└' + std::wstring((Position.right - Position.left), L'─') + L'┘');
 				buttonString += L"\n";
 
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.left, (SHORT)Position.top});
