@@ -106,6 +106,44 @@ namespace NosStdLib
 				if (!(OnClick == nullptr)) { delete OnClick; OnClick = nullptr; }
 				ButtonArray.ObjectRemove(this); /* remove self from array so the array doesn't call the destroy on me */
 			}
+
+			/* DOGSHIT CODE. REWRITE */
+			std::wstring ModifyName(const std::wstring& name)
+			{
+				int neededLenght = (Position.right - Position.left)-4;
+				std::wstring output = name;
+				if (name.length() > neededLenght)
+				{
+					output = (L" " + name.substr(0, name.length() - 4).append(L"... "));
+				}
+				else if (name.length() < neededLenght)
+				{
+					output = (L" " + name + std::wstring(neededLenght - (name.length() + 1), L' '));
+				}
+				return output;
+			}
+
+			void PrintButton()
+			{
+				int middleSection = (Position.bottom - Position.top)/2;
+
+				std::wstring buttonString = std::wstring(Position.right - Position.left, L'=');
+				buttonString += L"\n";
+
+				for (int i = 0; i < Position.bottom - Position.top; i++)
+				{
+					buttonString += std::wstring(Position.left-1, L' ');
+					buttonString += L"|";
+					buttonString += (i == middleSection ? ModifyName(ButtonText) : std::wstring((Position.right - Position.left), L' '));
+					buttonString += L"|\n";
+				}
+				buttonString += std::wstring(Position.left, L' ');
+				buttonString += std::wstring(Position.right - Position.left, L'=');
+				buttonString += L"\n";
+
+				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.left, (SHORT)Position.top});
+				wprintf(buttonString.c_str());
+			}
 		};
 	}
 }
