@@ -114,11 +114,11 @@ namespace NosStdLib
 				std::wstring output = name;
 				if (name.length() > neededLenght)
 				{
-					output = (L" " + name.substr(0, name.length() - 4).append(L"... "));
+					output = (L" " + name.substr(0, neededLenght).append(L".. "));
 				}
 				else if (name.length() < neededLenght)
 				{
-					output = (L" " + name + std::wstring(neededLenght - (name.length() + 1), L' '));
+					output = (std::wstring((neededLenght - (name.length() - 3))/2, L' ') + name + std::wstring((neededLenght - (name.length() - 3)) / 2, L' '));
 				}
 				return output;
 			}
