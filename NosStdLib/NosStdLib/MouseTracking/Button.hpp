@@ -130,18 +130,18 @@ namespace NosStdLib
 			{
 				int middleSection = (Position.bottom - Position.top)/2;
 
-				std::wstring buttonString = (L'┌' + std::wstring((Position.right - Position.left), L'─') + L'┐');
+				std::wstring buttonString = (L'┌' + std::wstring((Position.right - Position.left)-1, L'─') + L'┐');
 				buttonString += L"\n";
 
 				for (int i = 0; i < Position.bottom - Position.top; i++)
 				{
 					buttonString += std::wstring(Position.left, L' ');
 					buttonString += L"│";
-					buttonString += (i == middleSection ? ModifyName(ButtonText) : std::wstring((Position.right - Position.left), L' '));
+					buttonString += (i == middleSection ? ModifyName(ButtonText) : std::wstring((Position.right - Position.left)-1, L' '));
 					buttonString += L"│\n";
 				}
 				buttonString += std::wstring(Position.left, L' ');
-				buttonString += (L'└' + std::wstring((Position.right - Position.left), L'─') + L'┘');
+				buttonString += (L'└' + std::wstring((Position.right - Position.left)-1, L'─') + L'┘');
 				buttonString += L"\n";
 
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.left, (SHORT)Position.top});
