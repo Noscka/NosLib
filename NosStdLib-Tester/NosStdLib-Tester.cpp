@@ -25,6 +25,8 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
+    std::wcout << (vector1 + vector2).str<wchar_t>() << std::endl;
+
     NosStdLib::Button::Button testButton(L"correct", NosStdLib::Button::BoxSize(1,1,5,5,0,0));
     
     testButton.PrintButton();

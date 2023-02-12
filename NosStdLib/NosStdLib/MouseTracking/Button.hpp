@@ -69,9 +69,9 @@ namespace NosStdLib
 		class BoxSize
 		{
 		public:
-			NosStdLib::Vector::VectorD2 PointOne;	/* Top Left Coord vector */
-			NosStdLib::Vector::VectorD2 PointTwo;	/* Bottom Right Coord vector */
-			NosStdLib::Vector::VectorD2 Offset;		/* Vector which holds offset values */
+			NosStdLib::Vector::VectorD2<uint16_t> PointOne;	/* Top Left Coord vector */
+			NosStdLib::Vector::VectorD2<uint16_t> PointTwo;	/* Bottom Right Coord vector */
+			NosStdLib::Vector::VectorD2<uint16_t> Offset;	/* Vector which holds offset values */
 
 			BoxSize(){}
 
@@ -84,11 +84,11 @@ namespace NosStdLib
 			/// <param name="pointTwoY">- Right Y</param>
 			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
 			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
-			BoxSize(const int& pointOneX, const int& pointOneY, const int& pointTwoX, const int& pointTwoY, const int& offsetX = 0, const int& offsetY = 0)
+			BoxSize(const uint16_t& pointOneX, const uint16_t& pointOneY, const uint16_t& pointTwoX, const uint16_t& pointTwoY, const uint16_t& offsetX = 0, const uint16_t& offsetY = 0)
 			{
-				PointOne = NosStdLib::Vector::VectorD2(pointOneX, pointOneY);
-				PointTwo = NosStdLib::Vector::VectorD2(pointTwoX, pointTwoY);
-				Offset = NosStdLib::Vector::VectorD2(offsetX, offsetY);
+				PointOne = NosStdLib::Vector::VectorD2<uint16_t>(pointOneX, pointOneY);
+				PointTwo = NosStdLib::Vector::VectorD2<uint16_t>(pointTwoX, pointTwoY);
+				Offset = NosStdLib::Vector::VectorD2<uint16_t>(offsetX, offsetY);
 			}
 
 			/// <summary>
@@ -97,7 +97,7 @@ namespace NosStdLib
 			/// <param name="pointOne">- Top Left</param>
 			/// <param name="pointTwo">- Bottom Right</param>
 			/// <param name="Offset">- vector which containts amount that will get added/taken away from in calculations</param>
-			BoxSize(const NosStdLib::Vector::VectorD2& pointOne, const NosStdLib::Vector::VectorD2& pointTwo, const NosStdLib::Vector::VectorD2& offset = NosStdLib::Vector::VectorD2(0,0))
+			BoxSize(const NosStdLib::Vector::VectorD2<uint16_t>& pointOne, const NosStdLib::Vector::VectorD2<uint16_t>& pointTwo, const NosStdLib::Vector::VectorD2<uint16_t>& offset = NosStdLib::Vector::VectorD2<uint16_t>(0,0))
 			{
 				PointOne = pointOne;
 				PointTwo = pointTwo;
@@ -109,7 +109,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="offset">(default = true) - if calculation should take offset into considuration</param>
 			/// <returns>VectorD2 with X and Y being sizes</returns>
-			NosStdLib::Vector::VectorD2 CalculateSize(const bool& offset = true)
+			NosStdLib::Vector::VectorD2<uint16_t> CalculateSize(const bool& offset = true)
 			{
 				if (offset)
 				{
@@ -190,7 +190,7 @@ namespace NosStdLib
 			void PrintButton()
 			{
 				int middleSection = ((Position.PointTwo.X - Position.PointOne.X) - 1) / 2;
-				NosStdLib::Vector::VectorD2 sizeVector = Position.CalculateSize();
+				NosStdLib::Vector::VectorD2<uint16_t> sizeVector = Position.CalculateSize();
 
 				std::wstring buttonString = (L'┌' + std::wstring(sizeVector.Y-1, L'─') + L'┐');
 				buttonString += L"\n";
@@ -206,7 +206,7 @@ namespace NosStdLib
 				buttonString += (L'└' + std::wstring(sizeVector.Y -1, L'─') + L'┘');
 				buttonString += L"\n";
 
-				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.PointOne.X,(SHORT)Position.PointOne.Y} );
+				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Position.PointOne);
 				wprintf(buttonString.c_str());
 			}
 		};

@@ -5,6 +5,7 @@
 
 #include <string>
 #include <format>
+#include <type_traits>
 
 namespace NosStdLib
 {
@@ -16,11 +17,13 @@ namespace NosStdLib
 		/// <summary>
 		/// A 2 dimentional vector
 		/// </summary>
+		template<typename ArithmeticType>
 		class VectorD2
 		{
+			static_assert(std::is_arithmetic_v<ArithmeticType>, "Vector datatype has to be an arithmetic type");
 		public:
-			int X;
-			int Y;
+			ArithmeticType X;
+			ArithmeticType Y;
 
 			/// <summary>
 			/// Default VectorD2 Constructor
@@ -32,7 +35,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
-			VectorD2(const int& x, const int& y)
+			VectorD2(const ArithmeticType& x, const ArithmeticType& y)
 			{
 				X = x;
 				Y = y;
@@ -43,7 +46,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="addingObject">- the second object to add</param>
 			/// <returns>An object of the other objects added together</returns>
-			VectorD2 operator+(VectorD2& addingObject)
+			VectorD2<ArithmeticType> operator+(const VectorD2<ArithmeticType>& addingObject)
 			{
 				return VectorD2((this->X + addingObject.X), (this->Y + addingObject.Y));
 			}
@@ -53,9 +56,17 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="subtractingObject">- the second object to subtract</param>
 			/// <returns>An object of the other objects subtracted together</returns>
-			VectorD2 operator-(VectorD2& subtractingObject)
+			VectorD2<ArithmeticType> operator-(const VectorD2<ArithmeticType>& subtractingObject)
 			{
 				return VectorD2((this->X - subtractingObject.X), (this->Y - subtractingObject.Y));
+			}
+
+			/// <summary>
+			/// Convert to COORD
+			/// </summary>
+			operator COORD()
+			{
+				return COORD(X,Y);
 			}
 
 			/// <summary>
@@ -73,12 +84,14 @@ namespace NosStdLib
 		/// <summary>
 		/// A 3 dimentional vector
 		/// </summary>
+		template<typename ArithmeticType>
 		class VectorD3
 		{
+			static_assert(std::is_arithmetic_v<ArithmeticType>, "Vector datatype has to be an arithmetic type");
 		public:
-			int X;
-			int Y;
-			int Z;
+			ArithmeticType X;
+			ArithmeticType Y;
+			ArithmeticType Z;
 
 			/// <summary>
 			/// Default VectorD3 Constructor
@@ -91,7 +104,7 @@ namespace NosStdLib
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
 			/// <param name="z">- z coord</param>
-			VectorD3(const int& x, const int& y, const int& z)
+			VectorD3(const ArithmeticType& x, const ArithmeticType& y, const ArithmeticType& z)
 			{
 				X = x;
 				Y = y;
@@ -103,7 +116,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="addingObject">- the second object to add</param>
 			/// <returns>An object of the other objects added together</returns>
-			VectorD3 operator+(VectorD3& addingObject)
+			VectorD3<ArithmeticType> operator+(const VectorD3<ArithmeticType>& addingObject)
 			{
 				return VectorD3((this->X + addingObject.X), (this->Y + addingObject.Y), (this->Z + addingObject.Z));
 			}
@@ -113,7 +126,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="subtractingObject">- the second object to subtract</param>
 			/// <returns>An object of the other objects subtracted together</returns>
-			VectorD3 operator-(VectorD3& subtractingObject)
+			VectorD3<ArithmeticType> operator-(const VectorD3<ArithmeticType>& subtractingObject)
 			{
 				return VectorD3((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z));
 			}
