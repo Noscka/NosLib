@@ -49,6 +49,16 @@ namespace NosStdLib
 			}
 
 			/// <summary>
+			/// - operator
+			/// </summary>
+			/// <param name="subtractingObject">- the second object to subtract</param>
+			/// <returns>An object of the other objects subtracted together</returns>
+			VectorD2 operator-(VectorD2& subtractingObject)
+			{
+				return VectorD2((this->X - subtractingObject.X), (this->Y - subtractingObject.Y));
+			}
+
+			/// <summary>
 			/// Converts Vector to string
 			/// </summary>
 			/// <typeparam name="CharT">- what character type to convert to</typeparam>
@@ -96,6 +106,16 @@ namespace NosStdLib
 			VectorD3 operator+(VectorD3& addingObject)
 			{
 				return VectorD3((this->X + addingObject.X), (this->Y + addingObject.Y), (this->Z + addingObject.Z));
+			}
+
+			/// <summary>
+			/// - operator
+			/// </summary>
+			/// <param name="subtractingObject">- the second object to subtract</param>
+			/// <returns>An object of the other objects subtracted together</returns>
+			VectorD3 operator-(VectorD3& subtractingObject)
+			{
+				return VectorD3((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z));
 			}
 
 			/// <summary>
