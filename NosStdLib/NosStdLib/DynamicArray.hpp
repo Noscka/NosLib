@@ -18,11 +18,12 @@ namespace NosStdLib
 	class DynamicArray
 	{
 	private:
-		int ArraySize;				/* Array starting sizeand the size after it is resized */
-		int ArrayDefaultSize;		/* Array starting size which doesn't change */
-		ArrayDataType* MainArray;	/* Pointer to Array */
-		int ArrayIndexPointer;		/* keeps track amount of objects in array */
-		int ArrayStepSize;			/* how much the array will get increased by when it reaches the limit */
+		int ArraySize;						/* Array starting sizeand the size after it is resized */
+		int ArrayDefaultSize;				/* Array starting size which doesn't change */
+		ArrayDataType* MainArray;			/* Pointer to Array */
+		int ArrayIndexPointer;				/* keeps track amount of objects in array */
+		int ArrayStepSize;					/* how much the array will get increased by when it reaches the limit */
+		bool DeleteObjectsOnDestruction;	/* If the array should destroy all the objects (if possible) when getting destroyed */
 
 		typedef ArrayDataType* iterator;
 		typedef const ArrayDataType* const_iterator;
@@ -33,10 +34,13 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="StartSize"> - Starting size of the array</param>
 		/// <param name="StepSize"> - how much the array will increase each time it reaches the limit</param>
-		DynamicArray(const int& startSize, const int& stepSize)
+		/// <param name="deleteObjectsOnDestruction">(default = true) - If the array should destroy all the objects (if possible) when getting destroyed</param>
+		DynamicArray(const int& startSize, const int& stepSize, const bool& deleteObjectsOnDestruction = true)
 		{
 			ArrayDefaultSize = ArraySize = startSize;
 			ArrayStepSize = stepSize;
+			DeleteObjectsOnDestruction = deleteObjectsOnDestruction;
+
 
 			// ! DO NOT CHANGE !
 			ArrayIndexPointer = 0;
@@ -55,7 +59,7 @@ namespace NosStdLib
 		~DynamicArray()
 		{
 			/* if a pointer and not a function, go through all entries and delete */
-			if constexpr (std::is_pointer<ArrayDataType>::value && !std::is_function< NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value)
+			if constexpr ((std::is_pointer<ArrayDataType>::value && !std::is_function< NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value) && deleteObjectsOnDestruction)
 			{
 				for (int i = 0; i < ArrayIndexPointer; i++)
 				{
