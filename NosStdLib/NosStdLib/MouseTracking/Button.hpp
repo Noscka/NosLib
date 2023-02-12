@@ -7,6 +7,7 @@
 #include "../Vector.hpp"
 
 #include <math.h>
+#include <cassert>
 
 namespace NosStdLib
 {
@@ -66,14 +67,14 @@ namespace NosStdLib
 		/// <summary>
 		/// class which holds 2 points which are used for drawing a box
 		/// </summary>
-		class BoxSize
+		class BoxDimentions
 		{
 		public:
-			NosStdLib::Vector::VectorD2<uint16_t> PointOne;	/* Top Left Coord vector */
-			NosStdLib::Vector::VectorD2<uint16_t> PointTwo;	/* Bottom Right Coord vector */
-			NosStdLib::Vector::VectorD2<uint16_t> Offset;	/* Vector which holds offset values */
+			NosStdLib::Vector::VectorD2<int16_t> PointOne;	/* Top Left Coord vector */
+			NosStdLib::Vector::VectorD2<int16_t> PointTwo;	/* Bottom Right Coord vector */
+			NosStdLib::Vector::VectorD2<int16_t> Offset;	/* Vector which holds offset values */
 
-			BoxSize(){}
+			BoxDimentions(){}
 
 			/// <summary>
 			/// Create object with int coords
@@ -84,11 +85,11 @@ namespace NosStdLib
 			/// <param name="pointTwoY">- Right Y</param>
 			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
 			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
-			BoxSize(const uint16_t& pointOneX, const uint16_t& pointOneY, const uint16_t& pointTwoX, const uint16_t& pointTwoY, const uint16_t& offsetX = 0, const uint16_t& offsetY = 0)
+			BoxDimentions(const int16_t& pointOneX, const int16_t& pointOneY, const int16_t& pointTwoX, const int16_t& pointTwoY, const int16_t& offsetX = 0, const int16_t& offsetY = 0)
 			{
-				PointOne = NosStdLib::Vector::VectorD2<uint16_t>(pointOneX, pointOneY);
-				PointTwo = NosStdLib::Vector::VectorD2<uint16_t>(pointTwoX, pointTwoY);
-				Offset = NosStdLib::Vector::VectorD2<uint16_t>(offsetX, offsetY);
+				PointOne = NosStdLib::Vector::VectorD2<int16_t>(pointOneX, pointOneY);
+				PointTwo = NosStdLib::Vector::VectorD2<int16_t>(pointTwoX, pointTwoY);
+				Offset = NosStdLib::Vector::VectorD2<int16_t>(offsetX, offsetY);
 			}
 
 			/// <summary>
@@ -97,7 +98,7 @@ namespace NosStdLib
 			/// <param name="pointOne">- Top Left</param>
 			/// <param name="pointTwo">- Bottom Right</param>
 			/// <param name="Offset">- vector which containts amount that will get added/taken away from in calculations</param>
-			BoxSize(const NosStdLib::Vector::VectorD2<uint16_t>& pointOne, const NosStdLib::Vector::VectorD2<uint16_t>& pointTwo, const NosStdLib::Vector::VectorD2<uint16_t>& offset = NosStdLib::Vector::VectorD2<uint16_t>(0,0))
+			BoxDimentions(const NosStdLib::Vector::VectorD2<int16_t>& pointOne, const NosStdLib::Vector::VectorD2<int16_t>& pointTwo, const NosStdLib::Vector::VectorD2<int16_t>& offset = NosStdLib::Vector::VectorD2<int16_t>(0,0))
 			{
 				PointOne = pointOne;
 				PointTwo = pointTwo;
@@ -109,7 +110,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="offset">(default = true) - if calculation should take offset into considuration</param>
 			/// <returns>VectorD2 with X and Y being sizes</returns>
-			NosStdLib::Vector::VectorD2<uint16_t> CalculateSize(const bool& offset = true)
+			NosStdLib::Vector::VectorD2<int16_t> CalculateSize(const bool& offset = true)
 			{
 				if (offset)
 				{
@@ -120,26 +121,36 @@ namespace NosStdLib
 					return (PointTwo - PointOne);
 				}
 			}
+
+			/// <summary>
+			/// calculate size with custom offset (pointeTwo-pointOne)
+			/// </summary>
+			/// <param name="offset">- the offset which will get used in the calculation</param>
+			/// <returns>VectorD2 with X and Y being sizes that are offset</returns>
+			NosStdLib::Vector::VectorD2<int16_t> CalculateSize(const NosStdLib::Vector::VectorD2<int16_t>& offset)
+			{
+				return (PointTwo - PointOne) + offset;
+			}
 		};
 
 		class Button
 		{
 		private:
-			static inline NosStdLib::DynamicArray<Button*> ButtonArray;
-			std::wstring ButtonText;
-			BoxSize Position;
+			static inline NosStdLib::DynamicArray<Button*> ButtonArray; /* Array containing all buttons */
+			std::wstring ButtonText;	/* text that will be in the button */
+			BoxDimentions Position;		/* position of the button */
 
 		public:
 			/// <summary>
-			/// Check if a button is in a position. if didn't find anything, returns nullptr
+			/// Check if the first button is in a position. if didn't find anything, returns nullptr
 			/// </summary>
 			/// <param name="position">- position to check</param>
 			/// <returns>pointer to button (if one is found)</returns>
-			static Button* CheckButtonAtPosition(COORD position)
+			static Button* CheckButtonAtPosition(const NosStdLib::Vector::VectorD2<int16_t>& position)
 			{
 				for (Button* buttonPointer : ButtonArray)
 				{
-					if ((position.Y >= buttonPointer->Position.PointOne.Y && position.X >= buttonPointer->Position.PointOne.X)  && (position.Y <= buttonPointer->Position.PointOne.Y && position.X <= buttonPointer->Position.PointOne.X))
+					if ((position.X >= buttonPointer->Position.PointOne.X && position.Y >= buttonPointer->Position.PointOne.Y)  && (position.X <= buttonPointer->Position.PointTwo.X && position.Y <= buttonPointer->Position.PointTwo.Y))
 					{
 						return buttonPointer;
 					}
@@ -148,13 +159,29 @@ namespace NosStdLib
 				return nullptr;
 			}
 
+			/// <summary>
+			/// Check if a button is in a position. runs function passed in params
+			/// </summary>
+			/// <param name="position">- position to check</param>
+			/// <param name="runFunc">- function to run when button found</param>
+			static void CheckButtonAtPosition(const NosStdLib::Vector::VectorD2<int16_t>& position, void(*runFunc)(Button*))
+			{
+				for (Button* buttonPointer : ButtonArray)
+				{
+					if ((position.X >= buttonPointer->Position.PointOne.X && position.Y >= buttonPointer->Position.PointOne.Y) && (position.X <= buttonPointer->Position.PointTwo.X && position.Y <= buttonPointer->Position.PointTwo.Y))
+					{
+						(*runFunc)(buttonPointer);
+					}
+				}
+			}
+
 		//public:
 			Event* OnHover = nullptr; /* pointer to event object which will trigger when mouse hovers over */
 			Event* OnClick = nullptr; /* pointer to event object which will tigger when mouse click on button */
 
 			Button(){}
 
-			Button(const std::wstring& buttonText, const BoxSize& position)
+			Button(const std::wstring& buttonText, const BoxDimentions& position)
 			{
 				ButtonText = buttonText;
 				Position = position;
@@ -172,42 +199,58 @@ namespace NosStdLib
 			/* DOGSHIT CODE. REWRITE */
 			std::wstring ModifyName(const std::wstring& nameInput, const int& size)
 			{
-				/* MAKE CHECKING FOR IF THE SIZE IS TOO SMALL FOR STRING */
+				if (size < 2){throw std::length_error("size in ModifyName function has to be 2 or more");}
+
 				std::wstring outputString;
 
-				if (nameInput.size() > size)
+				if (nameInput.size() > size) /* if name is less then size, shorten it and add .. to the end to show it's been shortened */
 				{
-					outputString = nameInput.substr(0, size - 2).append(L".."); /* IF STRING TOO LONG ERROR. LOOK HERE */
+					outputString = nameInput.substr(0, size - 2).append(L"..");
 				}
-				else{outputString = nameInput;}
-
-				float spacingSize = size - outputString.size();
-				outputString = (std::wstring(std::floorf(spacingSize / 2), L' ') + outputString + std::wstring(std::ceilf(spacingSize / 2), L' '));
+				else if (nameInput.size() < size) /* if name is more then size, center it in the space */
+				{
+					float spacingSize = size - nameInput.size();
+					outputString = (std::wstring(std::floorf(spacingSize / 2), L' ') + nameInput + std::wstring(std::ceilf(spacingSize / 2), L' '));
+				}
+				else /* if name is same lenght as size. return name for efficiency */
+				{
+					return nameInput;
+				}
 
 				return outputString;
 			}
 
-			void PrintButton()
+			/// <summary>
+			/// Generate string of the button
+			/// </summary>
+			/// <returns>generated button string</returns>
+			std::wstring GenerateButtonString()
 			{
-				int middleSection = ((Position.PointTwo.X - Position.PointOne.X) - 1) / 2;
-				NosStdLib::Vector::VectorD2<uint16_t> sizeVector = Position.CalculateSize();
+				NosStdLib::Vector::VectorD2<int16_t> sizeVector = Position.CalculateSize(NosStdLib::Vector::VectorD2<int16_t>(-1, -1));
 
-				std::wstring buttonString = (L'┌' + std::wstring(sizeVector.Y-1, L'─') + L'┐');
-				buttonString += L"\n";
+				std::wstring buttonString = (L'┌' + std::wstring(sizeVector.X, L'─') + L"┐\n");
 
-				for (int i = 0; i < sizeVector.X -1; i++)
+				int middleSectionPosition = sizeVector.Y / 2;
+				for (int i = 0; i < sizeVector.Y; i++)
 				{
-					buttonString += std::wstring(Position.PointOne.Y, L' ');
+					buttonString += std::wstring(Position.PointOne.X, L' ');
 					buttonString += L"│";
-					buttonString += (i == middleSection ? ModifyName(ButtonText, sizeVector.Y-1) : std::wstring(sizeVector.Y -1, L' '));
+					buttonString += (i == middleSectionPosition ? ModifyName(ButtonText, sizeVector.X) : std::wstring(sizeVector.X, L' '));
 					buttonString += L"│\n";
 				}
-				buttonString += std::wstring(Position.PointOne.Y, L' ');
-				buttonString += (L'└' + std::wstring(sizeVector.Y -1, L'─') + L'┘');
-				buttonString += L"\n";
+				buttonString += std::wstring(Position.PointOne.X, L' ');
+				buttonString += (L'└' + std::wstring(sizeVector.X, L'─') + L"┘\n");
 
+				return buttonString;
+			}
+
+			/// <summary>
+			/// Print Button to console
+			/// </summary>
+			void PrintButton()
+			{
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Position.PointOne);
-				wprintf(buttonString.c_str());
+				wprintf(GenerateButtonString().c_str());
 			}
 		};
 	}

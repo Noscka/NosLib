@@ -25,20 +25,16 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    std::wcout << (vector1 + vector2).str<wchar_t>() << std::endl;
-
-    NosStdLib::Button::Button testButton(L"correct", NosStdLib::Button::BoxSize(1,1,5,5,0,0));
+    NosStdLib::Button::Button testButton(L"correct", NosStdLib::Button::BoxDimentions(1,1,9,3));
     
     testButton.PrintButton();
 
-    //testButton.OnHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"abc"));
-    //
-    //NosStdLib::Button::Button::CheckButtonAtPosition(COORD{2,2})->OnHover->TriggerEvent();
+    testButton.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"abc"));
 
-    //NosStdLib::MouseTracking::InitializeMouseTracking();
-    //
-    //MSG msg;
-    //while (GetMessage(&msg, 0, 0, 0)) {}
+    NosStdLib::MouseTracking::InitializeMouseTracking();
+    
+    MSG msg;
+    while (GetMessage(&msg, 0, 0, 0)) {}
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

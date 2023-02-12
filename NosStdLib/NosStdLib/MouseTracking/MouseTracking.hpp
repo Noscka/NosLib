@@ -5,6 +5,7 @@
 #include "../RGB.hpp"
 #include "../String.hpp"
 #include "../Cast.hpp"
+#include "Button.hpp"
 
 #include <Windows.h>
 #include <stdio.h>
@@ -139,6 +140,11 @@ namespace NosStdLib
 
 		HHOOK MouseHook;
 
+		void runEvent(NosStdLib::Button::Button* button)
+		{
+			button->OnClick->TriggerEvent();
+		}
+
 		LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 		{
 			if (nCode <= 0)
@@ -147,7 +153,27 @@ namespace NosStdLib
 
 				NosStdLib::Console::ShowCaret(false);
 
-				CalcCharPixel(mouseHookStruct);
+				if (wParam == WM_LBUTTONDOWN)
+				{
+					int windowX, windowY;
+					NosStdLib::Console::GetWindowPosition(&windowX, &windowY); /* get the coords of the window */
+
+					/* position inside the display (black text area) */
+					int consoleDisplayX = (mouseHookStruct->pt.x - windowX) - 6,  /* x coord */
+						consoleDisplayY = (mouseHookStruct->pt.y - windowY) - 31; /* y coord */
+
+					CONSOLE_FONT_INFOEX consoleFontInfo;
+					consoleFontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+
+					GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
+
+					int16_t charX = (consoleDisplayX / consoleFontInfo.dwFontSize.X),
+							charY = (consoleDisplayY / consoleFontInfo.dwFontSize.Y);
+
+					NosStdLib::Button::Button::CheckButtonAtPosition(NosStdLib::Vector::VectorD2<int16_t>(NosStdLib::Cast::Cast<int16_t, int>(charX),
+																	 NosStdLib::Cast::Cast<int16_t, int>(charY)),
+																	 &runEvent);
+				}
 			}
 
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
