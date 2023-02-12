@@ -103,6 +103,23 @@ namespace NosStdLib
 				PointTwo = pointTwo;
 				Offset = offset;
 			}
+
+			/// <summary>
+			/// calculate size (pointeTwo-pointOne)
+			/// </summary>
+			/// <param name="offset">(default = true) - if calculation should take offset into considuration</param>
+			/// <returns>VectorD2 with X and Y being sizes</returns>
+			NosStdLib::Vector::VectorD2 CalculateSize(const bool& offset = true)
+			{
+				if (offset)
+				{
+					return (PointTwo - PointOne) + Offset;
+				}
+				else
+				{
+					return (PointTwo - PointOne);
+				}
+			}
 		};
 
 		class Button
@@ -153,8 +170,6 @@ namespace NosStdLib
 			}
 
 			/* DOGSHIT CODE. REWRITE */
-
-
 			std::wstring ModifyName(const std::wstring& nameInput, const int& size)
 			{
 				/* MAKE CHECKING FOR IF THE SIZE IS TOO SMALL FOR STRING */
@@ -175,19 +190,20 @@ namespace NosStdLib
 			void PrintButton()
 			{
 				int middleSection = ((Position.PointTwo.X - Position.PointOne.X) - 1) / 2;
+				NosStdLib::Vector::VectorD2 sizeVector = Position.CalculateSize();
 
-				std::wstring buttonString = (L'┌' + std::wstring((Position.PointTwo.Y - Position.PointOne.Y)-1, L'─') + L'┐');
+				std::wstring buttonString = (L'┌' + std::wstring(sizeVector.Y-1, L'─') + L'┐');
 				buttonString += L"\n";
 
-				for (int i = 0; i < (Position.PointTwo.X - Position.PointOne.X)-1; i++)
+				for (int i = 0; i < sizeVector.X -1; i++)
 				{
-					buttonString += std::wstring(Position.left, L' ');
+					buttonString += std::wstring(Position.PointOne.Y, L' ');
 					buttonString += L"│";
-					buttonString += (i == middleSection ? ModifyName(ButtonText, (Position.PointTwo.Y - Position.PointOne.Y)-1) : std::wstring((Position.PointTwo.Y - Position.PointOne.Y)-1, L' '));
+					buttonString += (i == middleSection ? ModifyName(ButtonText, sizeVector.Y-1) : std::wstring(sizeVector.Y -1, L' '));
 					buttonString += L"│\n";
 				}
-				buttonString += std::wstring(Position.left, L' ');
-				buttonString += (L'└' + std::wstring((Position.PointTwo.Y - Position.PointOne.Y)-1, L'─') + L'┘');
+				buttonString += std::wstring(Position.PointOne.Y, L' ');
+				buttonString += (L'└' + std::wstring(sizeVector.Y -1, L'─') + L'┘');
 				buttonString += L"\n";
 
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.PointOne.X,(SHORT)Position.PointOne.Y} );
