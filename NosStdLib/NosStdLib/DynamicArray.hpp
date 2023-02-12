@@ -59,11 +59,14 @@ namespace NosStdLib
 		~DynamicArray()
 		{
 			/* if a pointer and not a function, go through all entries and delete */
-			if constexpr ((std::is_pointer<ArrayDataType>::value && !std::is_function< NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value) && DeleteObjectsOnDestruction)
+			if constexpr (std::is_pointer<ArrayDataType>::value && !std::is_function< NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value)
 			{
-				for (int i = 0; i < ArrayIndexPointer; i++)
+				if (DeleteObjectsOnDestruction)
 				{
-					delete MainArray[i];
+					for (int i = 0; i < ArrayIndexPointer; i++)
+					{
+						delete MainArray[i];
+					}
 				}
 			}
 			delete[] MainArray;

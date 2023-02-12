@@ -142,21 +142,23 @@ namespace NosStdLib
 
 		public:
 			/// <summary>
-			/// Check if the first button is in a position. if didn't find anything, returns nullptr
+			/// gets all buttons in position into array
 			/// </summary>
 			/// <param name="position">- position to check</param>
-			/// <returns>pointer to button (if one is found)</returns>
-			static Button* CheckButtonAtPosition(const NosStdLib::Vector::VectorD2<int16_t>& position)
+			/// <returns>array of button pointers</returns>
+			static NosStdLib::DynamicArray<Button*> CheckButtonAtPosition(const NosStdLib::Vector::VectorD2<int16_t>& position)
 			{
+				NosStdLib::DynamicArray<Button*> returnButtonArray(5,2, false);
+
 				for (Button* buttonPointer : ButtonArray)
 				{
 					if ((position.X >= buttonPointer->Position.PointOne.X && position.Y >= buttonPointer->Position.PointOne.Y)  && (position.X <= buttonPointer->Position.PointTwo.X && position.Y <= buttonPointer->Position.PointTwo.Y))
 					{
-						return buttonPointer;
+						returnButtonArray.Append(buttonPointer);
 					}
 				}
 
-				return nullptr;
+				return returnButtonArray;
 			}
 
 			/// <summary>
@@ -176,7 +178,8 @@ namespace NosStdLib
 			}
 
 		//public:
-			Event* OnHover = nullptr; /* pointer to event object which will trigger when mouse hovers over */
+			Event* OnEnterHover = nullptr; /* pointer to event object which will trigger when mouse enters hover over button */
+			Event* OnLeaveHover = nullptr; /* pointer to event object which will trigger when mouse leaves hover over button */
 			Event* OnClick = nullptr; /* pointer to event object which will tigger when mouse click on button */
 
 			Button(){}
@@ -191,7 +194,8 @@ namespace NosStdLib
 
 			~Button()
 			{
-				if (!(OnHover == nullptr)) { delete OnHover; OnHover = nullptr; }
+				if (!(OnEnterHover == nullptr)) { delete OnEnterHover; OnEnterHover = nullptr; }
+				if (!(OnLeaveHover == nullptr)) { delete OnLeaveHover; OnLeaveHover = nullptr; }
 				if (!(OnClick == nullptr)) { delete OnClick; OnClick = nullptr; }
 				ButtonArray.ObjectRemove(this); /* remove self from array so the array doesn't call the delete operator again */
 			}

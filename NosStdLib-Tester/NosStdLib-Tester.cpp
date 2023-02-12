@@ -26,10 +26,13 @@ int main()
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
     NosStdLib::Button::Button testButton(L"correct", NosStdLib::Button::BoxDimentions(1,1,9,3));
+    NosStdLib::Button::Button button2(L"button2", NosStdLib::Button::BoxDimentions(2, 2, 9, 3));
     
     testButton.PrintButton();
+    button2.PrintButton();
 
-    testButton.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"abc"));
+    testButton.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"correct button"));
+    button2.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"button2"));
 
     NosStdLib::MouseTracking::InitializeMouseTracking();
     
