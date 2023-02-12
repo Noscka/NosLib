@@ -25,7 +25,7 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::Button::Button testButton(L"correcta", RECT{1,1,5,5});
+    NosStdLib::Button::Button testButton(L"correct", RECT{1,1,5,5});
     
     testButton.PrintButton();
 

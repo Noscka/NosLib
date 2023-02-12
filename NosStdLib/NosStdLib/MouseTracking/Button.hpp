@@ -4,6 +4,7 @@
 #include "../Functional.hpp"
 #include "../Cast.hpp"
 #include "../DynamicArray.hpp"
+#include "../Vector.hpp"
 
 #include <math.h>
 
@@ -62,12 +63,54 @@ namespace NosStdLib
 
 		};
 
+		/// <summary>
+		/// class which holds 2 points which are used for drawing a box
+		/// </summary>
+		class BoxSize
+		{
+		public:
+			NosStdLib::Vector::VectorD2 PointOne;	/* Top Left Coord vector */
+			NosStdLib::Vector::VectorD2 PointTwo;	/* Bottom Right Coord vector */
+			NosStdLib::Vector::VectorD2 Offset;		/* Vector which holds offset values */
+
+			BoxSize(){}
+
+			/// <summary>
+			/// Create object with int coords
+			/// </summary>
+			/// <param name="pointOneX">- Top X</param>
+			/// <param name="pointOneY">- Left Y</param>
+			/// <param name="pointTwoX">- Bottom X</param>
+			/// <param name="pointTwoY">- Right Y</param>
+			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
+			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
+			BoxSize(const int& pointOneX, const int& pointOneY, const int& pointTwoX, const int& pointTwoY, const int& offsetX = 0, const int& offsetY = 0)
+			{
+				PointOne = NosStdLib::Vector::VectorD2(pointOneX, pointOneY);
+				PointTwo = NosStdLib::Vector::VectorD2(pointTwoX, pointTwoY);
+				Offset = NosStdLib::Vector::VectorD2(offsetX, offsetY);
+			}
+
+			/// <summary>
+			/// Create object with Vector objects
+			/// </summary>
+			/// <param name="pointOne">- Top Left</param>
+			/// <param name="pointTwo">- Bottom Right</param>
+			/// <param name="Offset">- vector which containts amount that will get added/taken away from in calculations</param>
+			BoxSize(const NosStdLib::Vector::VectorD2& pointOne, const NosStdLib::Vector::VectorD2& pointTwo, const NosStdLib::Vector::VectorD2& offset = NosStdLib::Vector::VectorD2(0,0))
+			{
+				PointOne = pointOne;
+				PointTwo = pointTwo;
+				Offset = offset;
+			}
+		};
+
 		class Button
 		{
 		private:
 			static inline NosStdLib::DynamicArray<Button*> ButtonArray;
 			std::wstring ButtonText;
-			RECT Position;
+			BoxSize Position;
 
 		public:
 			/// <summary>
@@ -79,7 +122,7 @@ namespace NosStdLib
 			{
 				for (Button* buttonPointer : ButtonArray)
 				{
-					if ((position.Y >= buttonPointer->Position.top && position.X >= buttonPointer->Position.left)  && (position.Y <= buttonPointer->Position.bottom && position.X <= buttonPointer->Position.right))
+					if ((position.Y >= buttonPointer->Position.PointOne.Y && position.X >= buttonPointer->Position.PointOne.X)  && (position.Y <= buttonPointer->Position.PointOne.Y && position.X <= buttonPointer->Position.PointOne.X))
 					{
 						return buttonPointer;
 					}
@@ -94,7 +137,7 @@ namespace NosStdLib
 
 			Button(){}
 
-			Button(const std::wstring& buttonText, const RECT& position)
+			Button(const std::wstring& buttonText, const BoxSize& position)
 			{
 				ButtonText = buttonText;
 				Position = position;
@@ -106,45 +149,48 @@ namespace NosStdLib
 			{
 				if (!(OnHover == nullptr)) { delete OnHover; OnHover = nullptr; }
 				if (!(OnClick == nullptr)) { delete OnClick; OnClick = nullptr; }
-				ButtonArray.ObjectRemove(this); /* remove self from array so the array doesn't call the destroy on me */
+				ButtonArray.ObjectRemove(this); /* remove self from array so the array doesn't call the delete operator again */
 			}
 
 			/* DOGSHIT CODE. REWRITE */
-			std::wstring ModifyName(const std::wstring& name)
+
+
+			std::wstring ModifyName(const std::wstring& nameInput, const int& size)
 			{
-				int neededLenght = (Position.right - Position.left)-4;
-				std::wstring output = name;
-				if ((name.length()-4) > neededLenght)
+				/* MAKE CHECKING FOR IF THE SIZE IS TOO SMALL FOR STRING */
+				std::wstring outputString;
+
+				if (nameInput.size() > size)
 				{
-					output = (L" " + name.substr(0, neededLenght).append(L".. "));
+					outputString = nameInput.substr(0, size - 2).append(L".."); /* IF STRING TOO LONG ERROR. LOOK HERE */
 				}
-				else if ((name.length() - 4) < neededLenght)
-				{
-					float spacing = (neededLenght - (name.length() - 4));
-					output = (std::wstring(std::floorf(spacing / 2), L' ') + name + std::wstring(std::ceilf(spacing / 2), L' '));
-				}
-				return output;
+				else{outputString = nameInput;}
+
+				float spacingSize = size - outputString.size();
+				outputString = (std::wstring(std::floorf(spacingSize / 2), L' ') + outputString + std::wstring(std::ceilf(spacingSize / 2), L' '));
+
+				return outputString;
 			}
 
 			void PrintButton()
 			{
-				int middleSection = (Position.bottom - Position.top)/2;
+				int middleSection = ((Position.PointTwo.X - Position.PointOne.X) - 1) / 2;
 
-				std::wstring buttonString = (L'┌' + std::wstring((Position.right - Position.left)-1, L'─') + L'┐');
+				std::wstring buttonString = (L'┌' + std::wstring((Position.PointTwo.Y - Position.PointOne.Y)-1, L'─') + L'┐');
 				buttonString += L"\n";
 
-				for (int i = 0; i < Position.bottom - Position.top; i++)
+				for (int i = 0; i < (Position.PointTwo.X - Position.PointOne.X)-1; i++)
 				{
 					buttonString += std::wstring(Position.left, L' ');
 					buttonString += L"│";
-					buttonString += (i == middleSection ? ModifyName(ButtonText) : std::wstring((Position.right - Position.left)-1, L' '));
+					buttonString += (i == middleSection ? ModifyName(ButtonText, (Position.PointTwo.Y - Position.PointOne.Y)-1) : std::wstring((Position.PointTwo.Y - Position.PointOne.Y)-1, L' '));
 					buttonString += L"│\n";
 				}
 				buttonString += std::wstring(Position.left, L' ');
-				buttonString += (L'└' + std::wstring((Position.right - Position.left)-1, L'─') + L'┘');
+				buttonString += (L'└' + std::wstring((Position.PointTwo.Y - Position.PointOne.Y)-1, L'─') + L'┘');
 				buttonString += L"\n";
 
-				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.left, (SHORT)Position.top});
+				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)Position.PointOne.X,(SHORT)Position.PointOne.Y} );
 				wprintf(buttonString.c_str());
 			}
 		};
