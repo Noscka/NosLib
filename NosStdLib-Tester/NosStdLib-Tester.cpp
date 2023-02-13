@@ -15,6 +15,7 @@
 
 void SomeEventFunction(std::wstring toPrint)
 {
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0,6});
     wprintf(toPrint.c_str());
 }
 
