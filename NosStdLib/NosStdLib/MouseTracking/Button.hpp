@@ -298,23 +298,40 @@ namespace NosStdLib
 				/* TODO: REQUIRE REWRITE */
 
 				NosStdLib::Vector::VectorD2<int16_t> sizeVector = Position.CalculateSize(NosStdLib::Vector::VectorD2<int16_t>(-1, -1));
+				std::wstring buttonString = L"";
 
-				std::wstring buttonString = (inverse ? L"\033[7m" : L""); 
-				buttonString += (L'┌' + std::wstring(sizeVector.X, L'─') + L"┐\n");
-				buttonString += (inverse ? L"\033[0m" : L"");
+				buttonString.reserve(((sizeVector.X + 1) * (sizeVector.Y + 1)) * (Position.PointOne.X * (sizeVector.Y + 1)));
 
-				int middleSectionPosition = sizeVector.Y / 2;
-				for (int i = 0; i < sizeVector.Y; i++)
+				if (!inverse)
 				{
+					buttonString = (L'┌' + std::wstring(sizeVector.X, L'─') + L"┐\n");
+
+					int middleSectionPosition = sizeVector.Y / 2;
+					for (int i = 0; i < sizeVector.Y; i++)
+					{
+						buttonString += std::wstring(Position.PointOne.X, L' ');
+						buttonString += L"│";
+						buttonString += (i == middleSectionPosition ? ModifyName(ButtonText, sizeVector.X) : std::wstring(sizeVector.X, L' '));
+						buttonString += L"│\n";
+					}
 					buttonString += std::wstring(Position.PointOne.X, L' ');
-					buttonString += (inverse ? L"\033[7m" : L"");
-					buttonString += L"│";
-					buttonString += (i == middleSectionPosition ? ModifyName(ButtonText, sizeVector.X) : std::wstring(sizeVector.X, L' '));
-					buttonString += L"│";
-					buttonString += (inverse ? L"\033[0m\n" : L"\n");
+					buttonString += (L'└' + std::wstring(sizeVector.X, L'─') + L"┘\n");
 				}
-				buttonString += (std::wstring(Position.PointOne.X, L' ') + (inverse ? L"\033[7m" : L""));
-				buttonString += (L'└' + std::wstring(sizeVector.X, L'─') + L"┘\n" + (inverse ? L"\033[0m" : L""));
+				else
+				{
+					buttonString = (L"\033[7m┌" + std::wstring(sizeVector.X, L'─') + L"┐\033[0m\n");
+
+					int middleSectionPosition = sizeVector.Y / 2;
+					for (int i = 0; i < sizeVector.Y; i++)
+					{
+						buttonString += std::wstring(Position.PointOne.X, L' ');
+						buttonString += L"\033[7m│";
+						buttonString += (i == middleSectionPosition ? ModifyName(ButtonText, sizeVector.X) : std::wstring(sizeVector.X, L' '));
+						buttonString += L"│\033[0m\n";
+					}
+					buttonString += (std::wstring(Position.PointOne.X, L' ') + L"\033[7m");
+					buttonString += (L'└' + std::wstring(sizeVector.X, L'─') + L"┘\033[0m\n");
+				}
 
 				return buttonString;
 			}
