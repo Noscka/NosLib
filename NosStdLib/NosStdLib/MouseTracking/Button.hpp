@@ -25,6 +25,7 @@ namespace NosStdLib
 		private:
 			NosStdLib::Functional::FunctionStoreBase* EventFunction; /* pointer to FunctionStore which will be run on event trigger */
 
+			/* TODO: ALLOW FOR STACKING FUNCTIONS */
 		public:
 			/// <summary>
 			/// Default constructor
@@ -217,7 +218,7 @@ namespace NosStdLib
 				/* Either this or adding all the buttons together in a single string to be most efficient */
 				for (Button* buttonPointer : ButtonArray)
 				{
-					buttonPointer->PrintButton();
+					buttonPointer->PrintButton(false);
 				}
 			}
 		#pragma endregion
@@ -229,6 +230,11 @@ namespace NosStdLib
 
 			Button(){}
 
+			static void DefaultHoverEventFunction(Button* object, const bool& inverse)
+			{
+				object->PrintButton(inverse);
+			}
+
 			/// <summary>
 			/// Create button object
 			/// </summary>
@@ -238,6 +244,9 @@ namespace NosStdLib
 			{
 				ButtonText = buttonText;
 				Position = position;
+
+				OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(NosStdLib::Button::Button*, const bool&), NosStdLib::Button::Button*, bool>(&DefaultHoverEventFunction, this, true));
+				OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(NosStdLib::Button::Button*, const bool&), NosStdLib::Button::Button*, bool>(&DefaultHoverEventFunction, this, false));
 
 				ButtonArray.Append(this);
 			}
@@ -282,23 +291,30 @@ namespace NosStdLib
 			/// <summary>
 			/// Generate string of the button
 			/// </summary>
-			/// <returns>generated button string</returns>
-			std::wstring GenerateButtonString()
+			/// <param name="inverse">- if the colors should be inversed</param>
+			/// /// <returns>generated button string</returns>
+			std::wstring GenerateButtonString(const bool& inverse)
 			{
+				/* TODO: REQUIRE REWRITE */
+
 				NosStdLib::Vector::VectorD2<int16_t> sizeVector = Position.CalculateSize(NosStdLib::Vector::VectorD2<int16_t>(-1, -1));
 
-				std::wstring buttonString = (L'┌' + std::wstring(sizeVector.X, L'─') + L"┐\n");
+				std::wstring buttonString = (inverse ? L"\033[7m" : L""); 
+				buttonString += (L'┌' + std::wstring(sizeVector.X, L'─') + L"┐\n");
+				buttonString += (inverse ? L"\033[0m" : L"");
 
 				int middleSectionPosition = sizeVector.Y / 2;
 				for (int i = 0; i < sizeVector.Y; i++)
 				{
 					buttonString += std::wstring(Position.PointOne.X, L' ');
+					buttonString += (inverse ? L"\033[7m" : L"");
 					buttonString += L"│";
 					buttonString += (i == middleSectionPosition ? ModifyName(ButtonText, sizeVector.X) : std::wstring(sizeVector.X, L' '));
-					buttonString += L"│\n";
+					buttonString += L"│";
+					buttonString += (inverse ? L"\033[0m\n" : L"\n");
 				}
-				buttonString += std::wstring(Position.PointOne.X, L' ');
-				buttonString += (L'└' + std::wstring(sizeVector.X, L'─') + L"┘\n");
+				buttonString += (std::wstring(Position.PointOne.X, L' ') + (inverse ? L"\033[7m" : L""));
+				buttonString += (L'└' + std::wstring(sizeVector.X, L'─') + L"┘\n" + (inverse ? L"\033[0m" : L""));
 
 				return buttonString;
 			}
@@ -306,10 +322,10 @@ namespace NosStdLib
 			/// <summary>
 			/// Print Button to console
 			/// </summary>
-			void PrintButton()
+			void PrintButton(const bool& inverse)
 			{
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Position.PointOne);
-				wprintf(GenerateButtonString().c_str());
+				wprintf(GenerateButtonString(inverse).c_str());
 			}
 		};
 	}

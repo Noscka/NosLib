@@ -30,12 +30,12 @@ int main()
     
     NosStdLib::Button::Button::PrintAllButtons();
     
-    button1.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 1\n"));
-    button1.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 1\n"));
+    //button1.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 1\n"));
+    //button1.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 1\n"));
     button1.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Clicked button 1\n"));
-
-    button2.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 2\n"));
-    button2.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 2\n"));
+    
+    //button2.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 2\n"));
+    //button2.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 2\n"));
     button2.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Clicked button 2\n"));
     
     NosStdLib::MouseTracking::InitializeMouseTracking();
