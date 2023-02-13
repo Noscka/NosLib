@@ -208,6 +208,17 @@ namespace NosStdLib
 			}
 
 			/// <summary>
+			/// Checks if position passed is inside box
+			/// </summary>
+			/// <param name="position">- position to check for</param>
+			/// <returns>true if position is inside, false if outside</returns>
+			bool CheckIfPositionInside(const NosStdLib::Vector::VectorD2<int16_t>& position)
+			{
+				return (position.X >= PointOne.X && position.Y >= PointOne.Y) &&
+						(position.X <= PointTwo.X && position.Y <= PointTwo.Y);
+			}
+
+			/// <summary>
 			/// calculate size (pointeTwo-pointOne)
 			/// </summary>
 			/// <param name="offset">(default = true) - if calculation should take offset into considuration</param>
