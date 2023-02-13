@@ -166,13 +166,11 @@ namespace NosStdLib
 			switch (wParam)
 			{
 			case WM_LBUTTONDOWN:
-				for (NosStdLib::Button::Button* buttonPointer : NosStdLib::Button::Button::CheckButtonAtPosition(currentPosition))
-				{
-					buttonPointer->OnClick->TriggerEvent();
-				}
+				NosStdLib::Button::Button::TriggerClickEventAtPosition(currentPosition);
 				break;
 
 			case WM_MOUSEMOVE:
+				NosStdLib::Button::Button::TriggerHoverEventAtPosition(currentPosition, lastPosition);
 				break;
 			}
 

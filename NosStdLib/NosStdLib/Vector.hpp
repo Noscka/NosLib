@@ -62,6 +62,16 @@ namespace NosStdLib
 			}
 
 			/// <summary>
+			/// == operator
+			/// </summary>
+			/// <param name="comparingObject">- second object to compare against</param>
+			/// <returns>if vectors represent the same position or not</returns>
+			bool operator==(const VectorD2<ArithmeticType>& comparingObject) const
+			{
+				return (this->X == comparingObject.X && this->Y == comparingObject.Y);
+			}
+
+			/// <summary>
 			/// Convert to COORD
 			/// </summary>
 			operator COORD()
@@ -129,6 +139,16 @@ namespace NosStdLib
 			VectorD3<ArithmeticType> operator-(const VectorD3<ArithmeticType>& subtractingObject)
 			{
 				return VectorD3((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z));
+			}
+
+			/// <summary>
+			/// == operator
+			/// </summary>
+			/// <param name="comparingObject">- second object to compare against</param>
+			/// <returns>if vectors represent the same position or not</returns>
+			bool operator==(const VectorD3<ArithmeticType>& comparingObject) const
+			{
+				return (this->X == comparingObject.X && this->Y == comparingObject.Y && this->Z == comparingObject.Z);
 			}
 
 			/// <summary>
