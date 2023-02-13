@@ -1,6 +1,7 @@
-#ifndef _CLOSEHANDLE_NOSSTDLIB_HPP_
-#define _CLOSEHANDLE_NOSSTDLIB_HPP_
+#ifndef _EVENTHANDLING_NOSSTDLIB_HPP_
+#define _EVENTHANDLING_NOSSTDLIB_HPP_
 
+#include "../Functional.hpp"
 #include "../DynamicArray.hpp"
 
 #include <Windows.h>
@@ -9,6 +10,54 @@
 
 namespace NosStdLib
 {
+	/// <summary>
+	/// Class which allows for storing functions for events
+	/// </summary>
+	class Event
+	{
+	private:
+		NosStdLib::Functional::FunctionStoreBase* EventFunction; /* pointer to FunctionStore which will be run on event trigger */
+
+		/* TODO: ALLOW FOR STACKING FUNCTIONS */
+	public:
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		Event() {}
+
+		/// <summary>
+		/// constructor with specified function to run when event is triggered
+		/// </summary>
+		/// <param name="eventFunction">- Function Store object to run (use the none base version)</param>
+		Event(NosStdLib::Functional::FunctionStoreBase* eventFunction)
+		{
+			AssignEventFunction(eventFunction);
+		}
+
+		~Event()
+		{
+			delete EventFunction;
+		}
+
+		/// <summary>
+		/// Used to assigned the function to the event
+		/// </summary>
+		/// <param name="eventFunction">- Function Store object to run (use the none base version)</param>
+		void AssignEventFunction(NosStdLib::Functional::FunctionStoreBase* eventFunction)
+		{
+			EventFunction = eventFunction;
+		}
+
+		/// <summary>
+		/// Runs the event function
+		/// </summary>
+		void TriggerEvent()
+		{
+			EventFunction->RunFunction();
+		}
+
+	};
+
 	/// <summary>
 	/// namespace which contains code for clean up once program gets shutdown
 	/// </summary>

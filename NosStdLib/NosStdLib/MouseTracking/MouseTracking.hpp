@@ -5,7 +5,7 @@
 #include "../RGB.hpp"
 #include "../String.hpp"
 #include "../Cast.hpp"
-#include "Button.hpp"
+#include "Clickable.hpp"
 
 #include <Windows.h>
 #include <stdio.h>
@@ -166,11 +166,11 @@ namespace NosStdLib
 			switch (wParam)
 			{
 			case WM_LBUTTONDOWN:
-				NosStdLib::Button::Button::TriggerClickEventAtPosition(currentPosition);
+				NosStdLib::Clickable::Button::TriggerClickEventAtPosition(currentPosition);
 				break;
 
 			case WM_MOUSEMOVE:
-				NosStdLib::Button::Button::TriggerHoverEventAtPosition(currentPosition, lastPosition);
+				NosStdLib::Clickable::Button::TriggerHoverEventAtPosition(currentPosition, lastPosition);
 				break;
 			}
 

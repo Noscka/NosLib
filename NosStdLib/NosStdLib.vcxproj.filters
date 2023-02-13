@@ -54,7 +54,7 @@
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\Vector.hpp">
+    <ClInclude Include="NosStdLib\DimentionVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp">
@@ -75,7 +75,7 @@
     <ClInclude Include="NosStdLib\Cast.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\MouseTracking\Button.hpp">
+    <ClInclude Include="NosStdLib\MouseTracking\Clickable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

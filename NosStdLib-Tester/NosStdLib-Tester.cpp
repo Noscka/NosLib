@@ -1,7 +1,8 @@
 ﻿#include "NosStdLib/Console.hpp"
 #include "NosStdLib/String.hpp"
+#include "NosStdLib/Functional.hpp"
 #include "NosStdLib/MouseTracking/MouseTracking.hpp"
-#include "NosStdLib/MouseTracking/Button.hpp"
+#include "NosStdLib/MouseTracking/Clickable.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -26,18 +27,18 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::Button::Button button1(L"button 1", NosStdLib::Button::BoxDimentions(1,1,10,3));
-    NosStdLib::Button::Button button2(L"button 2", NosStdLib::Button::BoxDimentions(20, 3, 29, 5));
+    NosStdLib::Clickable::Button button1(L"button 1", NosStdLib::Dimention::DimentionsD2(1,1,10,3));
+    NosStdLib::Clickable::Button button2(L"button 2", NosStdLib::Dimention::DimentionsD2(20, 3, 29, 5));
     
-    NosStdLib::Button::Button::PrintAllButtons();
+    NosStdLib::Clickable::Button::PrintAllButtons();
     
     //button1.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 1\n"));
     //button1.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 1\n"));
-    button1.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Clicked button 1\n"));
+    button1.OnClick = new NosStdLib::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Clicked button 1\n"));
     
     //button2.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 2\n"));
     //button2.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 2\n"));
-    button2.OnClick = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Clicked button 2\n"));
+    button2.OnClick = new NosStdLib::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Clicked button 2\n"));
     
     NosStdLib::MouseTracking::InitializeMouseTracking();
     
