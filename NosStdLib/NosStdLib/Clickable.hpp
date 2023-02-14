@@ -1,11 +1,11 @@
 ﻿#ifndef _CLICKABLE_NOSSTDLIB_HPP_
 #define _CLICKABLE_NOSSTDLIB_HPP_
 
-#include "../Functional.hpp"
-#include "../Cast.hpp"
-#include "../DynamicArray.hpp"
-#include "../DimentionVector.hpp"
-#include "../EventHandling/EventHandling.hpp"
+#include "Functional.hpp"
+#include "Cast.hpp"
+#include "DynamicArray.hpp"
+#include "DimentionVector.hpp"
+#include "EventHandling/EventHandling.hpp"
 
 
 #include <math.h>
