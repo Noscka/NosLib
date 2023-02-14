@@ -31,7 +31,7 @@ namespace NosStdLib
 			Event* OnLeaveHover = nullptr; /* pointer to event object which will trigger when mouse leaves hover over button */
 			Event* OnClick = nullptr; /* pointer to event object which will tigger when mouse click on button */
 
-		#pragma region Static Functions
+		#pragma region Event Triggering Static Functions
 			/// <summary>
 			/// Triggers Click event for all buttons at position
 			/// </summary>
@@ -42,7 +42,7 @@ namespace NosStdLib
 				{
 					if (ClickablePointer->Position.CheckIfPositionInside(position))
 					{
-						ClickablePointer->OnClick->TriggerEvent();
+						if (ClickablePointer->OnClick != nullptr) { ClickablePointer->OnClick->TriggerEvent(); }
 					}
 				}
 			}
@@ -64,11 +64,11 @@ namespace NosStdLib
 					}
 					else if (ClickablePointer->Position.CheckIfPositionInside(currentPosition) && !ClickablePointer->Position.CheckIfPositionInside(lastPosition)) /* if current position is in and last wasn't mouse entered hover */
 					{
-						ClickablePointer->OnEnterHover->TriggerEvent();
+						if (ClickablePointer->OnEnterHover != nullptr) { ClickablePointer->OnEnterHover->TriggerEvent(); }
 					}
 					else if (!ClickablePointer->Position.CheckIfPositionInside(currentPosition) && ClickablePointer->Position.CheckIfPositionInside(lastPosition)) /* if current position isn't in and last was mouse left hover */
 					{
-						ClickablePointer->OnLeaveHover->TriggerEvent();
+						if (ClickablePointer->OnLeaveHover != nullptr) { ClickablePointer->OnLeaveHover->TriggerEvent(); }
 					}
 				}
 			}
@@ -96,6 +96,10 @@ namespace NosStdLib
 
 			Clickable(){}
 
+			/// <summary>
+			/// Create clickable object with position
+			/// </summary>
+			/// <param name="position">- position of object</param>
 			Clickable(const NosStdLib::Dimention::DimentionsD2& position)
 			{
 				Position = position;
@@ -154,9 +158,6 @@ namespace NosStdLib
 
 			~Button()
 			{
-				if (!(OnEnterHover == nullptr)) { delete OnEnterHover; OnEnterHover = nullptr; }
-				if (!(OnLeaveHover == nullptr)) { delete OnLeaveHover; OnLeaveHover = nullptr; }
-				if (!(OnClick == nullptr)) { delete OnClick; OnClick = nullptr; }
 				ButtonArray.ObjectRemove(this); /* remove self from array so the array doesn't call the delete operator again */
 			}
 

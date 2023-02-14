@@ -16,7 +16,8 @@ namespace NosStdLib
 	class Event
 	{
 	private:
-		NosStdLib::Functional::FunctionStoreBase* EventFunction; /* pointer to FunctionStore which will be run on event trigger */
+		NosStdLib::Functional::FunctionStoreBase* EventFunction = nullptr; /* pointer to FunctionStore which will be run on event trigger */
+		bool AssignedFunction = false; /* If the EventFunction pointer was actually set */
 
 		/* TODO: ALLOW FOR STACKING FUNCTIONS */
 	public:
@@ -46,6 +47,7 @@ namespace NosStdLib
 		void AssignEventFunction(NosStdLib::Functional::FunctionStoreBase* eventFunction)
 		{
 			EventFunction = eventFunction;
+			AssignedFunction = true;
 		}
 
 		/// <summary>
@@ -53,7 +55,16 @@ namespace NosStdLib
 		/// </summary>
 		void TriggerEvent()
 		{
-			EventFunction->RunFunction();
+			if (AssignedFunction && EventFunction != nullptr)
+			{
+				EventFunction->RunFunction();
+			}
+		#ifndef NDEBUG
+			else
+			{
+				throw std::exception("Function wasn't set");
+			}
+		#endif
 		}
 
 	};
