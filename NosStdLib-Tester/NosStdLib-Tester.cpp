@@ -36,12 +36,40 @@ void SomeFunction(int* param1, int* param2)
     return;
 }
 
+class BasicClass : public NosStdLib::ArrayPositionTrack::PositionTrack
+{
+private:
+    std::wstring SomeTing;
+public:
+    BasicClass(){}
+    BasicClass(const std::wstring& someTing)
+    {
+        SomeTing = someTing;
+    }
+};
+
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Console::InitializeModifiers::EnableANSI();
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
+
+    NosStdLib::DynamicArray<BasicClass*> someArray;
+
+    BasicClass* someClass1 = new BasicClass();
+    BasicClass* someClass2 = new BasicClass();
+
+    someArray.Append(someClass1);
+    someArray.Append(someClass2);
+
+    someArray.Remove(0);
+
+    std::wcout << someClass2->GetPosition() << std::endl;
+    std::wcout << someArray[0]->GetPosition() << std::endl;
+
+    wprintf(L"Press any button to continue"); _getch();
+    return 0;
 
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
     NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);

@@ -84,6 +84,12 @@
     <ClInclude Include="NosStdLib\Definitions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NosStdLib\DynamicArray\ArrayPositionTrack.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\Pointers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

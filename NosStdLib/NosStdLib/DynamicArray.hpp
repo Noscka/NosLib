@@ -2,6 +2,8 @@
 #define _DYNAMICARRAY_NOSSTDLIB_HPP_
 
 #include "TypeTraits.hpp"
+#include "Pointers.hpp"
+#include "DynamicArray/ArrayPositionTrack.hpp"
 
 #include <iostream>
 
@@ -78,7 +80,7 @@ namespace NosStdLib
 		/// Append single Object
 		/// </summary>
 		/// <param name="ObjectToAdd"> - Object to add</param>
-		void Append(const ArrayDataType& objectToAdd)
+		void Append(ArrayDataType& objectToAdd)
 		{
 			if (ArrayIndexPointer >= ArraySize) // if Current Index pointer is more then the array size (trying to add to OutOfRange space)
 			{
@@ -105,6 +107,11 @@ namespace NosStdLib
 				}
 
 				delete[] TempArray;
+			}
+
+			if constexpr (std::is_base_of_v<NosStdLib::ArrayPositionTrack::PositionTrack, NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
+			{
+				NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(objectToAdd)->ChangePosition(ArrayIndexPointer);
 			}
 
 			MainArray[ArrayIndexPointer] = objectToAdd;
@@ -137,12 +144,17 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="ReplaceObject"> - Object to place in the position</param>
 		/// <param name="position"> - position to put the Object in</param>
-		void Replace(const ArrayDataType& replaceObject, const int& position)
+		void Replace(ArrayDataType& replaceObject, const int& position)
 		{
 			if (position >= (ArrayIndexPointer - 1) || position < 0)// check if the position to remove is in array range
 			{
 				throw std::out_of_range("position was out of range of the array");
 				return;
+			}
+
+			if constexpr (std::is_base_of_v<NosStdLib::ArrayPositionTrack::PositionTrack, NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
+			{
+				NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(replaceObject)->ChangePosition(position);
 			}
 
 			MainArray[position] = replaceObject;
@@ -163,8 +175,15 @@ namespace NosStdLib
 			for (int i = position; i < (ArrayIndexPointer - 1); i++) // moving all back
 			{
 				MainArray[i] = MainArray[i + 1];
+
+				if constexpr (std::is_base_of_v<NosStdLib::ArrayPositionTrack::PositionTrack, NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
+				{
+					NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ChangePosition(i);
+				}
 			}
-			MainArray[ArrayIndexPointer - 1] = NULL; // make last character blank
+
+			delete MainArray[ArrayIndexPointer - 1];
+			MainArray[ArrayIndexPointer - 1] = nullptr; // make last character blank
 			ArrayIndexPointer--;
 		}
 

@@ -72,7 +72,9 @@ namespace NosStdLib
 						EntryInputPassStruct InputPassStruct{ currentIndex, titleSize, EntryInputPassStruct::InputType::Enter, false };
 						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
 						if (InputPassStruct.Redraw)
+						{
 							DrawMenu(currentIndex, &titleSize);
+						}
 						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 					}
 					else if (!(ch && ch != 224))
@@ -175,6 +177,8 @@ namespace NosStdLib
 				MenuEntryList.Append(Entry);
 			}
 
+
+
 		private:
 			/// <summary>
 			/// Draws the menu
@@ -190,12 +194,14 @@ namespace NosStdLib
 				std::wstring outputString; /* string for full "display" as it is the most perfomace efficent method */
 
 				if (GenerateUnicodeTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title */
+				{
 					outputString = NosStdLib::UnicodeTextGenerator::BasicUnicodeTextGenerate(ConsoleHandle, Title, CenterTitle); // add title with "ascii generator"
+				}
 				else
-					if (CenterTitle)
-						outputString = std::wstring(((ConsoleSizeStruct.Columns / 2) - Title.length() / 2), ' ') + Title;
-					else
-						outputString = Title;
+				{
+					if (CenterTitle) {outputString = std::wstring(((ConsoleSizeStruct.Columns / 2) - Title.length() / 2), ' ') + Title;}
+					else {outputString = Title;}
+				}
 
 				*titleSize = std::count(outputString.begin(), outputString.end(), L'\n');
 
@@ -203,9 +209,13 @@ namespace NosStdLib
 				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
 				{
 					if (i == currentIndex)
+					{
 						outputString += MenuEntryList[i]->EntryString(true);
+					}
 					else
+					{
 						outputString += MenuEntryList[i]->EntryString(false);
+					}
 				}
 
 				wprintf(outputString.c_str());

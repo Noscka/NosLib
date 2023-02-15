@@ -24,6 +24,7 @@
     <ClInclude Include="NosStdLib\Console.hpp" />
     <ClInclude Include="NosStdLib\Definitions.hpp" />
     <ClInclude Include="NosStdLib\DynamicArray.hpp" />
+    <ClInclude Include="NosStdLib\DynamicArray\ArrayPositionTrack.hpp" />
     <ClInclude Include="NosStdLib\DynamicContextMenu.hpp" />
     <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp" />
     <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="NosStdLib\Functional.hpp" />
     <ClInclude Include="NosStdLib\Clickable.hpp" />
     <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp" />
+    <ClInclude Include="NosStdLib\Pointers.hpp" />
     <ClInclude Include="NosStdLib\Resource\resource.h" />
     <ClInclude Include="NosStdLib\RGB.hpp" />
     <ClInclude Include="NosStdLib\String.hpp" />
