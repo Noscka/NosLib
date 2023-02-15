@@ -80,7 +80,7 @@ namespace NosStdLib
 		/// Append single Object
 		/// </summary>
 		/// <param name="ObjectToAdd"> - Object to add</param>
-		void Append(ArrayDataType& objectToAdd)
+		void Append(const ArrayDataType& objectToAdd)
 		{
 			if (ArrayIndexPointer >= ArraySize) // if Current Index pointer is more then the array size (trying to add to OutOfRange space)
 			{
@@ -111,7 +111,7 @@ namespace NosStdLib
 
 			if constexpr (std::is_base_of_v<NosStdLib::ArrayPositionTrack::PositionTrack, NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 			{
-				NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(objectToAdd)->ChangePosition(ArrayIndexPointer);
+				NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(objectToAdd)->ModifyArrayPosition(ArrayIndexPointer);
 			}
 
 			MainArray[ArrayIndexPointer] = objectToAdd;
@@ -144,7 +144,7 @@ namespace NosStdLib
 		/// </summary>
 		/// <param name="ReplaceObject"> - Object to place in the position</param>
 		/// <param name="position"> - position to put the Object in</param>
-		void Replace(ArrayDataType& replaceObject, const int& position)
+		void Replace(const ArrayDataType& replaceObject, const int& position)
 		{
 			if (position >= (ArrayIndexPointer - 1) || position < 0)// check if the position to remove is in array range
 			{
@@ -154,7 +154,7 @@ namespace NosStdLib
 
 			if constexpr (std::is_base_of_v<NosStdLib::ArrayPositionTrack::PositionTrack, NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 			{
-				NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(replaceObject)->ChangePosition(position);
+				NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(replaceObject)->ModifyArrayPosition(position);
 			}
 
 			MainArray[position] = replaceObject;
@@ -178,7 +178,7 @@ namespace NosStdLib
 
 				if constexpr (std::is_base_of_v<NosStdLib::ArrayPositionTrack::PositionTrack, NosStdLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 				{
-					NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ChangePosition(i);
+					NosStdLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
 				}
 			}
 

@@ -20,7 +20,7 @@ namespace NosStdLib
 				ArrayPosition = arrayPosition;
 			}
 
-			void ChangePosition(const int& arrayPosition)
+			void ModifyArrayPosition(const int& arrayPosition)
 			{
 				ArrayPosition = arrayPosition;
 			}

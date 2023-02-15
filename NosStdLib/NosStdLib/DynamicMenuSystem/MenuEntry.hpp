@@ -4,6 +4,8 @@
 #include "../Definitions.hpp"
 #include "../Console.hpp"
 #include "../RGB.hpp"
+#include "../Clickable.hpp"
+#include "../DynamicArray/ArrayPositionTrack.hpp"
 
 #include <Windows.h>
 #include <conio.h>
@@ -30,7 +32,7 @@ namespace NosStdLib
 		/// <summary>
 		/// The base of MenuEntry which only exists to allow for storing all the templated types together
 		/// </summary>
-		class MenuEntryBase
+		class MenuEntryBase : public NosStdLib::ArrayPositionTrack::PositionTrack, public NosStdLib::Clickable::Clickable
 		{
 		protected:
 			std::wstring EntryName; /* The entry name */

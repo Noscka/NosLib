@@ -27,7 +27,7 @@ namespace NosStdLib
 		std::wstring BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::wstring& input, const bool center)
 		{
 			/*
-			Program: Unicode Text Generator (Modified by Noscka)
+			Program: Unicode Text Generator (Modified by Norzka)
 			Description: Design text with unicode art. Modification: Made function return string instead of printing it straight to console
 			======= ORIGINAL CREATOR =======
 			Author: Lord Hypersonic

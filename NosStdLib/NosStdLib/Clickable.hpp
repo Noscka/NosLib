@@ -107,6 +107,15 @@ namespace NosStdLib
 				ClickableArray.Append(this);
 			}
 
+			/// <summary>
+			/// Change the position of the clickable object
+			/// </summary>
+			/// <param name="position">- the new position</param>
+			void ModifyClickablePosition(const NosStdLib::Dimention::DimentionsD2& position)
+			{
+				Position = position;
+			}
+
 			~Clickable()
 			{
 				if (!(OnEnterHover == nullptr)) { delete OnEnterHover; OnEnterHover = nullptr; }
