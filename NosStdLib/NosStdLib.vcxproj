@@ -28,7 +28,6 @@
     <ClInclude Include="NosStdLib\DynamicContextMenu.hpp" />
     <ClInclude Include="NosStdLib\DynamicLoadingScreen.hpp" />
     <ClInclude Include="NosStdLib\DynamicMenuSystem.hpp" />
-    <ClInclude Include="NosStdLib\DynamicMenuSystem\MenuEntry.hpp" />
     <ClInclude Include="NosStdLib\ErrorHandling.hpp" />
     <ClInclude Include="NosStdLib\EventHandling\EventHandling.hpp" />
     <ClInclude Include="NosStdLib\Experimental.hpp" />

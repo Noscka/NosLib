@@ -78,9 +78,6 @@
     <ClInclude Include="NosStdLib\Clickable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\DynamicMenuSystem\MenuEntry.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NosStdLib\Definitions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
