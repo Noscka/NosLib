@@ -1,6 +1,7 @@
 ﻿#include "NosStdLib/Console.hpp"
 #include "NosStdLib/String.hpp"
 #include "NosStdLib/DynamicMenuSystem.hpp"
+#include "NosStdLib/MouseTracking/MouseTracking.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -36,18 +37,6 @@ void SomeFunction(int* param1, int* param2)
     return;
 }
 
-class BasicClass : public NosStdLib::ArrayPositionTrack::PositionTrack
-{
-private:
-    std::wstring SomeTing;
-public:
-    BasicClass(){}
-    BasicClass(const std::wstring& someTing)
-    {
-        SomeTing = someTing;
-    }
-};
-
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
@@ -55,13 +44,16 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
+    NosStdLib::MouseTracking::InitializeMouseTracking();
+
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
     NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
     SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
     SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", new NosStdLib::Functional::FunctionStore(&CheckNumber)));
 
-    int param1, param2;
+    int param1 = 0,
+        param2 = 10;
 
     SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param1", &param1));
     SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"param2", &param2));

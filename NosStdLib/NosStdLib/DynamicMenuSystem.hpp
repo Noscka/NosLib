@@ -15,13 +15,20 @@ namespace NosStdLib
 {
 	namespace Menu
 	{
+		enum MouseEventEnum : uint8_t
+		{
+			OnClick = 0,
+			OnEnterHover = 1,
+			OnLeaveHover = 2,
+		};
+
 		struct EntryInputPassStruct
 		{
 			enum InputType : uint8_t
 			{
-				Enter,
-				ArrowLeft,
-				ArrowRight,
+				Enter = 0,
+				ArrowLeft = 1,
+				ArrowRight = 2,
 			};
 
 			int CurrentIndex;
@@ -29,6 +36,9 @@ namespace NosStdLib
 			InputType inputType;
 			bool Redraw;
 		};
+
+		/* Define so MenuEntry can hold pointer */
+		class DynamicMenu;
 
 		/// <summary>
 		/// The base of MenuEntry which only exists to allow for storing all the templated types together
@@ -38,8 +48,9 @@ namespace NosStdLib
 		protected:
 			std::wstring EntryName; /* The entry name */
 
-			HANDLE* MenuConsoleHandle;												/* a pointer to the menu's MenuConsoleHandle, so its synced */
-			CONSOLE_SCREEN_BUFFER_INFO* MenuConsoleScreenBI;						/* a pointer to the menu's MenuConsoleScreenBI, so its synced */
+			DynamicMenu* ParentMenuPointer;									/* a pointer to the menu which parents/holds this entry */
+			HANDLE* MenuConsoleHandle;										/* a pointer to the menu's MenuConsoleHandle, so its synced */
+			CONSOLE_SCREEN_BUFFER_INFO* MenuConsoleScreenBI;				/* a pointer to the menu's MenuConsoleScreenBI, so its synced */
 			NosStdLib::Console::ConsoleSizeStruct* MenuConsoleSizeStruct;	/* a pointer to the menu's MenuConsoleSizeStruct, so its synced */
 		public:
 			/// <summary>
@@ -62,11 +73,11 @@ namespace NosStdLib
 			}
 
 			/// <summary>
-			/// Update/set the variables such as pointers to ConsoleHandle, ConsoleScreenBI and ConsoleSizeStruct
+			/// Update/set pointers to ParentMenuPointer, ConsoleHandle, ConsoleScreenBI and ConsoleSizeStruct
 			/// </summary>
-			/// <returns></returns>
-			void SetEntryVariables(HANDLE* menuConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* menuConsoleScreenBI, NosStdLib::Console::ConsoleSizeStruct* menuConsoleSizeStruct)
+			void SetEntryVariables(DynamicMenu* parentMenuPointer, HANDLE* menuConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* menuConsoleScreenBI, NosStdLib::Console::ConsoleSizeStruct* menuConsoleSizeStruct)
 			{
+				ParentMenuPointer = parentMenuPointer;
 				MenuConsoleHandle = menuConsoleHandle;
 				MenuConsoleScreenBI = menuConsoleScreenBI;
 				MenuConsoleSizeStruct = menuConsoleSizeStruct;
@@ -83,9 +94,14 @@ namespace NosStdLib
 		private:
 			// Type specific vars
 			EntryType* TypePointerStore;
+
+			/// <summary>
+			/// Function to Set Mouse Events
+			/// </summary>
+			void SetMouseEvents();
 		public:
 
-			//// <summary>
+			/// <summary>
 			/// For Arrays
 			/// </summary>
 			MenuEntry() {}
@@ -99,6 +115,8 @@ namespace NosStdLib
 			{
 				EntryName = name;
 				TypePointerStore = typePointerStore;
+
+				SetMouseEvents();
 			}
 
 			/// <summary>
@@ -172,8 +190,9 @@ namespace NosStdLib
 				 CenterTitle,			/* if the title should be centered */
 				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
 
-			int TitleSize;				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundries */
-
+			int TitleSize,				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundries */
+				CurrentIndex,			/* Which item is currently selected */
+				OldIndex;				/* Old index to know old index position */
 		public:
 			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
@@ -199,14 +218,13 @@ namespace NosStdLib
 				}
 
 				int ch, exCh; /* for getting input data */
-				int currentIndex = 0; /* Which item is currently selected */
-				int oldIndex = currentIndex; /* Old index to know old position */
+				OldIndex = CurrentIndex = 0; /* Assign both old and current index ints */
 				TitleSize = 0; /* title size (for calculations where actual menu entries start) */
 				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
 				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
 				NosStdLib::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
 
-				DrawMenu(currentIndex); /* Draw menu first time */
+				DrawMenu(); /* Draw menu first time */
 
 				NosStdLib::Console::ShowCaret(false); /* Hide the caret */
 
@@ -215,11 +233,11 @@ namespace NosStdLib
 					ch = _getch(); /* first character input */
 					if (ch == NosStdLib::Definitions::ENTER)
 					{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
-						EntryInputPassStruct InputPassStruct{ currentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
-						MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+						EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
+						MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 						if (InputPassStruct.Redraw)
 						{
-							DrawMenu(currentIndex);
+							DrawMenu();
 						}
 						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 					}
@@ -228,31 +246,31 @@ namespace NosStdLib
 						switch (exCh = _getch())
 						{
 						case NosStdLib::Definitions::ARROW_UP:
-							if (currentIndex > 0) /* Decrement only if larger the 0 */
+							if (CurrentIndex > 0) /* Decrement only if larger the 0 */
 							{
-								currentIndex--; /* Decrement the Indenetation */
+								CurrentIndex--; /* Decrement the Indenetation */
 							}
 							break;
 						case NosStdLib::Definitions::ARROW_DOWN:
-							if (currentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
+							if (CurrentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
 							{
-								currentIndex++; /* Increment the Indenetation */
+								CurrentIndex++; /* Increment the Indenetation */
 							}
 							break;
 						case NosStdLib::Definitions::ARROW_LEFT:
 							{
-								EntryInputPassStruct InputPassStruct{ currentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
-								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
+								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
-									DrawMenu(currentIndex);
+									DrawMenu();
 								break;
 							}
 						case NosStdLib::Definitions::ARROW_RIGHT:
 							{
-								EntryInputPassStruct InputPassStruct{ currentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowRight, false };
-								MenuEntryList[currentIndex]->EntryInput(&InputPassStruct);
+								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowRight, false };
+								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
-									DrawMenu(currentIndex);
+									DrawMenu();
 								break;
 							}
 						}
@@ -264,7 +282,7 @@ namespace NosStdLib
 					{
 						oldConsoleSizeStruct = ConsoleSizeStruct;
 						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
-						DrawMenu(currentIndex);
+						DrawMenu();
 					}
 
 					/*
@@ -279,38 +297,72 @@ namespace NosStdLib
 
 					COORD finalPosition = {0,0};
 
-					if (currentIndex > oldIndex && oldIndex != currentIndex) /* Going Down */
+					if (CurrentIndex > OldIndex && OldIndex != CurrentIndex) /* Going Down */
 					{
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + currentIndex - 1) });
-						wprintf((MenuEntryList[oldIndex]->EntryString(false) + MenuEntryList[currentIndex]->EntryString(true)).c_str());
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex - 1) });
+						wprintf((MenuEntryList[OldIndex]->EntryString(false) + MenuEntryList[CurrentIndex]->EntryString(true)).c_str());
 
-						if ((TitleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
+						if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
 							finalPosition = { 0,0 };
-						else if ((TitleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+						else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
 							finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + TitleSize - 1) };
 						else
-							finalPosition = { 0, (SHORT)((TitleSize + currentIndex) + (ConsoleSizeStruct.Rows / 2)) };
+							finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2)) };
 					}
-					else if(oldIndex != currentIndex)/* Going Up */
+					else if(OldIndex != CurrentIndex)/* Going Up */
 					{
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + currentIndex) });
-						wprintf((MenuEntryList[currentIndex]->EntryString(true) + MenuEntryList[oldIndex]->EntryString(false)).c_str());
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex) });
+						wprintf((MenuEntryList[CurrentIndex]->EntryString(true) + MenuEntryList[OldIndex]->EntryString(false)).c_str());
 
-						if ((TitleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
+						if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
 							finalPosition = { 0,0 };
-						else if ((TitleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+						else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
 							finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
 						else
-							finalPosition = { 0, (SHORT)((TitleSize + currentIndex) - (ConsoleSizeStruct.Rows / 2)) };
+							finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2)) };
 
 					}
 
 					SetConsoleCursorPosition(ConsoleHandle, finalPosition);
 
-					oldIndex = currentIndex;
+					OldIndex = CurrentIndex;
 				}
 				NosStdLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
 				NosStdLib::Console::ShowCaret(true); /* show the caret again */
+			}
+
+			/// <summary>
+			/// Function that gets called By MenuEntry object when it gets triggered by a mouse
+			/// </summary>
+			/// <param name="parentMenu">- pointer to parent menu</param>
+			/// <param name="entryPosition">- array position of the entry</param>
+			/// <param name="mouseOperationType">- the mouse event that happened</param>
+			static void MouseEventCallback(DynamicMenu* parentMenu, const int& entryPosition, const MouseEventEnum& mouseOperationType) /* TODO: figure out a better name */
+			{
+				switch (mouseOperationType)
+				{
+				case MouseEventEnum::OnClick:
+				{
+					EntryInputPassStruct InputPassStruct{parentMenu->CurrentIndex, parentMenu->TitleSize, EntryInputPassStruct::InputType::Enter, false};
+					parentMenu->MenuEntryList[parentMenu->CurrentIndex]->EntryInput(&InputPassStruct);
+					if (InputPassStruct.Redraw)
+					{
+						parentMenu->DrawMenu();
+					}
+					NosStdLib::Console::ShowCaret(false); /* hide the caret again */
+					break;
+				}
+
+				case MouseEventEnum::OnEnterHover:
+					break;
+
+				case MouseEventEnum::OnLeaveHover:
+					break;
+
+				default:
+					throw std::exception("Mouse Event not added");
+					break;
+				}
 			}
 
 			/// <summary>
@@ -319,8 +371,8 @@ namespace NosStdLib
 			/// <param name="Entry">- the entry to add</param>
 			void AddMenuEntry(MenuEntryBase* Entry)
 			{
-				Entry->SetEntryVariables(&ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
-				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(0, (TitleSize + MenuEntryList.GetArrayIndexPointer()), 20, (TitleSize + MenuEntryList.GetArrayIndexPointer()))); /* VALIDATE AND CALCULATE ACTUAL SIZE AFTER IT WORKS */
+				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
+				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(0, (TitleSize + MenuEntryList.GetArrayIndexPointer()), 20, (TitleSize + MenuEntryList.GetArrayIndexPointer()))); /* TODO: VALIDATE AND CALCULATE ACTUAL SIZE AFTER IT WORKS */
 				MenuEntryList.Append(Entry);
 			}
 
@@ -329,7 +381,7 @@ namespace NosStdLib
 			/// Draws the menu
 			/// </summary>
 			/// <param name="CurrentIndex">- currrent index</param>
-			void DrawMenu(const int& currentIndex)
+			void DrawMenu()
 			{
 				NosStdLib::Console::ClearScreen();
 
@@ -352,7 +404,7 @@ namespace NosStdLib
 				// for loop using counter to get the index so to add the >< to the selected option
 				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
 				{
-					if (i == currentIndex)
+					if (i == CurrentIndex)
 					{
 						outputString += MenuEntryList[i]->EntryString(true);
 					}
@@ -364,7 +416,7 @@ namespace NosStdLib
 
 				wprintf(outputString.c_str());
 
-				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(currentIndex) });
+				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(CurrentIndex) });
 			}
 
 			/// <summary>
@@ -376,6 +428,17 @@ namespace NosStdLib
 				menuPointer->MenuLoop = false;
 			}
 		};
+
+
+		/* Needs to be down here so it has "MouseEventCallback" function already declared and defined */
+		template<class EntryType>
+		void MenuEntry<EntryType>::SetMouseEvents()
+		{
+			/* Setup Event */
+			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, std::forward<DynamicMenu*>(ParentMenuPointer), GetArrayPosition(), MouseEventEnum::OnClick));
+			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, std::forward<DynamicMenu*>(ParentMenuPointer), GetArrayPosition(), MouseEventEnum::OnEnterHover));
+			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, std::forward<DynamicMenu*>(ParentMenuPointer), GetArrayPosition(), MouseEventEnum::OnLeaveHover));
+		}
 
 	#pragma region Template Specialization
 	#pragma region bool

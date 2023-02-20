@@ -25,7 +25,7 @@ namespace NosStdLib
 				ArrayPosition = arrayPosition;
 			}
 
-			int GetPosition()
+			int GetArrayPosition()
 			{
 				return ArrayPosition;
 			}
