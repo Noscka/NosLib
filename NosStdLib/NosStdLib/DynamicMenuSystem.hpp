@@ -172,6 +172,10 @@ namespace NosStdLib
 			}
 		};
 
+
+
+		/* https://stackoverflow.com/questions/41368759/c-interrupt-or-cancel-getch look into this */
+
 		/// <summary>
 		/// the main Menu class which will be used to render and display menu
 		/// </summary>
