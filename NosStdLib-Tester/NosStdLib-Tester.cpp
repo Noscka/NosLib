@@ -31,7 +31,7 @@ void add_chars_to_queue()
     wchar_t c{};
     for (;;)
     {
-        c = static_cast<char>(_getch());
+        c = static_cast<wchar_t>(_getch());
         if (!std::wcin)
         {
             std::unique_lock<std::mutex> lck{ mtx };
@@ -56,34 +56,35 @@ void add_chars_to_queue()
 }
 
 
-std::wstring get_key_or_wait(std::chrono::system_clock::duration d)
+void get_key_or_wait(std::chrono::system_clock::duration d)
 {
     std::unique_lock<std::mutex> lck{ mtx };
     for (int i{ 10 }; i > 0; --i)
     {
-        MSG msg;
-        GetMessage(&msg, 0, 0, 0);
 
         cv.wait_for(lck, d / 10., []() { return quit || !char_queue.empty(); });
         if (!char_queue.empty())
+        {
             break;
+        }
         if (quit)
-            return{ L"Quitting.\n" };
+        {
+            wprintf(L"Quitting.\n");
+            return;
+        }
         std::wcout << L"Countdown at " << i << '\n';
     }
-    std::wstring return_string{};
     if (!char_queue.empty())
     {
-        return_string += L"Obtained a character from the stream before the timer ran out. Character was: ";
-        return_string += char_queue.front();
+        wprintf(std::format(L"Obtained a character from the stream before the timer ran out. Character was: {}\n", char_queue.front()).c_str());
         char_queue.pop();
     }
     else
     {
-        return_string = L"Timer ran out.";
+        wprintf(L"Timer ran out.\n");
     }
 
-    return return_string;
+    return;
 }
 
 void PrintingFunction(std::wstring input)
@@ -103,12 +104,8 @@ int main()
 
     NosStdLib::Clickable::Button::PrintAllButtons();
 
-    //button1.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 1\n"));
-    //button1.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 1\n"));
     button1.OnClick = new NosStdLib::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&PrintingFunction, L"Clicked button 1\n"));
 
-    //button2.OnEnterHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Entered button 2\n"));
-    //button2.OnLeaveHover = new NosStdLib::Button::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&SomeEventFunction, L"Left button 2\n"));
     button2.OnClick = new NosStdLib::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&PrintingFunction, L"Clicked button 2\n"));
 
     NosStdLib::MouseTracking::InitializeMouseTracking();
@@ -116,16 +113,18 @@ int main()
 
     std::thread get_chars{ []() { add_chars_to_queue(); } };
 
-    std::wcout << L"Type q to exit.\n";
-    for (int i{}; i < 3; ++i)
+    wprintf(L"Type q to exit.\n");
+    MSG msg;
+    //while (true)
+    while(GetMessage(&msg, 0, 0, 0))
     {
         {
             std::lock_guard<std::mutex> lck{ mtx };
             if (quit)
                 break;
         }
-        std::wcout << L"Waiting for key press followed by <enter>.\n";
-        std::wcout << get_key_or_wait(std::chrono::seconds(10)) << '\n';
+        wprintf(L"Waiting for key press followed by <enter>.\n");
+        get_key_or_wait(std::chrono::seconds(10));
     }
 
     get_chars.join();
