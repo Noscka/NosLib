@@ -58,6 +58,8 @@ void add_chars_to_queue()
 }
 
 void get_key_or_wait(std::chrono::system_clock::duration d)
+
+void get_key_or_wait(std::chrono::system_clock::duration d)
 {
     std::unique_lock<std::mutex> lck{ mtx };
     for (int i{ 10 }; i > 0; --i)
@@ -90,6 +92,8 @@ void get_key_or_wait(std::chrono::system_clock::duration d)
     {
         wprintf(L"Timer ran out.\n");
     }
+
+    return;
 }
 
 void PrintingFunction(std::wstring input)
@@ -132,8 +136,10 @@ int main()
 
     std::thread get_chars{ []() { add_chars_to_queue(); } };
 
-    std::wcout << L"Type q to exit.\n";
-    for (int i{}; i < 3; ++i)
+    wprintf(L"Type q to exit.\n");
+    MSG msg;
+    //while (true)
+    while(GetMessage(&msg, 0, 0, 0))
     {
         {
             std::lock_guard<std::mutex> lck{ mtx };
