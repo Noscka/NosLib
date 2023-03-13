@@ -192,28 +192,11 @@ namespace NosStdLib
 			return CallNextHookEx(MouseHook, nCode, wParam, lParam);
 		}
 
-		DWORD main_thread_id;
-
-		void SetMouseHookAndMessageLoop()
-		{
-			AttachThreadInput(main_thread_id, GetCurrentThreadId(), true);
-
-			MSG msg;
-			while (GetMessage(&msg, 0,0,0))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-
 		/// <summary>
 		/// Initialize and create lowlevel Mouse callback
 		/// </summary>
 		bool InitializeMouseTracking()
 		{
-			main_thread_id = GetCurrentThreadId();
-			std::thread* MouseHKAndMsgLoop = new std::thread(&SetMouseHookAndMessageLoop);
-
 			MouseHook = SetWindowsHookEx(WH_MOUSE_LL, NosStdLib::MouseTracking::MouseHookProc, GetModuleHandle(NULL), 0);
 
 			DWORD prev_mode;
