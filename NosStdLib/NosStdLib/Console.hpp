@@ -349,6 +349,33 @@ namespace NosStdLib
 			return {consoleScreenBI->srWindow.Right - consoleScreenBI->srWindow.Left + 1, consoleScreenBI->srWindow.Bottom - consoleScreenBI->srWindow.Top + 1};
 		}
 	#pragma endregion
+
+	#pragma region NoneBlockingMessageLoop
+		/// <summary>
+		/// function which will create a none blocking message loop. used more as a template
+		/// </summary>
+		/// <param name="timeoutMilliseconds">(default = 5) - amount of milliseconds to wait for message</param>
+		void NoneBlockingMessageLoop(DWORD timeoutMilliseconds = 5)
+		{
+			MSG msg;
+
+			while (true)
+			{
+				switch (MsgWaitForMultipleObjects(0, NULL, FALSE, timeoutMilliseconds, QS_ALLINPUT))
+				{
+				case WAIT_OBJECT_0:
+					PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+					break;
+
+				case WAIT_TIMEOUT:
+					wprintf(L"timed out\n");
+					break;
+				}
+			}
+		}
+	#pragma endregion
 	}
 }
 

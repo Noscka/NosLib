@@ -60,24 +60,7 @@ int main()
 
     NosStdLib::MouseTracking::InitializeMouseTracking();
 
-    MSG msg;
-
-    while (true)
-    {
-        switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 10, QS_ALLINPUT))
-        {
-        case WAIT_OBJECT_0:
-            while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-            break;
-
-        case WAIT_TIMEOUT:
-            wprintf(L"timed out\n");
-            break;
-        }
-    }
+    NosStdLib::Console::NoneBlockingMessageLoop();
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
