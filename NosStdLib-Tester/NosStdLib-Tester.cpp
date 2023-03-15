@@ -61,39 +61,23 @@ int main()
     NosStdLib::MouseTracking::InitializeMouseTracking();
 
     MSG msg;
-    
+
     while (true)
     {
-        std::wcout << HIWORD(GetQueueStatus(QS_ALLEVENTS)) << std::endl;
-        if (HIWORD(GetQueueStatus(QS_ALLEVENTS)))
+        switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 10, QS_ALLINPUT))
         {
-            PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+        case WAIT_OBJECT_0:
+            while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+            break;
+
+        case WAIT_TIMEOUT:
+            wprintf(L"timed out\n");
+            break;
         }
     }
-
-
-    //while (true)
-    //{
-    //    switch (MsgWaitForMultipleObjects(1, handleArray, FALSE, INFINITE, QS_MOUSE))
-    //    {
-    //    case WAIT_OBJECT_0:
-    //        wprintf(L"Nothing To Do\n");
-    //        break;
-    //    case WAIT_OBJECT_0 + 1:
-    //        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-    //        {
-    //            // TODO:  must handle WM_QUIT; see Raymond's blog for details
-    //            TranslateMessage(&msg);
-    //            DispatchMessage(&msg);
-    //        }
-    //        break;
-    //    default:
-    //        return -1; // unexpected failure
-    //    }
-    //    
-    //}
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
