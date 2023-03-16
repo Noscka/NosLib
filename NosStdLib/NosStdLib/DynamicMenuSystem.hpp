@@ -203,9 +203,9 @@ namespace NosStdLib
 				CurrentIndex,			/* Which item is currently selected */
 				OldIndex;				/* Old index to know old index position */
 
-			std::condition_variable cv{};
-			std::mutex mtx;
-			std::queue<int> char_queue{};
+			std::condition_variable cv{};	/* Condition Variable to allow for shared queue */
+			std::mutex mtx;					/* Mutex used in condition variable */
+			std::queue<int> char_queue{};	/* queue for the message loop */
 		public:
 			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
@@ -249,12 +249,12 @@ namespace NosStdLib
 					std::unique_lock<std::mutex> lck{mtx};
 					switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 5, QS_ALLINPUT))
 					{
-					case WAIT_OBJECT_0:
+					case WAIT_OBJECT_0: /* if there is a message on the queue */
 						PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 						TranslateMessage(&msg);
 						DispatchMessage(&msg); /* break removed on purpose to also run timout code */
 
-					case WAIT_TIMEOUT:
+					case WAIT_TIMEOUT: /* if there was no message put on the queue in the 5 seconds time out */
 						cv.wait_for(lck, std::chrono::system_clock::duration(std::chrono::milliseconds(2)), [this]() {return !char_queue.empty(); });
 						if (!char_queue.empty())
 						{
