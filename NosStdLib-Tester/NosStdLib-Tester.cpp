@@ -13,33 +13,28 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
-bool SomeBool = false;
-int number = 1;
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
 
-void CheckBool()
-{
-    wprintf((SomeBool ? L"true\n" : L"false\n"));
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
+std::condition_variable cv{};
+std::mutex mtx;
+std::queue<wchar_t> char_queue{};
 
-void CheckNumber()
+void add_chars_to_queue()
 {
-    wprintf((std::to_wstring(number) + L"\n").c_str());
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
-
-void SomeFunction(int* param1, int* param2)
-{
-    std::wcout << L"Param1: " << *param1 << L" | Param2: " << *param2 << std::endl;
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
-
-void PrintingFunction(std::wstring input)
-{
-    wprintf(input.c_str());
+    wchar_t c{};
+    while(true)
+    {
+        c = _getch();
+        std::unique_lock<std::mutex> lck{mtx};
+        char_queue.push(c);
+        cv.notify_all();
+    }
 }
 
 int main()
@@ -49,18 +44,52 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::Clickable::Button button1(L"button 1", NosStdLib::Dimention::DimentionsD2(1, 1, 10, 3));
-    NosStdLib::Clickable::Button button2(L"button 2", NosStdLib::Dimention::DimentionsD2(20, 3, 29, 5));
-
-    NosStdLib::Clickable::Button::PrintAllButtons();
-
-    button1.OnClick = new NosStdLib::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&PrintingFunction, L"Clicked button 1\n"));
-
-    button2.OnClick = new NosStdLib::Event(new NosStdLib::Functional::FunctionStore<void(std::wstring), std::wstring>(&PrintingFunction, L"Clicked button 2\n"));
-
     NosStdLib::MouseTracking::InitializeMouseTracking();
 
-    NosStdLib::Console::NoneBlockingMessageLoop();
+    std::thread get_chars{[]() {add_chars_to_queue(); }};
+    MSG msg;
+
+    while (true)
+    {
+        std::unique_lock<std::mutex> lck{mtx};
+        switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 5, QS_ALLINPUT))
+        {
+        case WAIT_OBJECT_0:
+            PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            break;
+
+        case WAIT_TIMEOUT:
+            cv.wait_for(lck, std::chrono::system_clock::duration(std::chrono::milliseconds(2)), []() {return !char_queue.empty(); });
+            if (!char_queue.empty())
+            {
+                wprintf(std::format(L"Obtained a character from the stream before the timer ran out. Character was: {}\n", char_queue.front()).c_str());
+                char_queue.pop();
+            }
+            break;
+        }
+    }
+
+    get_chars.join();
+
+    /*MSG msg;
+
+    while (true)
+    {
+        switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 5, QS_ALLINPUT))
+        {
+        case WAIT_OBJECT_0:
+            PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            break;
+
+        case WAIT_TIMEOUT:
+            wprintf(L"timed out\n");
+            break;
+        }
+    }*/
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
