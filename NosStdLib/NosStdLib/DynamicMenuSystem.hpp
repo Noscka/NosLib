@@ -205,7 +205,7 @@ namespace NosStdLib
 
 			std::condition_variable cv{};
 			std::mutex mtx;
-			std::queue<wchar_t> char_queue{};
+			std::queue<int> char_queue{};
 		public:
 			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
@@ -252,8 +252,7 @@ namespace NosStdLib
 					case WAIT_OBJECT_0:
 						PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
 						TranslateMessage(&msg);
-						DispatchMessage(&msg);
-						break;
+						DispatchMessage(&msg); /* break removed on purpose to also run timout code */
 
 					case WAIT_TIMEOUT:
 						cv.wait_for(lck, std::chrono::system_clock::duration(std::chrono::milliseconds(2)), [this]() {return !char_queue.empty(); });
@@ -261,8 +260,11 @@ namespace NosStdLib
 						{
 							ch = char_queue.front();
 							char_queue.pop();
-							exCh = char_queue.front();
-							char_queue.pop();
+							if (!(ch && ch != 224))
+							{
+								exCh = char_queue.front();
+								char_queue.pop();
+							}
 
 							if (ch == NosStdLib::Definitions::ENTER)
 							{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
@@ -419,12 +421,18 @@ namespace NosStdLib
 			/// </summary>
 			void WaitForInput_Thread()
 			{
-				wchar_t c{};
-				while (MenuLoop)
+				int ch;
+				int exCh;
+				while (true)
 				{
-					c = _getch();
-					std::unique_lock<std::mutex> lck{mtx};
-					char_queue.push(c);
+					ch = _getch();
+					std::unique_lock<std::mutex> lock{mtx};
+					char_queue.push(ch);
+					if (!(ch && ch != 224))
+					{
+						exCh = _getch();
+						char_queue.push(exCh);
+					}
 					cv.notify_all();
 				}
 				return;
