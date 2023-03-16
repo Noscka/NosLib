@@ -10,6 +10,11 @@
 
 #include <Windows.h>
 #include <conio.h>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
 
 namespace NosStdLib
 {
@@ -197,6 +202,10 @@ namespace NosStdLib
 			int TitleSize,				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundries */
 				CurrentIndex,			/* Which item is currently selected */
 				OldIndex;				/* Old index to know old index position */
+
+			std::condition_variable cv{};
+			std::mutex mtx;
+			std::queue<wchar_t> char_queue{};
 		public:
 			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
@@ -227,112 +236,136 @@ namespace NosStdLib
 				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
 				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
 				NosStdLib::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
+				MSG msg;	/* MSG structer used for message loop */
 
 				DrawMenu(); /* Draw menu first time */
 
 				NosStdLib::Console::ShowCaret(false); /* Hide the caret */
 
+				std::thread inputListenThread{[this]() {WaitForInput_Thread(); }}; /* start waiting for input thread */
+
 				while (MenuLoop)
 				{
-					ch = _getch(); /* first character input */
-					if (ch == NosStdLib::Definitions::ENTER)
-					{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
-						EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
-						MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
-						if (InputPassStruct.Redraw)
-						{
-							DrawMenu();
-						}
-						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
-					}
-					else if (!(ch && ch != 224))
+					std::unique_lock<std::mutex> lck{mtx};
+					switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 5, QS_ALLINPUT))
 					{
-						switch (exCh = _getch())
+					case WAIT_OBJECT_0:
+						PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+						TranslateMessage(&msg);
+						DispatchMessage(&msg);
+						break;
+
+					case WAIT_TIMEOUT:
+						cv.wait_for(lck, std::chrono::system_clock::duration(std::chrono::milliseconds(2)), [this]() {return !char_queue.empty(); });
+						if (!char_queue.empty())
 						{
-						case NosStdLib::Definitions::ARROW_UP:
-							if (CurrentIndex > 0) /* Decrement only if larger the 0 */
-							{
-								CurrentIndex--; /* Decrement the Indenetation */
-							}
-							break;
-						case NosStdLib::Definitions::ARROW_DOWN:
-							if (CurrentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
-							{
-								CurrentIndex++; /* Increment the Indenetation */
-							}
-							break;
-						case NosStdLib::Definitions::ARROW_LEFT:
-							{
-								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
+							ch = char_queue.front();
+							char_queue.pop();
+							exCh = char_queue.front();
+							char_queue.pop();
+
+							if (ch == NosStdLib::Definitions::ENTER)
+							{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
+								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
 								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
+								{
 									DrawMenu();
-								break;
+								}
+								NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 							}
-						case NosStdLib::Definitions::ARROW_RIGHT:
+							else if (!(ch && ch != 224))
 							{
-								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowRight, false };
-								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
-								if (InputPassStruct.Redraw)
-									DrawMenu();
-								break;
+								switch (exCh)
+								{
+								case NosStdLib::Definitions::ARROW_UP:
+									if (CurrentIndex > 0) /* Decrement only if larger the 0 */
+									{
+										CurrentIndex--; /* Decrement the Indenetation */
+									}
+									break;
+								case NosStdLib::Definitions::ARROW_DOWN:
+									if (CurrentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
+									{
+										CurrentIndex++; /* Increment the Indenetation */
+									}
+									break;
+								case NosStdLib::Definitions::ARROW_LEFT:
+									{
+										EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
+										MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
+										if (InputPassStruct.Redraw)
+											DrawMenu();
+										break;
+									}
+								case NosStdLib::Definitions::ARROW_RIGHT:
+									{
+										EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowRight, false };
+										MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
+										if (InputPassStruct.Redraw)
+											DrawMenu();
+										break;
+									}
+								}
 							}
+
+							ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+							/* if the console dimentions have changed (console window has increased or decreased). then redraw whole menu */
+							if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
+							{
+								oldConsoleSizeStruct = ConsoleSizeStruct;
+								NosStdLib::Console::ShowCaret(false); /* hide the caret again */
+								DrawMenu();
+							}
+
+							/*
+								What needs to be redrawing depending on if its up for down
+								if the index goes down (bigger number), you need to clear above and current line
+								|| Old Selected Entry
+								\/ New Selected Entry <-- Here is Cursor
+								and if going up (smaller number)
+								/\ New Selected Entry <-- Here is Cursor
+								|| Old Selected Entry
+							*/
+
+							COORD finalPosition = {0,0};
+
+							if (CurrentIndex > OldIndex && OldIndex != CurrentIndex) /* Going Down */
+							{
+								SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex - 1) });
+								wprintf((MenuEntryList[OldIndex]->EntryString(false) + MenuEntryList[CurrentIndex]->EntryString(true)).c_str());
+
+								if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
+									finalPosition = { 0,0 };
+								else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+									finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + TitleSize - 1) };
+								else
+									finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2)) };
+							}
+							else if(OldIndex != CurrentIndex)/* Going Up */
+							{
+								SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex) });
+								wprintf((MenuEntryList[CurrentIndex]->EntryString(true) + MenuEntryList[OldIndex]->EntryString(false)).c_str());
+
+								if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
+									finalPosition = { 0,0 };
+								else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
+									finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
+								else
+									finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2)) };
+
+							}
+
+							SetConsoleCursorPosition(ConsoleHandle, finalPosition);
+
+							OldIndex = CurrentIndex;
 						}
+						break;
 					}
-
-					ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
-					/* if the console dimentions have changed (console window has increased or decreased). then redraw whole menu */
-					if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
-					{
-						oldConsoleSizeStruct = ConsoleSizeStruct;
-						NosStdLib::Console::ShowCaret(false); /* hide the caret again */
-						DrawMenu();
-					}
-
-					/*
-						What needs to be redrawing depending on if its up for down
-						if the index goes down (bigger number), you need to clear above and current line
-						|| Old Selected Entry
-						\/ New Selected Entry <-- Here is Cursor
-						and if going up (smaller number)
-						/\ New Selected Entry <-- Here is Cursor
-						|| Old Selected Entry
-					*/
-
-					COORD finalPosition = {0,0};
-
-					if (CurrentIndex > OldIndex && OldIndex != CurrentIndex) /* Going Down */
-					{
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex - 1) });
-						wprintf((MenuEntryList[OldIndex]->EntryString(false) + MenuEntryList[CurrentIndex]->EntryString(true)).c_str());
-
-						if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
-							finalPosition = { 0,0 };
-						else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
-							finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + TitleSize - 1) };
-						else
-							finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2)) };
-					}
-					else if(OldIndex != CurrentIndex)/* Going Up */
-					{
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex) });
-						wprintf((MenuEntryList[CurrentIndex]->EntryString(true) + MenuEntryList[OldIndex]->EntryString(false)).c_str());
-
-						if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
-							finalPosition = { 0,0 };
-						else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
-							finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
-						else
-							finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2)) };
-
-					}
-
-					SetConsoleCursorPosition(ConsoleHandle, finalPosition);
-
-					OldIndex = CurrentIndex;
 				}
 				NosStdLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
 				NosStdLib::Console::ShowCaret(true); /* show the caret again */
+				inputListenThread.join(); /* wait for thread to join */
 			}
 
 			/// <summary>
@@ -381,6 +414,22 @@ namespace NosStdLib
 			}
 
 		private:
+			/// <summary>
+			/// Function used in a thread for waiting for input
+			/// </summary>
+			void WaitForInput_Thread()
+			{
+				wchar_t c{};
+				while (MenuLoop)
+				{
+					c = _getch();
+					std::unique_lock<std::mutex> lck{mtx};
+					char_queue.push(c);
+					cv.notify_all();
+				}
+				return;
+			}
+
 			/// <summary>
 			/// Draws the menu
 			/// </summary>
