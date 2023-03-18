@@ -7,6 +7,7 @@
 #include "RGB.hpp"
 #include "Clickable.hpp"
 #include "DynamicArray/ArrayPositionTrack.hpp"
+#include "MouseTracking/MouseTracking.hpp"
 
 #include <Windows.h>
 #include <conio.h>
@@ -294,6 +295,7 @@ namespace NosStdLib
 
 							if (ch == NosStdLib::Definitions::ENTER)
 							{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
+								NosStdLib::MouseTracking::TerminateMouseTracking();
 								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
 								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
@@ -301,6 +303,7 @@ namespace NosStdLib
 									DrawMenu();
 								}
 								NosStdLib::Console::ShowCaret(false); /* hide the caret again */
+								NosStdLib::MouseTracking::InitializeMouseTracking();
 							}
 							else if (!(ch && ch != 224))
 							{
@@ -393,6 +396,7 @@ namespace NosStdLib
 				}
 				NosStdLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
 				NosStdLib::Console::ShowCaret(true); /* show the caret again */
+				NosStdLib::MouseTracking::TerminateMouseTracking(); /* Terminate mouse tracking hook */
 				inputListenThread.join(); /* wait for thread to join */
 			}
 
@@ -408,6 +412,7 @@ namespace NosStdLib
 				{
 				case MouseEventEnum::OnClick:
 				{
+					NosStdLib::MouseTracking::TerminateMouseTracking();
 					EntryInputPassStruct InputPassStruct{(*entryPosition), (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
 					(*parentMenu)->MenuEntryList[(*entryPosition)]->EntryInput(&InputPassStruct);
 					if (InputPassStruct.Redraw)
@@ -415,6 +420,7 @@ namespace NosStdLib
 						(*parentMenu)->DrawMenu();
 					}
 					NosStdLib::Console::ShowCaret(false); /* hide the caret again */
+					NosStdLib::MouseTracking::InitializeMouseTracking();
 					break;
 				}
 
@@ -448,19 +454,23 @@ namespace NosStdLib
 			/// </summary>
 			void WaitForInput_Thread()
 			{
-				int ch;
-				int exCh;
-				while (true)
+				int ch, exCh;
+				while (MenuLoop)
 				{
-					ch = _getch();
-					std::unique_lock<std::mutex> lock{mtx};
-					char_queue.push(ch);
-					if (!(ch && ch != 224)) /* if the input WAS equal to 224, then wait for second input */
+					if (_kbhit()) /* check if there is any input to take in */
 					{
-						exCh = _getch();
-						char_queue.push(exCh);
+						ch = _getch();
+						std::unique_lock<std::mutex> lock{mtx};
+						char_queue.push(ch);
+						if (!(ch && ch != 224)) /* if the input WAS equal to 224, then wait for second input */
+						{
+							exCh = _getch();
+							char_queue.push(exCh);
+						}
+						cv.notify_all();
 					}
-					cv.notify_all();
+
+					Sleep(10); /* cool down so it doesn't check 8905925157028157085 times per millisecond */
 				}
 				return;
 			}
