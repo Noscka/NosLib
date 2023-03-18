@@ -27,6 +27,12 @@ namespace NosStdLib
 			OnLeaveHover = 2,
 		};
 
+		struct EntryStartAndLenght
+		{
+			int X1;
+			int X2;
+		};
+
 		struct EntryInputPassStruct
 		{
 			enum InputType : uint8_t
@@ -75,6 +81,15 @@ namespace NosStdLib
 			virtual void EntryInput(EntryInputPassStruct* inputStruct)
 			{
 				return;
+			}
+
+			/// <summary>
+			/// Retuns the X values the entry string stop and start positions
+			/// </summary>
+			/// <returns>2 X positions in a int,int struct</returns>
+			virtual EntryStartAndLenght EntryStartAndLenghtPosition()
+			{
+				return {0,0};
 			}
 
 			/// <summary>
@@ -174,6 +189,17 @@ namespace NosStdLib
 				{
 					return;
 				}
+			}
+
+			/// <summary>
+			/// Retuns the X values the entry string stop and start positions
+			/// </summary>
+			/// <returns>2 X positions in a int,int struct</returns>
+			EntryStartAndLenght EntryStartAndLenghtPosition()
+			{
+				*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+
+				return {(int)((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2)), (int)(EntryName.length())};
 			}
 		};
 
@@ -411,7 +437,8 @@ namespace NosStdLib
 			void AddMenuEntry(MenuEntryBase* Entry)
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
-				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(0, (TitleSize + MenuEntryList.GetArrayIndexPointer()), 20, (TitleSize + MenuEntryList.GetArrayIndexPointer()))); /* TODO: VALIDATE AND CALCULATE ACTUAL SIZE AFTER IT WORKS */
+				EntryStartAndLenght xxvalue = Entry->EntryStartAndLenghtPosition();
+				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(xxvalue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxvalue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer()))); /* TODO: VALIDATE AND CALCULATE ACTUAL SIZE AFTER IT WORKS */
 				MenuEntryList.Append(Entry);
 			}
 

@@ -26,6 +26,8 @@ namespace NosStdLib
 		protected:
 			static inline NosStdLib::DynamicArray<Clickable*> ClickableArray;	/* Array containing all buttons */
 			NosStdLib::Dimention::DimentionsD2 Position;						/* position of the button */
+
+			bool Initialized = false;											/* boolean to check if the class (the position) has been initialized */
 		public:
 			Event* OnEnterHover = nullptr; /* pointer to event object which will trigger when mouse enters hover over button */
 			Event* OnLeaveHover = nullptr; /* pointer to event object which will trigger when mouse leaves hover over button */
@@ -105,6 +107,8 @@ namespace NosStdLib
 				Position = position;
 
 				ClickableArray.Append(this);
+
+				Initialized = true;
 			}
 
 			/// <summary>
@@ -114,6 +118,12 @@ namespace NosStdLib
 			void ModifyClickablePosition(const NosStdLib::Dimention::DimentionsD2& position)
 			{
 				Position = position;
+
+				if (!Initialized)
+				{
+					ClickableArray.Append(this);
+					Initialized = true;
+				}
 			}
 
 			~Clickable()
