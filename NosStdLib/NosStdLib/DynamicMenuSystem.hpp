@@ -406,7 +406,7 @@ namespace NosStdLib
 			/// <param name="parentMenu">- pointer to parent menu</param>
 			/// <param name="entryPosition">- array position of the entry</param>
 			/// <param name="mouseOperationType">- the mouse event that happened</param>
-			static void MouseEventCallback(DynamicMenu** parentMenu, int* entryPosition, const MouseEventEnum& mouseOperationType) /* TODO: figure out a better name */
+			static void MouseEventCallback(DynamicMenu** parentMenu, int* entryPosition, const MouseEventEnum& mouseOperationType)
 			{
 				switch (mouseOperationType)
 				{
