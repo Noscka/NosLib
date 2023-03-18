@@ -146,6 +146,7 @@ namespace NosStdLib
 	namespace MouseTracking
 	{
 		HHOOK MouseHook;
+		DWORD PreviousConsoleMode;
 
 		NosStdLib::Vector::VectorD2<int16_t> lastPosition;
 
@@ -193,15 +194,23 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Initialize and create lowlevel Mouse callback
+		/// Initialize and create lowlevel Mouse callback hook
 		/// </summary>
+		/// <returns>true if succesful, false if not</returns>
 		bool InitializeMouseTracking()
 		{
-			MouseHook = SetWindowsHookEx(WH_MOUSE_LL, NosStdLib::MouseTracking::MouseHookProc, GetModuleHandle(NULL), 0);
+			return (GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &PreviousConsoleMode) &&
+					SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (PreviousConsoleMode & ~ENABLE_QUICK_EDIT_MODE))
+					&& (MouseHook = SetWindowsHookEx(WH_MOUSE_LL, NosStdLib::MouseTracking::MouseHookProc, GetModuleHandle(NULL), 0)));
+		}
 
-			DWORD prev_mode;
-			return (GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &prev_mode) &&
-					SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (prev_mode & ~ENABLE_QUICK_EDIT_MODE)));
+		/// <summary>
+		/// Terminates LowLevel mouse callback hook
+		/// </summary>
+		/// <returns>true if succesful, false if not</returns>
+		bool TerminateMouseTracking()
+		{
+			return (UnhookWindowsHookEx(MouseHook) && SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), PreviousConsoleMode));
 		}
 	}
 }

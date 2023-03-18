@@ -131,7 +131,7 @@ namespace NosStdLib
 				if (!(OnEnterHover == nullptr)) { delete OnEnterHover; OnEnterHover = nullptr; }
 				if (!(OnLeaveHover == nullptr)) { delete OnLeaveHover; OnLeaveHover = nullptr; }
 				if (!(OnClick == nullptr)) { delete OnClick; OnClick = nullptr; }
-				ClickableArray.ObjectRemove(this); /* remove self from array so the array doesn't call the delete operator again */
+				ClickableArray.ObjectRemove(this, false); /* remove self from array so the array doesn't call the delete operator again */
 			}
 		};
 

@@ -45,11 +45,6 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Mouse Tracking");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    //std::wcout << ((10 >= 0 && 0 >= 0) && (10 <= 20 && 0 <= 0) ? L"True" : L"False") << std::endl;
-    //
-    //wprintf(L"Press any button to continue"); _getch();
-    //return 0;
-
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
     /*NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
@@ -66,8 +61,8 @@ int main()
 
     //MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
 
-    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
-    /*MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool", new NosStdLib::Functional::FunctionStore(&CheckBool)));
+    /*MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Toggle", &SomeBool));
+    MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Bool", new NosStdLib::Functional::FunctionStore(&CheckBool)));
 
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", new NosStdLib::Functional::FunctionStore(&CheckNumber)));*/
