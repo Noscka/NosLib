@@ -199,13 +199,11 @@ namespace NosStdLib
 			{
 				*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-				return {(int)((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2)), (int)(EntryName.length())};
+				int x1 = ((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
+
+				return {x1, (int)(x1 + EntryName.length())};
 			}
 		};
-
-
-
-		/* https://stackoverflow.com/questions/41368759/c-interrupt-or-cancel-getch look into this */
 
 		/// <summary>
 		/// the main Menu class which will be used to render and display menu
@@ -241,6 +239,8 @@ namespace NosStdLib
 				CenterTitle = centerTitle;
 
 				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+				UpdateTitleSize();
 			}
 
 			/// <summary>
@@ -402,17 +402,17 @@ namespace NosStdLib
 			/// <param name="parentMenu">- pointer to parent menu</param>
 			/// <param name="entryPosition">- array position of the entry</param>
 			/// <param name="mouseOperationType">- the mouse event that happened</param>
-			static void MouseEventCallback(DynamicMenu* parentMenu, const int& entryPosition, const MouseEventEnum& mouseOperationType) /* TODO: figure out a better name */
+			static void MouseEventCallback(DynamicMenu** parentMenu, const int& entryPosition, const MouseEventEnum& mouseOperationType) /* TODO: figure out a better name */
 			{
 				switch (mouseOperationType)
 				{
 				case MouseEventEnum::OnClick:
 				{
-					EntryInputPassStruct InputPassStruct{parentMenu->CurrentIndex, parentMenu->TitleSize, EntryInputPassStruct::InputType::Enter, false};
-					parentMenu->MenuEntryList[parentMenu->CurrentIndex]->EntryInput(&InputPassStruct);
+					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
+					(*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryInput(&InputPassStruct);
 					if (InputPassStruct.Redraw)
 					{
-						parentMenu->DrawMenu();
+						(*parentMenu)->DrawMenu();
 					}
 					NosStdLib::Console::ShowCaret(false); /* hide the caret again */
 					break;
@@ -437,8 +437,8 @@ namespace NosStdLib
 			void AddMenuEntry(MenuEntryBase* Entry)
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
-				EntryStartAndLenght xxvalue = Entry->EntryStartAndLenghtPosition();
-				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(xxvalue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxvalue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer()))); /* TODO: VALIDATE AND CALCULATE ACTUAL SIZE AFTER IT WORKS */
+				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
+				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(xxValue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxValue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer())));
 				MenuEntryList.Append(Entry);
 			}
 
@@ -455,7 +455,7 @@ namespace NosStdLib
 					ch = _getch();
 					std::unique_lock<std::mutex> lock{mtx};
 					char_queue.push(ch);
-					if (!(ch && ch != 224))
+					if (!(ch && ch != 224)) /* if the input WAS equal to 224, then wait for second input */
 					{
 						exCh = _getch();
 						char_queue.push(exCh);
@@ -487,7 +487,7 @@ namespace NosStdLib
 					else {outputString = Title;}
 				}
 
-				TitleSize = std::count(outputString.begin(), outputString.end(), L'\n');
+				UpdateTitleSize();
 
 				// for loop using counter to get the index so to add the >< to the selected option
 				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
@@ -508,6 +508,21 @@ namespace NosStdLib
 			}
 
 			/// <summary>
+			/// Calculate and update the TitleSize int variable
+			/// </summary>
+			void UpdateTitleSize()
+			{
+				if (GenerateUnicodeTitle)
+				{
+					TitleSize = 6;
+				}
+				else
+				{
+					TitleSize = std::count(Title.begin(), Title.end(), L'\n');
+				}
+			}
+
+			/// <summary>
 			/// quits the menu
 			/// </summary>
 			/// <param name="menuPointer">- a pointer to self</param>
@@ -523,9 +538,9 @@ namespace NosStdLib
 		void MenuEntry<EntryType>::SetMouseEvents()
 		{
 			/* Setup Event */
-			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, std::forward<DynamicMenu*>(ParentMenuPointer), GetArrayPosition(), MouseEventEnum::OnClick));
-			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, std::forward<DynamicMenu*>(ParentMenuPointer), GetArrayPosition(), MouseEventEnum::OnEnterHover));
-			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, std::forward<DynamicMenu*>(ParentMenuPointer), GetArrayPosition(), MouseEventEnum::OnLeaveHover));
+			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, GetArrayPosition(), MouseEventEnum::OnClick));
+			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, GetArrayPosition(), MouseEventEnum::OnEnterHover));
+			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, GetArrayPosition(), MouseEventEnum::OnLeaveHover));
 		}
 
 	#pragma region Template Specialization
