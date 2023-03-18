@@ -201,7 +201,7 @@ namespace NosStdLib
 
 				int x1 = ((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
 
-				return {x1, (int)(x1 + EntryName.length())};
+				return {x1, (int)(x1 + EntryName.length()-1)};
 			}
 		};
 
@@ -402,14 +402,14 @@ namespace NosStdLib
 			/// <param name="parentMenu">- pointer to parent menu</param>
 			/// <param name="entryPosition">- array position of the entry</param>
 			/// <param name="mouseOperationType">- the mouse event that happened</param>
-			static void MouseEventCallback(DynamicMenu** parentMenu, const int& entryPosition, const MouseEventEnum& mouseOperationType) /* TODO: figure out a better name */
+			static void MouseEventCallback(DynamicMenu** parentMenu, int* entryPosition, const MouseEventEnum& mouseOperationType) /* TODO: figure out a better name */
 			{
 				switch (mouseOperationType)
 				{
 				case MouseEventEnum::OnClick:
 				{
-					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
-					(*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryInput(&InputPassStruct);
+					EntryInputPassStruct InputPassStruct{(*entryPosition), (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
+					(*parentMenu)->MenuEntryList[(*entryPosition)]->EntryInput(&InputPassStruct);
 					if (InputPassStruct.Redraw)
 					{
 						(*parentMenu)->DrawMenu();
@@ -538,9 +538,9 @@ namespace NosStdLib
 		void MenuEntry<EntryType>::SetMouseEvents()
 		{
 			/* Setup Event */
-			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, GetArrayPosition(), MouseEventEnum::OnClick));
-			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, GetArrayPosition(), MouseEventEnum::OnEnterHover));
-			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, GetArrayPosition(), MouseEventEnum::OnLeaveHover));
+			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnClick));
+			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnEnterHover));
+			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnLeaveHover));
 		}
 
 	#pragma region Template Specialization
@@ -580,6 +580,19 @@ namespace NosStdLib
 				break;
 			}
 		}
+
+		/// <summary>
+		/// Retuns the X values the entry string stop and start positions
+		/// </summary>
+		/// <returns>2 X positions in a int,int struct</returns>
+		EntryStartAndLenght MenuEntry<bool>::EntryStartAndLenghtPosition()
+		{
+			*MenuConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
+
+			int x1 = ((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
+
+			return {x1, (int)(x1 + EntryName.length()+6)};
+		}
 	#pragma endregion
 
 	#pragma region int
@@ -610,7 +623,7 @@ namespace NosStdLib
 			case EntryInputPassStruct::InputType::Enter:
 			{
 				std::wstring NewInt;
-				wchar_t ch;
+				int ch;
 				bool ContinueIntType = true;
 
 				COORD NumberPosition = {(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), (inputStruct->CurrentIndex + inputStruct->TitleSize)};
@@ -618,7 +631,7 @@ namespace NosStdLib
 				SetConsoleCursorPosition(*MenuConsoleHandle, NumberPosition);
 				NosStdLib::Console::ShowCaret(true);
 
-				while (ContinueIntType)
+				while (ContinueIntType) /* TODO: Add message loop here */
 				{
 					ch = _getch();
 
@@ -658,13 +671,17 @@ namespace NosStdLib
 					catch (const std::out_of_range& ex)
 					{
 						if (NewInt[0] == '-')
+						{
 							*TypePointerStore = INT_MIN;
+						}
 						else
+						{
 							*TypePointerStore = INT_MAX;
+						}
 					}
-					catch (...)
+					catch (const std::exception& ex)
 					{
-						/* if any other exception, do nothing */
+						throw ex; /* if any other exception, do nothing */
 					}
 				}
 
