@@ -271,7 +271,7 @@ namespace NosStdLib
 
 				std::thread inputListenThread{[this]() {WaitForInput_Thread(); }}; /* start waiting for input thread */
 
-				while (MenuLoop)
+				while (MenuLoop) /* TODO: Make thread send message/event that can be used by the message loop */
 				{
 					std::unique_lock<std::mutex> lck{mtx};
 					switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 5, QS_ALLINPUT))
