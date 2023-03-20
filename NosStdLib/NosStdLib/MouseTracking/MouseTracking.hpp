@@ -205,6 +205,15 @@ namespace NosStdLib
 		}
 
 		/// <summary>
+		/// Terminates LowLevel mouse callback hook without setting console back to highlightable
+		/// </summary>
+		/// <returns>true if succesful, false if not</returns>
+		bool TemporaryTerminateMouseTracking()
+		{
+			return UnhookWindowsHookEx(MouseHook);
+		}
+
+		/// <summary>
 		/// Terminates LowLevel mouse callback hook
 		/// </summary>
 		/// <returns>true if succesful, false if not</returns>

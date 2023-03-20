@@ -295,7 +295,7 @@ namespace NosStdLib
 
 							if (ch == NosStdLib::Definitions::ENTER)
 							{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
-								NosStdLib::MouseTracking::TerminateMouseTracking();
+								NosStdLib::MouseTracking::TemporaryTerminateMouseTracking();
 								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
 								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
@@ -404,17 +404,18 @@ namespace NosStdLib
 			/// Function that gets called By MenuEntry object when it gets triggered by a mouse
 			/// </summary>
 			/// <param name="parentMenu">- pointer to parent menu</param>
+			/// <param name="entryPointer">- pointer to self (entry calling the callback)</param>
 			/// <param name="entryPosition">- array position of the entry</param>
 			/// <param name="mouseOperationType">- the mouse event that happened</param>
-			static void MouseEventCallback(DynamicMenu** parentMenu, int* entryPosition, const MouseEventEnum& mouseOperationType)
+			static void MouseEventCallback(DynamicMenu** parentMenu, MenuEntryBase* entryPointer, int* entryPosition, const MouseEventEnum& mouseOperationType)
 			{
 				switch (mouseOperationType)
 				{
 				case MouseEventEnum::OnClick:
 				{
-					NosStdLib::MouseTracking::TerminateMouseTracking();
+					NosStdLib::MouseTracking::TemporaryTerminateMouseTracking();
 					EntryInputPassStruct InputPassStruct{(*entryPosition), (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
-					(*parentMenu)->MenuEntryList[(*entryPosition)]->EntryInput(&InputPassStruct);
+					entryPointer->EntryInput(&InputPassStruct);
 					if (InputPassStruct.Redraw)
 					{
 						(*parentMenu)->DrawMenu();
@@ -548,9 +549,9 @@ namespace NosStdLib
 		void MenuEntry<EntryType>::SetMouseEvents()
 		{
 			/* Setup Event */
-			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnClick));
-			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnEnterHover));
-			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnLeaveHover));
+			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer,this, this->GetArrayPositionPointer(), MouseEventEnum::OnClick));
+			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer,this, this->GetArrayPositionPointer(), MouseEventEnum::OnEnterHover));
+			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer,this, this->GetArrayPositionPointer(), MouseEventEnum::OnLeaveHover));
 		}
 
 	#pragma region Template Specialization
