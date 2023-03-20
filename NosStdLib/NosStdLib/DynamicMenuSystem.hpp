@@ -228,9 +228,7 @@ namespace NosStdLib
 				CurrentIndex,			/* Which item is currently selected */
 				OldIndex;				/* Old index to know old index position */
 
-			std::condition_variable cv{};	/* Condition Variable to allow for shared queue */
-			std::mutex mtx;					/* Mutex used in condition variable */
-			std::queue<int> char_queue{};	/* queue for the message loop */
+			std::queue<int> char_queue{};	/* input queue for the message loop */
 		public:
 			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
@@ -269,20 +267,15 @@ namespace NosStdLib
 
 				NosStdLib::Console::ShowCaret(false); /* Hide the caret */
 
-				std::thread inputListenThread{[this]() {WaitForInput_Thread(); }}; /* start waiting for input thread */
+				HANDLE eventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+				std::thread inputListenThread{[this, eventHandle]() {WaitForInput_Thread(eventHandle); }}; /* start waiting for input thread */
 
 				while (MenuLoop) /* TODO: Make thread send message/event that can be used by the message loop */
 				{
-					std::unique_lock<std::mutex> lck{mtx};
-					switch (MsgWaitForMultipleObjects(0, NULL, FALSE, 5, QS_ALLINPUT))
+					switch (MsgWaitForMultipleObjects(1, &eventHandle, FALSE, 5, QS_ALLINPUT))
 					{
-					case WAIT_OBJECT_0: /* if there is a message on the queue */
-						PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
-						TranslateMessage(&msg);
-						DispatchMessage(&msg); /* break removed on purpose to also run timout code */
-
-					case WAIT_TIMEOUT: /* if there was no message put on the queue in the 5 seconds time out */
-						cv.wait_for(lck, std::chrono::system_clock::duration(std::chrono::milliseconds(2)), [this]() {return !char_queue.empty(); });
+					case WAIT_OBJECT_0 + 0: /* if event 0 (the input thread event) gets triggered */
 						if (!char_queue.empty())
 						{
 							ch = char_queue.front();
@@ -392,6 +385,15 @@ namespace NosStdLib
 							OldIndex = CurrentIndex;
 						}
 						break;
+
+						case WAIT_OBJECT_0 + 1: /* if there is a message on the queue */
+							PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
+							TranslateMessage(&msg);
+							DispatchMessage(&msg);
+							break;
+
+						case WAIT_TIMEOUT:
+							break;
 					}
 				}
 				NosStdLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
@@ -453,7 +455,8 @@ namespace NosStdLib
 			/// <summary>
 			/// Function used in a thread for waiting for input
 			/// </summary>
-			void WaitForInput_Thread()
+			/// <param name="eventHandle">- handle of event to call when got input</param>
+			void WaitForInput_Thread(const HANDLE& eventHandle)
 			{
 				int ch, exCh;
 				while (MenuLoop)
@@ -461,14 +464,13 @@ namespace NosStdLib
 					if (_kbhit()) /* check if there is any input to take in */
 					{
 						ch = _getch();
-						std::unique_lock<std::mutex> lock{mtx};
 						char_queue.push(ch);
 						if (!(ch && ch != 224)) /* if the input WAS equal to 224, then wait for second input */
 						{
 							exCh = _getch();
 							char_queue.push(exCh);
 						}
-						cv.notify_all();
+						SetEvent(eventHandle); /* tell message loop that there are keys in queue */
 					}
 
 					Sleep(10); /* cool down so it doesn't check 8905925157028157085 times per millisecond */
