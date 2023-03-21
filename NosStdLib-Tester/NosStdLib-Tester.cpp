@@ -46,9 +46,9 @@ int main()
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
     NosStdLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-    NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
+    //NosStdLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
 
-    SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
+    //SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
     //SecondaryMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", new NosStdLib::Functional::FunctionStore(&CheckNumber)));
     //
     //int param1 = 0,

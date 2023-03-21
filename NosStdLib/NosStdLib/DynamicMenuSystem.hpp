@@ -85,12 +85,22 @@ namespace NosStdLib
 			}
 
 			/// <summary>
-			/// Retuns the X values the entry string stop and start positions
+			/// Returns the X values the entry string stop and start positions
 			/// </summary>
 			/// <returns>2 X positions in a int,int struct</returns>
 			virtual EntryStartAndLenght EntryStartAndLenghtPosition()
 			{
 				return {0,0};
+			}
+
+
+			/// <summary>
+			/// Returns Entry name
+			/// </summary>
+			/// <returns>wstring of entry name</returns>
+			std::wstring GetEntryName()
+			{
+				return EntryName;
 			}
 
 			/// <summary>
@@ -406,18 +416,18 @@ namespace NosStdLib
 			/// Function that gets called By MenuEntry object when it gets triggered by a mouse
 			/// </summary>
 			/// <param name="parentMenu">- pointer to parent menu</param>
-			/// <param name="entryPointer">- pointer to self (entry calling the callback)</param>
 			/// <param name="entryPosition">- array position of the entry</param>
 			/// <param name="mouseOperationType">- the mouse event that happened</param>
-			static void MouseEventCallback(DynamicMenu** parentMenu, MenuEntryBase* entryPointer, int* entryPosition, const MouseEventEnum& mouseOperationType)
+			static void MouseEventCallback(DynamicMenu** parentMenu, int* entryPosition, const MouseEventEnum& mouseOperationType)
 			{
 				switch (mouseOperationType)
 				{
 				case MouseEventEnum::OnClick:
 				{
 					NosStdLib::MouseTracking::TemporaryTerminateMouseTracking();
-					EntryInputPassStruct InputPassStruct{(*entryPosition), (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
-					entryPointer->EntryInput(&InputPassStruct);
+					(*parentMenu)->CurrentIndex = *entryPosition;
+					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
+					(*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryInput(&InputPassStruct);
 					if (InputPassStruct.Redraw)
 					{
 						(*parentMenu)->DrawMenu();
@@ -428,7 +438,46 @@ namespace NosStdLib
 				}
 
 				case MouseEventEnum::OnEnterHover:
+				{
+					(*parentMenu)->CurrentIndex = *entryPosition;
+					if ((*parentMenu)->OldIndex == (*parentMenu)->CurrentIndex) /* if old index and current index are equal */
+					{
+						return;
+					}
+
+					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, {0, (SHORT)((*parentMenu)->TitleSize + (*parentMenu)->OldIndex)});
+					wprintf((*parentMenu)->MenuEntryList[(*parentMenu)->OldIndex]->EntryString(false).c_str());
+
+					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, {0, (SHORT)((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex)});
+					wprintf((*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryString(true).c_str());
+
+					COORD finalPosition = {0,0};
+
+					if ((*parentMenu)->CurrentIndex > (*parentMenu)->OldIndex) /* Going Down */
+					{
+
+						if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) < 0)
+							finalPosition = {0,0};
+						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetArrayIndexPointer())
+							finalPosition = {0, (SHORT)((*parentMenu)->MenuEntryList.GetArrayIndexPointer() + (*parentMenu)->TitleSize - 1)};
+						else
+							finalPosition = {0, (SHORT)(((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2))};
+					}
+					else /* Going Up */
+					{
+						if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) < 0)
+							finalPosition = {0,0};
+						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetArrayIndexPointer())
+							finalPosition = {0, (SHORT)(*parentMenu)->MenuEntryList.GetArrayIndexPointer()};
+						else
+							finalPosition = {0, (SHORT)(((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2))};
+					}
+
+					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, finalPosition);
+
+					(*parentMenu)->OldIndex = (*parentMenu)->CurrentIndex;
 					break;
+				}
 
 				case MouseEventEnum::OnLeaveHover:
 					break;
@@ -551,9 +600,9 @@ namespace NosStdLib
 		void MenuEntry<EntryType>::SetMouseEvents()
 		{
 			/* Setup Event */
-			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer,this, this->GetArrayPositionPointer(), MouseEventEnum::OnClick));
-			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer,this, this->GetArrayPositionPointer(), MouseEventEnum::OnEnterHover));
-			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer,this, this->GetArrayPositionPointer(), MouseEventEnum::OnLeaveHover));
+			OnClick = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnClick));
+			OnEnterHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnEnterHover));
+			OnLeaveHover = new Event(new NosStdLib::Functional::FunctionStore(&DynamicMenu::MouseEventCallback, &ParentMenuPointer, this->GetArrayPositionPointer(), MouseEventEnum::OnLeaveHover));
 		}
 
 	#pragma region Template Specialization
