@@ -228,7 +228,7 @@ namespace NosStdLib
 			NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
 			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;	/* array of MenuEntries */
 
-			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
+			bool MenuLoop = false,		/* if the menu should continue looping (true -> yes, false -> no) */
 				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
 				 AddExitEntry,			/* if to add a quit option/entry at the bottom */
 				 CenterTitle,			/* if the title should be centered */
@@ -497,6 +497,7 @@ namespace NosStdLib
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
 				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(xxValue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxValue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer())));
+				Entry->ModifyEnableBool(&MenuLoop);
 				MenuEntryList.Append(Entry);
 			}
 

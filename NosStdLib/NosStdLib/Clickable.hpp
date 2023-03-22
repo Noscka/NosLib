@@ -27,11 +27,14 @@ namespace NosStdLib
 			static inline NosStdLib::DynamicArray<Clickable*> ClickableArray;	/* Array containing all buttons */
 			NosStdLib::Dimention::DimentionsD2 Position;						/* position of the button */
 
-			bool Initialized = false;											/* boolean to check if the class (the position) has been initialized */
+			bool Initialized = false;				/* boolean to check if the class (the position) has been initialized */
+			bool FirstEnableBoolDeletion = false;	/* if the enabled bool pointer has deleted/changed it old value (for memory leak management) */
 		public:
-			Event* OnEnterHover = nullptr; /* pointer to event object which will trigger when mouse enters hover over button */
-			Event* OnLeaveHover = nullptr; /* pointer to event object which will trigger when mouse leaves hover over button */
-			Event* OnClick = nullptr; /* pointer to event object which will tigger when mouse click on button */
+			Event* OnEnterHover = nullptr;	/* pointer to event object which will trigger when mouse enters hover over button */
+			Event* OnLeaveHover = nullptr;	/* pointer to event object which will trigger when mouse leaves hover over button */
+			Event* OnClick = nullptr;		/* pointer to event object which will tigger when mouse click on button */
+
+			bool* Enabled = new bool(true);	/* if the objects with proccess events */
 
 		#pragma region Event Triggering Static Functions
 			/// <summary>
@@ -42,6 +45,8 @@ namespace NosStdLib
 			{
 				for (Clickable* ClickablePointer : ClickableArray)
 				{
+					if (*(ClickablePointer->Enabled) == false) { continue; } /* if clickable is disabled, do nothing */
+
 					if (ClickablePointer->Position.CheckIfPositionInside(position))
 					{
 						if (ClickablePointer->OnClick != nullptr) { ClickablePointer->OnClick->TriggerEvent(); }
@@ -60,6 +65,8 @@ namespace NosStdLib
 
 				for (Clickable* ClickablePointer : ClickableArray)
 				{
+					if (*(ClickablePointer->Enabled) == false) { continue; } /* if clickable is disabled, do nothing */
+
 					if (ClickablePointer->Position.CheckIfPositionInside(currentPosition) == ClickablePointer->Position.CheckIfPositionInside(lastPosition)) /* if both are equal (both in or out), do nothing */
 					{
 						continue;
@@ -124,6 +131,30 @@ namespace NosStdLib
 					ClickableArray.Append(this);
 					Initialized = true;
 				}
+			}
+
+			/// <summary>
+			/// Change the Enable value with an absolute value (none pointer)
+			/// </summary>
+			/// <param name="absoluteValue">- a boolean value</param>
+			void ModifyEnableBool(const bool& absoluteValue)
+			{
+				*Enabled = absoluteValue;
+			}
+
+			/// <summary>
+			/// change the Enabled value with a pointer value (tie it to another boolean)
+			/// </summary>
+			/// <param name="pointerValue">- a boolean pointer value</param>
+			void ModifyEnableBool(bool* pointerValue)
+			{
+				if (!FirstEnableBoolDeletion)
+				{
+					delete Enabled;
+					FirstEnableBoolDeletion = true;
+				}
+
+				Enabled = pointerValue;
 			}
 
 			~Clickable()
