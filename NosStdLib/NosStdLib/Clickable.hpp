@@ -247,6 +247,8 @@ namespace NosStdLib
 			/// /// <returns>generated button string</returns>
 			std::wstring GenerateButtonString(const bool& inverse)
 			{
+				if (!Enabled) { return L""; } /* if disabled */
+
 				NosStdLib::Vector::VectorD2<int16_t> sizeVector = Position.CalculateSize(NosStdLib::Vector::VectorD2<int16_t>(-1, -1));
 				std::wstring buttonString = L"";
 
