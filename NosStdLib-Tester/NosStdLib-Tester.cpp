@@ -67,8 +67,6 @@ int main()
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Number", &number));
     MainMenu.AddMenuEntry(new NosStdLib::Menu::MenuEntry(L"Check Number", new NosStdLib::Functional::FunctionStore(&CheckNumber)));
 
-    NosStdLib::MouseTracking::InitializeMouseTracking();
-
     MainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();

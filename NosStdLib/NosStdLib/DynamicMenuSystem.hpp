@@ -34,6 +34,9 @@ namespace NosStdLib
 			int X2;
 		};
 
+		/* Define so MenuEntry can hold pointer */
+		class DynamicMenu;
+
 		struct EntryInputPassStruct
 		{
 			enum InputType : uint8_t
@@ -45,12 +48,11 @@ namespace NosStdLib
 
 			int CurrentIndex;
 			int TitleSize;
+			DynamicMenu* ParentMenu;
 			InputType inputType;
 			bool Redraw;
 		};
 
-		/* Define so MenuEntry can hold pointer */
-		class DynamicMenu;
 
 		/// <summary>
 		/// The base of MenuEntry which only exists to allow for storing all the templated types together
@@ -228,11 +230,12 @@ namespace NosStdLib
 			NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
 			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;	/* array of MenuEntries */
 
-			bool MenuLoop = false,		/* if the menu should continue looping (true -> yes, false -> no) */
+			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
 				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
 				 AddExitEntry,			/* if to add a quit option/entry at the bottom */
 				 CenterTitle,			/* if the title should be centered */
-				 AddedQuit;				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
+				 AddedQuit,				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
+				 ButtonStatus = false;	/* if the buttons are enabled or disabled currently */
 
 			int TitleSize,				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundries */
 				CurrentIndex,			/* Which item is currently selected */
@@ -257,7 +260,10 @@ namespace NosStdLib
 			/// </summary>
 			void StartMenu()
 			{
+				NosStdLib::MouseTracking::InitializeMouseTracking(); /* Initialize Mouse Tracking incase it was disabled */
+
 				MenuLoop = true; /* incase menu was quit before */
+				ButtonStatus = true; /* enable buttons for current menu */
 
 				if (AddExitEntry && !AddedQuit)
 				{
@@ -299,13 +305,15 @@ namespace NosStdLib
 							if (ch == NosStdLib::Definitions::ENTER)
 							{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
 								NosStdLib::MouseTracking::TemporaryTerminateMouseTracking();
-								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::Enter, false };
+								ButtonStatus = false; /* temporarily disable buttons */
+								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, this, EntryInputPassStruct::InputType::Enter, false };
 								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
 								{
 									DrawMenu();
 								}
 								NosStdLib::Console::ShowCaret(false); /* hide the caret again */
+								ButtonStatus = true; /* re-enable buttons */
 								NosStdLib::MouseTracking::InitializeMouseTracking();
 							}
 							else if (!(ch && ch != 224))
@@ -326,7 +334,7 @@ namespace NosStdLib
 									break;
 								case NosStdLib::Definitions::ARROW_LEFT:
 									{
-										EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowLeft, false };
+										EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize,this, EntryInputPassStruct::InputType::ArrowLeft, false };
 										MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 										if (InputPassStruct.Redraw)
 											DrawMenu();
@@ -334,7 +342,7 @@ namespace NosStdLib
 									}
 								case NosStdLib::Definitions::ARROW_RIGHT:
 									{
-										EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, EntryInputPassStruct::InputType::ArrowRight, false };
+										EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize,this, EntryInputPassStruct::InputType::ArrowRight, false };
 										MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 										if (InputPassStruct.Redraw)
 											DrawMenu();
@@ -406,6 +414,7 @@ namespace NosStdLib
 							break;
 					}
 				}
+				ButtonStatus = false;	/* disable buttons for current menu */
 				NosStdLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
 				NosStdLib::Console::ShowCaret(true); /* show the caret again */
 				NosStdLib::MouseTracking::TerminateMouseTracking(); /* Terminate mouse tracking hook */
@@ -425,14 +434,16 @@ namespace NosStdLib
 				case MouseEventEnum::OnClick:
 				{
 					NosStdLib::MouseTracking::TemporaryTerminateMouseTracking();
+					(*parentMenu)->ButtonStatus = false; /* temporarily disable buttons */
 					(*parentMenu)->CurrentIndex = *entryPosition;
-					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize, EntryInputPassStruct::InputType::Enter, false};
+					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize,*parentMenu, EntryInputPassStruct::InputType::Enter, false};
 					(*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryInput(&InputPassStruct);
 					if (InputPassStruct.Redraw)
 					{
 						(*parentMenu)->DrawMenu();
 					}
 					NosStdLib::Console::ShowCaret(false); /* hide the caret again */
+					(*parentMenu)->ButtonStatus = true; /* re-enable button */
 					NosStdLib::MouseTracking::InitializeMouseTracking();
 					break;
 				}
@@ -497,7 +508,7 @@ namespace NosStdLib
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
 				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(xxValue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxValue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer())));
-				Entry->ModifyEnableBool(&MenuLoop);
+				Entry->ModifyEnableBool(&ButtonStatus);
 				MenuEntryList.Append(Entry);
 			}
 
