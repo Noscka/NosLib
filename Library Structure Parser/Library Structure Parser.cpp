@@ -137,15 +137,15 @@ int main()
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Console::InitializeModifiers::EnableANSI();
 
-    ParseHeader(LR"(D:\NosStdLib\Build\Library Structure Parser\x64\Release\abc.hpp)");
-
+    ParseHeader(LR"(D:\Libraries\NosStdLib\Build\NosStdLib-Tester\x64\Release\abc.hpp)");
+    
     wprintf(L"Press any button to continue"); _getch();
     return 0;
 
     std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
 
     //RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
-    RecureThrouDir(LR"(D:\NosStdLib\Build\Library Structure Parser\x64\Release)");
+    RecureThrouDir(LR"(D:\Libraries\NosStdLib\Build\NosStdLib-Tester\x64\Release)");
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;
