@@ -241,8 +241,15 @@ namespace NosStdLib
 				CurrentIndex,			/* Which item is currently selected */
 				OldIndex;				/* Old index to know old index position */
 
-			std::queue<int> char_queue{};	/* input queue for the message loop */
+			std::queue<int> CrossThread_CharQueue;	/* input queue for the message loop */
 		public:
+			/// <summary>
+			/// DynamicMenu Constructor
+			/// </summary>
+			/// <param name="title">- title which will show at the top of menu</param>
+			/// <param name="generateUnicodeTitle">(default = true) - if the title text should get converted into bubbled text</param>
+			/// <param name="addExitEntry">(default = true) - if the menu should add in an exit entry at the bottom</param>
+			/// <param name="centerTitle">(default = true) - if the menu should center the text</param>
 			DynamicMenu(const std::wstring& title, const bool& generateUnicodeTitle = true, const bool& addExitEntry = true, const bool& centerTitle = true)
 			{
 				Title = title;
@@ -292,14 +299,14 @@ namespace NosStdLib
 					switch (MsgWaitForMultipleObjects(1, &eventHandle, FALSE, 5, QS_ALLINPUT))
 					{
 					case WAIT_OBJECT_0 + 0: /* if event 0 (the input thread event) gets triggered */
-						if (!char_queue.empty())
+						if (!CrossThread_CharQueue.empty())
 						{
-							ch = char_queue.front();
-							char_queue.pop();
+							ch = CrossThread_CharQueue.front();
+							CrossThread_CharQueue.pop();
 							if (!(ch && ch != 224))
 							{
-								exCh = char_queue.front();
-								char_queue.pop();
+								exCh = CrossThread_CharQueue.front();
+								CrossThread_CharQueue.pop();
 							}
 
 							if (ch == NosStdLib::Definitions::ENTER)
@@ -525,11 +532,11 @@ namespace NosStdLib
 					if (_kbhit()) /* check if there is any input to take in */
 					{
 						ch = _getch();
-						char_queue.push(ch);
+						CrossThread_CharQueue.push(ch);
 						if (!(ch && ch != 224)) /* if the input WAS equal to 224, then wait for second input */
 						{
 							exCh = _getch();
-							char_queue.push(exCh);
+							CrossThread_CharQueue.push(exCh);
 						}
 						SetEvent(eventHandle); /* tell message loop that there are keys in queue */
 					}
