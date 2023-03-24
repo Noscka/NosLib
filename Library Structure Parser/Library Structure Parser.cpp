@@ -60,8 +60,84 @@ void ParseHeader(const std::wstring& filePath)
     std::wifstream ParserStream(filePath);
     std::wstring line;
     Item* currentItem = new Item(Item::Type::Namespace, L"Root", nullptr);
+
     while (std::getline(ParserStream, line)) /* iterate over each line in the header file */
     {
+        for (int i = 0; i <= line.length(); i++)
+        {
+            switch (line[i])
+            {
+            case L'/': /* if comment */
+                if (line[i + 1] == L'/') /* if its an '//' comment then ignore the whole line */
+                {
+                    wprintf(L"// comment\n");
+                    goto continueGoto; /* Finish/Continue the outer loop */
+                }
+                else if (line[i + 1] == L'*')
+                {
+                    wprintf(L"comment: /*");
+
+                    for (i+=2; i <= line.length(); i++)  /* second loop for finding/ignoring everything inside the comment */
+                    {
+                        if (line[i] == L'*' && line[i + 1] == L'/') /* looking for the ending part */
+                        {
+                            wprintf(L"*/\n");
+                            break;
+                        }
+
+                        wprintf(L"%c", line[i]);
+                    }
+
+                    wprintf(L"/**/ comment\n");
+                }
+                break;
+
+            case L'n': /* n for namespace */
+                if (line.substr(i, 10) == L"namespace ") /* if is an class */
+                {
+                    std::wstring namespaceName;
+
+                    for (i+=10; i <= line.length(); i++)
+                    {
+                        if (line[i] == L' ')
+                        {
+                            break;
+                        }
+
+                        namespaceName += line[i];
+                    }
+
+                    wprintf(std::format(L"namespace {}", namespaceName).c_str());
+                    wprintf(L"\n"); /* TODO: Fix wprintf or c_str deleting the newline (\n) character */
+                }
+                break;
+
+            case L'c': /* c for class */
+                if (line.substr(i, 6) == L"class ") /* if is an class */
+                {
+                    std::wstring className;
+
+                    for (i += 6; i <= line.length(); i++)
+                    {
+                        if (line[i] == L' ')
+                        {
+                            break;
+                        }
+
+                        className += line[i];
+                    }
+
+                    wprintf(std::format(L"class {}", className).c_str());
+                    wprintf(L"\n"); /* TODO: Fix wprintf or c_str deleting the newline (\n) character */
+                }
+
+                break;
+            }
+        }
+
+    continueGoto:;
+        continue;
+
         if (size_t point = line.find(L"namespace") != std::string::npos)
         {
             wprintf((L"namespace " + NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
@@ -137,7 +213,7 @@ int main()
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Console::InitializeModifiers::EnableANSI();
 
-    ParseHeader(LR"(D:\Libraries\NosStdLib\Build\NosStdLib-Tester\x64\Release\abc.hpp)");
+    ParseHeader(LR"(D:\Libraries\NosStdLib\Build\Library Structure Parser\x64\Release\abc.hpp)");
     
     wprintf(L"Press any button to continue"); _getch();
     return 0;
@@ -145,7 +221,7 @@ int main()
     std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
 
     //RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
-    RecureThrouDir(LR"(D:\Libraries\NosStdLib\Build\NosStdLib-Tester\x64\Release)");
+    RecureThrouDir(LR"(D:\Libraries\NosStdLib\Build\Library Structure Parser\x64\Release)");
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;
