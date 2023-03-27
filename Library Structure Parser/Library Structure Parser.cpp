@@ -1,4 +1,4 @@
-#include <NosStdLib/FileManagement.hpp>
+﻿#include <NosStdLib/FileManagement.hpp>
 #include <NosStdLib/DynamicArray.hpp>
 #include <NosStdLib/String.hpp>
 #include <NosStdLib/Console.hpp>
@@ -11,6 +11,7 @@
 #include <fstream>
 #include <conio.h>
 #include <regex>
+#include <cwctype>
 
 class Item
 {
@@ -51,6 +52,15 @@ public:
     }
 };
 
+struct FunctionDetectionTracking
+{
+    std::wstring datatype,
+        name,
+        arguments;
+
+    bool stillTracking = true;
+};
+
 /// <summary>
 /// Parse a specified header to get the library structer
 /// </summary>
@@ -63,7 +73,9 @@ void ParseHeader(const std::wstring& filePath)
 
     while (std::getline(ParserStream, line)) /* iterate over each line in the header file */
     {
-        for (int i = 0; i <= line.length(); i++)
+        FunctionDetectionTracking functionTracking{};
+
+        for (int i = 0; i <= line.length(); i++) /* check for comments, namespaces and classes */
         {
             switch (line[i])
             {
@@ -107,6 +119,7 @@ void ParseHeader(const std::wstring& filePath)
                         namespaceName += line[i];
                     }
 
+                     
                     wprintf(std::format(L"namespace {}", namespaceName).c_str());
                     wprintf(L"\n"); /* TODO: Fix wprintf or c_str deleting the newline (\n) character */
                 }
@@ -131,6 +144,16 @@ void ParseHeader(const std::wstring& filePath)
                     wprintf(L"\n"); /* TODO: Fix wprintf or c_str deleting the newline (\n) character */
                 }
 
+                break;
+
+            default:
+                if (std::iswspace(line[i]))
+                {
+                    functionTracking.stillTracking = false;
+                    functionTracking.datatype = L"";
+                    functionTracking.name = L"";
+                    functionTracking.arguments = L"";
+                }
                 break;
             }
         }
