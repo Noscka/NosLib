@@ -54,11 +54,20 @@ public:
 
 struct FunctionDetectionTracking
 {
-    std::wstring datatype,
-        name,
-        arguments;
+    enum StageEnum : UINT8
+    {
+        DatatypeStage = 0,
+        NameStage = 1,
+        ArgumentsStage = 2,
+    };
 
-    bool stillTracking = true;
+    std::wstring Datatype = L"",
+                 Name = L"",
+                 Arguments = L"";
+
+    bool StartedTracking = false;
+
+    StageEnum CurrentStage = DatatypeStage;
 };
 
 /// <summary>
@@ -111,7 +120,7 @@ void ParseHeader(const std::wstring& filePath)
 
                     for (i+=10; i <= line.length(); i++)
                     {
-                        if (line[i] == L' ')
+                        if (std::iswspace(line[i]))
                         {
                             break;
                         }
@@ -132,7 +141,7 @@ void ParseHeader(const std::wstring& filePath)
 
                     for (i += 6; i <= line.length(); i++)
                     {
-                        if (line[i] == L' ')
+                        if (std::iswspace(line[i]))
                         {
                             break;
                         }
@@ -147,12 +156,10 @@ void ParseHeader(const std::wstring& filePath)
                 break;
 
             default:
-                if (std::iswspace(line[i]))
+                if (!std::iswspace(line[i]))
                 {
-                    functionTracking.stillTracking = false;
-                    functionTracking.datatype = L"";
-                    functionTracking.name = L"";
-                    functionTracking.arguments = L"";
+                    functionTracking.StartedTracking = true;
+
                 }
                 break;
             }
