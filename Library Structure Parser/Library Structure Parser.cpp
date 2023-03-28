@@ -65,9 +65,11 @@ struct FunctionDetectionTracking
                  Name = L"",
                  Arguments = L"";
 
-    bool StartedTracking = false;
+    bool Finished = false;
 
-    StageEnum CurrentStage = DatatypeStage;
+    int PreviousPosition;
+
+    StageEnum CurrentStage = ArgumentsStage;
 };
 
 /// <summary>
@@ -127,7 +129,6 @@ void ParseHeader(const std::wstring& filePath)
 
                         namespaceName += line[i];
                     }
-
                      
                     wprintf(std::format(L"namespace {}", namespaceName).c_str());
                     wprintf(L"\n"); /* TODO: Fix wprintf or c_str deleting the newline (\n) character */
@@ -155,12 +156,57 @@ void ParseHeader(const std::wstring& filePath)
 
                 break;
 
-            default:
-                if (!std::iswspace(line[i]))
+            case L')': /* Parsing Functions */
+                for (int ii = i; ii >= 0; ii--) /* count backwards from the brackets */
                 {
-                    functionTracking.StartedTracking = true;
-
+                    if (functionTracking.CurrentStage == FunctionDetectionTracking::StageEnum::ArgumentsStage && line[ii] == L'(') /* finding starting bracket */
+                    {
+                        functionTracking.Arguments = line.substr(ii, (i - ii) + 1);
+                        functionTracking.CurrentStage = FunctionDetectionTracking::StageEnum::NameStage;
+                        functionTracking.PreviousPosition = ii;
+                        for (ii--; ii >= 0; ii--) /* iterate untill no spaces are left */
+                        {
+                            if (!std::iswspace(line[ii]))
+                            {
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                    else if (functionTracking.CurrentStage == FunctionDetectionTracking::StageEnum::NameStage && std::iswspace(line[ii]))
+                    {
+                        functionTracking.Name = line.substr(ii+1, (functionTracking.PreviousPosition - ii)-1);
+                        functionTracking.CurrentStage = FunctionDetectionTracking::StageEnum::DatatypeStage;
+                        functionTracking.PreviousPosition = ii;
+                        for (ii--; ii >= 0; ii--) /* iterate untill no spaces are left */
+                        {
+                            if (!std::iswspace(line[ii]))
+                            {
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                    else if (functionTracking.CurrentStage == FunctionDetectionTracking::StageEnum::DatatypeStage && std::iswspace(line[ii]))
+                    {
+                        functionTracking.Datatype = line.substr(ii + 1, (functionTracking.PreviousPosition - ii) - 1);
+                        functionTracking.CurrentStage = FunctionDetectionTracking::StageEnum::DatatypeStage;
+                        functionTracking.Finished = true;
+                        break;
+                    }
                 }
+
+                if (functionTracking.Finished)
+                {
+                    wprintf((functionTracking.Datatype + L" ").c_str());
+                    wprintf((functionTracking.Name).c_str());
+                    wprintf((functionTracking.Arguments + L"\n").c_str());
+                }
+                
+                break;
+
+            default:
+
                 break;
             }
         }
