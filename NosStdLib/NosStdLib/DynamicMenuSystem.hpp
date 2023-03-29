@@ -294,7 +294,7 @@ namespace NosStdLib
 
 				std::thread inputListenThread{[this, eventHandle]() {WaitForInput_Thread(eventHandle); }}; /* start waiting for input thread */
 
-				while (MenuLoop) /* TODO: Make thread send message/event that can be used by the message loop */
+				while (MenuLoop)
 				{
 					switch (MsgWaitForMultipleObjects(1, &eventHandle, FALSE, 5, QS_ALLINPUT))
 					{
@@ -712,7 +712,7 @@ namespace NosStdLib
 				SetConsoleCursorPosition(*MenuConsoleHandle, NumberPosition);
 				NosStdLib::Console::ShowCaret(true);
 
-				while (ContinueIntType) /* TODO: Add message loop here */
+				while (ContinueIntType)
 				{
 					ch = _getch();
 

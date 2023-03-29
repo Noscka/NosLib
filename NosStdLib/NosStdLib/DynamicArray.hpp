@@ -4,6 +4,7 @@
 #include "TypeTraits.hpp"
 #include "Pointers.hpp"
 #include "DynamicArray/ArrayPositionTrack.hpp"
+#include "TypeTraits.hpp"
 
 #include <iostream>
 
@@ -270,58 +271,36 @@ namespace NosStdLib
 	#pragma endregion
 
 	#pragma region Operators
+
 		/// <summary>
-		/// What to do incase of << operator with wostream
+		/// Allows usage of << operator with all oStreams
 		/// </summary>
-		/// <param name="os">- output stream</param>
-		/// <param name="Array">- the array object</param>
-		/// <returns></returns>
-		friend std::wostream& operator<<(std::wostream& os, const DynamicArray& MainArray) /* TODO: make wostream and ostream be 1 function which uses std::basic_stream */
+		/// <typeparam name="CharT">- output stream character type</typeparam>
+		/// <typeparam name="TraitsT">- output stream character traits</typeparam>
+		/// <param name="oStreamReference">- output stream</param>
+		/// <param name="MainArray">- the array object</param>
+		/// <returns>Original stream refrence</returns>
+		template <typename CharT, typename TraitsT>
+		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& oStreamReference, const DynamicArray& MainArray)
 		{
-			if constexpr (std::is_same<ArrayDataType, std::wstring>::value || std::is_same<ArrayDataType, wchar_t>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
+			if constexpr (NosStdLib::TypeTraits::is_character<ArrayDataType>::value)
 			{
-				os << MainArray.MainArray;
+				oStreamReference << MainArray.MainArray;
 			}
-			else  /* if type is any other "list" the array with comman */
+			else
 			{
 				for (int i = 0; i < MainArray.ArrayIndexPointer; i++)
 				{
-					os << MainArray.MainArray[i];
+					oStreamReference << MainArray.MainArray[i];
 
 					if (!(i == MainArray.ArrayIndexPointer - 1))
 					{
-						os << ", ";
+						oStreamReference << ", ";
 					}
 				}
 			}
-			return os;
-		}
-
-		/// <summary>
-		/// What to do incase of << operator with ostream
-		/// </summary>
-		/// <param name="os">- output stream</param>
-		/// <param name="Array">- the array object</param>
-		/// <returns></returns>
-		friend std::ostream& operator<<(std::ostream& os, const DynamicArray& MainArray)
-		{
-			if (std::is_same<ArrayDataType, std::string>::value || std::is_same<ArrayDataType, char>::value) /* if the array contained is either string, wstring, char or wchar. output as normal */
-			{
-				os << MainArray.MainArray;
-			}
-			else  /* if type is any other "list" the array with comman */
-			{
-				for (int i = 0; i < MainArray.ArrayIndexPointer; i++)
-				{
-					os << MainArray.MainArray[i];
-
-					if (!(i == MainArray.ArrayIndexPointer - 1))
-					{
-						os << ", ";
-					}
-				}
-			}
-			return os;
+		
+			return oStreamReference;
 		}
 
 		/// <summary>

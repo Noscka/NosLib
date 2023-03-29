@@ -30,7 +30,7 @@ namespace NosStdLib
 		/// <typeparam name="StringFrom">- the string input type</typeparam>
 		/// <param name="strIn">- string input</param>
 		/// <returns>converted string</returns>
-		template< typename StringTo, typename StringFrom>
+		template<typename StringTo, typename StringFrom>
 		std::basic_string<StringTo> ConvertString(const std::basic_string<StringFrom>& strIn)
 		{
 			if constexpr (std::is_same_v<StringTo, StringFrom>) /* if same character type, then just return string */
