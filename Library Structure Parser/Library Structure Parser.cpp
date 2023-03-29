@@ -82,6 +82,8 @@ void ParseHeader(const std::wstring& filePath)
     std::wstring line;
     Item* currentItem = new Item(Item::Type::Namespace, L"Root", nullptr);
 
+    //ParserStream.read(line.data(), NosStdLib::FileManagement::GetFileSize<wchar_t>(filePath)); /* Maybe make the parsing use whole file instead of line by line */
+
     while (std::getline(ParserStream, line)) /* iterate over each line in the header file */
     {
         FunctionDetectionTracking functionTracking{};

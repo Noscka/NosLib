@@ -1,6 +1,8 @@
 #ifndef _FILEMANAGEMENT_NOSSTDLIB_HPP_
 #define _FILEMANAGEMENT_NOSSTDLIB_HPP_
 
+#include "String.hpp"
+
 #include <string>
 #include <filesystem>
 
@@ -91,6 +93,23 @@ namespace NosStdLib
             return filename.substr(filename.find_last_of(L".") + 1);
         }
     #pragma endregion
+
+    #pragma region GetFileSize
+        /// <summary>
+        /// Gets file size
+        /// </summary>
+        /// <typeparam name="CharT">- string type</typeparam>
+        /// <param name="filename">- path to file</param>
+        /// <returns>size as int</returns>
+        template <typename CharT>
+        int GetFileSize(const std::basic_string<CharT>& filePath)
+        {
+            struct stat stat_buf;
+            int rc = stat(NosStdLib::String::ConvertString<char, CharT>(filePath).c_str(), &stat_buf);
+            return rc == 0 ? stat_buf.st_size : -1;
+        }
+    #pragma endregion
+
     }
 }
 #endif
