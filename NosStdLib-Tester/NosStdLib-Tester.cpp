@@ -1,6 +1,6 @@
 ﻿#include "NosStdLib/Console.hpp"
 #include "NosStdLib/String.hpp"
-#include "NosStdLib/DynamicArray.hpp"
+#include "NosStdLib/DynamicMenuSystem.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -12,6 +12,13 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
+void PrintIntValue(int* pointerToInt)
+{
+    wprintf(L"%d\n", *pointerToInt);
+    wprintf(L"Press any button to continue"); _getch();
+    return;
+}
+
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
@@ -19,14 +26,16 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Dynamic Array Development");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::DynamicArray<int> testingDynamicArray;
+    namespace menu = NosStdLib::Menu;
 
-    for (int i = 0; i <= 30; i++)
-    {
-        testingDynamicArray.Append((i+70));
-    }
+    int intPointer = 0;
 
-    std::wcout << testingDynamicArray << std::endl;
+    menu::DynamicMenu mainMenu(L"Some Title", true, true, true);
+    mainMenu.AddMenuEntry(new menu::MenuEntry<int>(L"Interger Ting", &intPointer));
+
+    mainMenu.AddMenuEntry(new menu::MenuEntry(L"Print Function", new NosStdLib::Functional::FunctionStore(&PrintIntValue, &intPointer)));
+
+    mainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
