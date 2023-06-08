@@ -1,7 +1,7 @@
 ﻿#include "NosStdLib/Console.hpp"
-#include "NosStdLib/String.hpp"
-#include "NosStdLib/DynamicMenuSystem.hpp"
-#include "NosStdLib/DynamicLoadingScreen.hpp"
+//#include "NosStdLib/String.hpp"
+//#include "NosStdLib/DynamicMenuSystem.hpp"
+//#include "NosStdLib/DynamicLoadingScreen.hpp"
 
 #include <Windows.h>
 #include <iostream>
@@ -10,72 +10,78 @@
 #include <iostream> 
 #include <cstdio> 
 #include <conio.h>
+#include <oleidl.h>
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
-void PrintIntValue(int* pointerToInt)
+class TestDropDrag : public IDropTarget
 {
-    wprintf(L"%d\n", *pointerToInt);
-    wprintf(L"Press any button to continue"); _getch();
-    return;
-}
+private:
+public:
+	TestDropDrag()
+	{
 
-void WaitingFunction(NosStdLib::LoadingScreen* loadingCallerPointer)
-{
-    for (int i = 0; i < 100; i++)
-    {
-        loadingCallerPointer->UpdateKnownProgressBar(i/100, std::format(L"{} done", i), true);
-        Sleep(10);
-    }
-    
-    return;
-}
+	}
+
+	~TestDropDrag()
+	{
+
+	}
+
+	// basic IUnknown stuff
+	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** ppvObject)
+	{
+		return S_OK;
+	}
+
+	ULONG STDMETHODCALLTYPE AddRef(void)
+	{
+		return 0;
+	}
+
+	ULONG STDMETHODCALLTYPE Release(void)
+	{
+		return 0;
+	}
+
+	// IDropTarget stuff
+	virtual HRESULT DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override
+	{
+		return S_OK;
+	}
+
+	virtual HRESULT DragOver(DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override
+	{
+		return S_OK;
+	}
+
+	virtual HRESULT DragLeave() override
+	{
+		return S_OK;
+	}
+
+	virtual HRESULT Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override
+	{
+		wprintf(L"Dropped file\n");
+		return S_OK;
+	}
+};
 
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
     NosStdLib::Console::InitializeModifiers::EnableANSI();
-    NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Dynamic Array Development");
+    NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Drag and Drop Testing");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    namespace menu = NosStdLib::Menu;
-    using loadingScreen = NosStdLib::LoadingScreen;
+    RegisterDragDrop(GetConsoleWindow(), new TestDropDrag());
 
-    loadingScreen::InitilizeFont();
-
-    std::wstring splash = LR"(
-                      ████████                ███████                            
-                    ▄██▀    ▀██▄ ▄███████▄  ███▀   ▀████████▄                    
-          ▄███████████▌      ██████     ▀█████       ███     ▀▀███▄              
-     ▄██▀▀         ██▌        ████       ████▌       ███           ▀▀███▄        
-   ██▀            ███         ███▌       ▐███        ▐██▄               ▀▀███▄   
- ██▀       ███    ███         ███▌       ▐███        ▐████▀                  ▀██ 
-██▌       ▀███▄▄▄▄███         ███        ▐███        ████▌                     ██
-██▌               ██▌         ███        ▐███        ███▌          ████▄▄     ▄██
-▀██▄              ██▌         ███        ▐███        ███          ███    ▀█████▀ 
-  ▀██████████████▄███         ███        ████       ███          ███             
-    ██▀       ████▀██         ███        ▐██▌      ▐██▌          ██▌             
-   ███             ██▌        ██▌         ██       ███▌         ███              
-   ███             ▐██                            █████▄       ███               
-    ▀██▄▄       ▄▄▄████▄                         ███   ▀███▄▄███▀                
-       ▀▀▀███▀▀▀▀    ▀██▄         ▄██▄         ▄██▀                              
-                       ▀███▄▄▄▄▄███▀████▄▄▄▄▄███▀                                
-                           ▀▀▀▀▀        ▀▀▀▀▀                                    )";
-
-    NosStdLib::LoadingScreen loadingScreenTest(NosStdLib::LoadingScreen::LoadType::Known, splash);
-    loadingScreenTest.StartLoading(&WaitingFunction);
-
-    loadingScreen::TerminateFont();
-
-    int intPointer = 0;
-
-    menu::DynamicMenu mainMenu(L"Some Title", true, true, true);
-    mainMenu.AddMenuEntry(new menu::MenuEntry<int>(L"Interger Ting", &intPointer));
-
-    mainMenu.AddMenuEntry(new menu::MenuEntry(L"Print Function", new NosStdLib::Functional::FunctionStore(&PrintIntValue, &intPointer)));
-
-
-    mainMenu.StartMenu();
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
