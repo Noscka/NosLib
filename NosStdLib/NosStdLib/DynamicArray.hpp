@@ -44,7 +44,6 @@ namespace NosStdLib
 			ArrayStepSize = stepSize;
 			DeleteObjectsOnDestruction = deleteObjectsOnDestruction;
 
-
 			// ! DO NOT CHANGE !
 			ArrayIndexPointer = 0;
 			MainArray = new ArrayDataType[ArraySize]();
@@ -141,7 +140,7 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Replaces a a chosen positin with the chosen Object
+		/// Replaces a a chosen position with the chosen Object
 		/// </summary>
 		/// <param name="ReplaceObject"> - Object to place in the position</param>
 		/// <param name="position"> - position to put the Object in</param>
@@ -162,7 +161,7 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Remove object in position and move all Object infront, back 1 spot
+		/// Remove object in position and move all Object in front, back 1 spot
 		/// </summary>
 		/// <param name="position">- Position to remove</param>
 		/// <param name="deleteObject">(default = true) - if function should also delete the object</param>
@@ -191,7 +190,7 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Remove object from array and move all objects infront back 1 spot (has to have a different name incase DataType is int)
+		/// Remove object from array and move all objects in front back 1 spot (has to have a different name incase DataType is int)
 		/// </summary>
 		/// <param name="object">- object to find and remove</param>
 		/// <param name="checkAll">(deleteObject = true) - if function should also delete the object</param>

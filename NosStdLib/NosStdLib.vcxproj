@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="NosStdLib\BinaryMath.hpp" />
     <ClInclude Include="NosStdLib\Cast.hpp" />
+    <ClInclude Include="NosStdLib\Chat.hpp" />
     <ClInclude Include="NosStdLib\Console.hpp" />
     <ClInclude Include="NosStdLib\Definitions.hpp" />
     <ClInclude Include="NosStdLib\DynamicArray.hpp" />
@@ -42,7 +43,7 @@
     <ClInclude Include="NosStdLib\TextColor.hpp" />
     <ClInclude Include="NosStdLib\TypeTraits.hpp" />
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp" />
-    <ClInclude Include="NosStdLib\DimentionVector.hpp" />
+    <ClInclude Include="NosStdLib\DimensionVector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

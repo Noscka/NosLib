@@ -64,9 +64,6 @@ namespace NosStdLib
 		template<typename T>
 		constexpr bool is_character_v = is_character<T>::value;
 	#pragma endregion
-
-
 	}
 }
-
 #endif

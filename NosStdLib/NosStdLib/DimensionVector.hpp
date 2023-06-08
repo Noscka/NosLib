@@ -10,12 +10,12 @@
 namespace NosStdLib
 {
 	/// <summary>
-	/// namespace that containts items on vectors
+	/// namespace that contains items on vectors
 	/// </summary>
 	namespace Vector
 	{
 		/// <summary>
-		/// A 2 dimentional vector
+		/// A 2 dimensional vector
 		/// </summary>
 		template<typename ArithmeticType>
 		class VectorD2
@@ -31,7 +31,7 @@ namespace NosStdLib
 			VectorD2(){}
 
 			/// <summary>
-			/// Creates a 2 dimentional vector object
+			/// Creates a 2 dimensional vector object
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
@@ -92,7 +92,7 @@ namespace NosStdLib
 		};
 
 		/// <summary>
-		/// A 3 dimentional vector
+		/// A 3 dimensional vector
 		/// </summary>
 		template<typename ArithmeticType>
 		class VectorD3
@@ -109,7 +109,7 @@ namespace NosStdLib
 			VectorD3() {}
 
 			/// <summary>
-			/// Creates a 3 dimentional vector object
+			/// Creates a 3 dimensional vector object
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
@@ -164,19 +164,19 @@ namespace NosStdLib
 		};
 	}
 
-	namespace Dimention
+	namespace Dimension
 	{
 		/// <summary>
 		/// class which holds 2 points which are used for drawing a box
 		/// </summary>
-		class DimentionsD2
+		class DimensionD2
 		{
 		public:
 			NosStdLib::Vector::VectorD2<int16_t> PointOne;	/* Top Left Coord vector */
 			NosStdLib::Vector::VectorD2<int16_t> PointTwo;	/* Bottom Right Coord vector */
 			NosStdLib::Vector::VectorD2<int16_t> Offset;	/* Vector which holds offset values */
 
-			DimentionsD2() {}
+			DimensionD2() {}
 
 			/// <summary>
 			/// Create object with int coords
@@ -187,7 +187,7 @@ namespace NosStdLib
 			/// <param name="pointTwoY">- Right Y</param>
 			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
 			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
-			DimentionsD2(const int16_t& pointOneX, const int16_t& pointOneY, const int16_t& pointTwoX, const int16_t& pointTwoY, const int16_t& offsetX = 0, const int16_t& offsetY = 0)
+			DimensionD2(const int16_t& pointOneX, const int16_t& pointOneY, const int16_t& pointTwoX, const int16_t& pointTwoY, const int16_t& offsetX = 0, const int16_t& offsetY = 0)
 			{
 				PointOne = NosStdLib::Vector::VectorD2<int16_t>(pointOneX, pointOneY);
 				PointTwo = NosStdLib::Vector::VectorD2<int16_t>(pointTwoX, pointTwoY);
@@ -200,7 +200,7 @@ namespace NosStdLib
 			/// <param name="pointOne">- Top Left</param>
 			/// <param name="pointTwo">- Bottom Right</param>
 			/// <param name="Offset">- vector which containts amount that will get added/taken away from in calculations</param>
-			DimentionsD2(const NosStdLib::Vector::VectorD2<int16_t>& pointOne, const NosStdLib::Vector::VectorD2<int16_t>& pointTwo, const NosStdLib::Vector::VectorD2<int16_t>& offset = NosStdLib::Vector::VectorD2<int16_t>(0, 0))
+			DimensionD2(const NosStdLib::Vector::VectorD2<int16_t>& pointOne, const NosStdLib::Vector::VectorD2<int16_t>& pointTwo, const NosStdLib::Vector::VectorD2<int16_t>& offset = NosStdLib::Vector::VectorD2<int16_t>(0, 0))
 			{
 				PointOne = pointOne;
 				PointTwo = pointTwo;

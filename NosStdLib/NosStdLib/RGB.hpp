@@ -81,7 +81,5 @@ namespace NosStdLib
 			}
 		};
 	}
-
 }
-
 #endif

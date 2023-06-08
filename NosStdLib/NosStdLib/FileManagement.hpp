@@ -109,7 +109,6 @@ namespace NosStdLib
             return rc == 0 ? stat_buf.st_size : -1;
         }
     #pragma endregion
-
     }
 }
 #endif

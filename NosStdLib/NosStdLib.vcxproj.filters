@@ -54,7 +54,7 @@
     <ClInclude Include="NosStdLib\UnicodeTextGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosStdLib\DimentionVector.hpp">
+    <ClInclude Include="NosStdLib\DimensionVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\MouseTracking\MouseTracking.hpp">
@@ -85,6 +85,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosStdLib\Pointers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NosStdLib\Chat.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,9 +4,8 @@
 #include "Functional.hpp"
 #include "Cast.hpp"
 #include "DynamicArray.hpp"
-#include "DimentionVector.hpp"
+#include "DimensionVector.hpp"
 #include "EventHandling/EventHandling.hpp"
-
 
 #include <math.h>
 #include <cassert>
@@ -25,16 +24,16 @@ namespace NosStdLib
 		{
 		protected:
 			static inline NosStdLib::DynamicArray<Clickable*> ClickableArray;	/* Array containing all buttons */
-			NosStdLib::Dimention::DimentionsD2 Position;						/* position of the button */
+			NosStdLib::Dimension::DimensionD2 Position;						/* position of the button */
 
 			bool Initialized = false;				/* boolean to check if the class (the position) has been initialized */
 			bool FirstEnableBoolDeletion = false;	/* if the enabled bool pointer has deleted/changed it old value (for memory leak management) */
 		public:
 			Event* OnEnterHover = nullptr;	/* pointer to event object which will trigger when mouse enters hover over button */
 			Event* OnLeaveHover = nullptr;	/* pointer to event object which will trigger when mouse leaves hover over button */
-			Event* OnClick = nullptr;		/* pointer to event object which will tigger when mouse click on button */
+			Event* OnClick = nullptr;		/* pointer to event object which will trigger when mouse click on button */
 
-			bool* Enabled = new bool(true);	/* if the objects with proccess events */
+			bool* Enabled = new bool(true);	/* if the objects with process events */
 
 		#pragma region Event Triggering Static Functions
 			/// <summary>
@@ -109,7 +108,7 @@ namespace NosStdLib
 			/// Create clickable object with position
 			/// </summary>
 			/// <param name="position">- position of object</param>
-			Clickable(const NosStdLib::Dimention::DimentionsD2& position)
+			Clickable(const NosStdLib::Dimension::DimensionD2& position)
 			{
 				Position = position;
 
@@ -122,7 +121,7 @@ namespace NosStdLib
 			/// Change the position of the clickable object
 			/// </summary>
 			/// <param name="position">- the new position</param>
-			void ModifyClickablePosition(const NosStdLib::Dimention::DimentionsD2& position)
+			void ModifyClickablePosition(const NosStdLib::Dimension::DimensionD2& position)
 			{
 				Position = position;
 
@@ -196,7 +195,7 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="buttonText">- text to show inside button</param>
 			/// <param name="position">- position and dimentions of button</param>
-			Button(const std::wstring& buttonText, const NosStdLib::Dimention::DimentionsD2& position) : Clickable(position)
+			Button(const std::wstring& buttonText, const NosStdLib::Dimension::DimensionD2& position) : Clickable(position)
 			{
 				ButtonText = buttonText;
 
@@ -232,7 +231,7 @@ namespace NosStdLib
 					float spacingSize = size - nameInput.size();
 					outputString = (std::wstring(std::floorf(spacingSize / 2), L' ') + nameInput + std::wstring(std::ceilf(spacingSize / 2), L' '));
 				}
-				else /* if name is same lenght as size. return name for efficiency */
+				else /* if name is same length as size. return name for efficiency */
 				{
 					return nameInput;
 				}

@@ -55,7 +55,7 @@ namespace NosStdLib
 
 
 		/// <summary>
-		/// The base of MenuEntry which only exists to allow for storing all the templated types together
+		/// The base of MenuEntry which only exists to allow for storing all the template types together
 		/// </summary>
 		class MenuEntryBase : public NosStdLib::ArrayPositionTrack::PositionTrack, public NosStdLib::Clickable::Clickable
 		{
@@ -205,7 +205,7 @@ namespace NosStdLib
 			}
 
 			/// <summary>
-			/// Retuns the X values the entry string stop and start positions
+			/// Returns the X values the entry string stop and start positions
 			/// </summary>
 			/// <returns>2 X positions in a int,int struct</returns>
 			EntryStartAndLenght EntryStartAndLenghtPosition()
@@ -227,7 +227,7 @@ namespace NosStdLib
 			std::wstring Title;										/* Menu Title */
 			HANDLE ConsoleHandle;									/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;				/* global ConsoleScreenBI so it is synced across all operations */
-			NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console colums and rows */
+			NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console columns and rows */
 			NosStdLib::DynamicArray<MenuEntryBase*> MenuEntryList;	/* array of MenuEntries */
 
 			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
@@ -237,7 +237,7 @@ namespace NosStdLib
 				 AddedQuit,				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
 				 ButtonStatus = false;	/* if the buttons are enabled or disabled currently */
 
-			int TitleSize,				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundries */
+			int TitleSize,				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundaries */
 				CurrentIndex,			/* Which item is currently selected */
 				OldIndex;				/* Old index to know old index position */
 
@@ -330,13 +330,13 @@ namespace NosStdLib
 								case NosStdLib::Definitions::ARROW_UP:
 									if (CurrentIndex > 0) /* Decrement only if larger the 0 */
 									{
-										CurrentIndex--; /* Decrement the Indenetation */
+										CurrentIndex--; /* Decrement the Indentation */
 									}
 									break;
 								case NosStdLib::Definitions::ARROW_DOWN:
 									if (CurrentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
 									{
-										CurrentIndex++; /* Increment the Indenetation */
+										CurrentIndex++; /* Increment the Indentation */
 									}
 									break;
 								case NosStdLib::Definitions::ARROW_LEFT:
@@ -359,7 +359,7 @@ namespace NosStdLib
 							}
 
 							ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
-							/* if the console dimentions have changed (console window has increased or decreased). then redraw whole menu */
+							/* if the console dimensions have changed (console window has increased or decreased). then redraw whole menu */
 							if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
 							{
 								oldConsoleSizeStruct = ConsoleSizeStruct;
@@ -514,7 +514,7 @@ namespace NosStdLib
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
-				Entry->ModifyClickablePosition(NosStdLib::Dimention::DimentionsD2(xxValue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxValue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer())));
+				Entry->ModifyClickablePosition(NosStdLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxValue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer())));
 				Entry->ModifyEnableBool(&ButtonStatus);
 				MenuEntryList.Append(Entry);
 			}
@@ -556,9 +556,9 @@ namespace NosStdLib
 
 				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
 
-				std::wstring outputString; /* string for full "display" as it is the most perfomace efficent method */
+				std::wstring outputString; /* string for full "display" as it is the most performance efficient method */
 
-				if (GenerateUnicodeTitle) /* If custom Title is true, its going to use the straight characters instead of generating a unicode title */
+				if (GenerateUnicodeTitle) /* If custom Title is true, its going to use the straight characters instead of generating a Unicode title */
 				{
 					outputString = NosStdLib::UnicodeTextGenerator::BasicUnicodeTextGenerate(ConsoleHandle, Title, CenterTitle); // add title with "ascii generator"
 				}
@@ -663,7 +663,7 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Retuns the X values the entry string stop and start positions
+		/// Returns the X values the entry string stop and start positions
 		/// </summary>
 		/// <returns>2 X positions in a int,int struct</returns>
 		EntryStartAndLenght MenuEntry<bool>::EntryStartAndLenghtPosition()
@@ -785,7 +785,7 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Retuns the X values the entry string stop and start positions
+		/// Returns the X values the entry string stop and start positions
 		/// </summary>
 		/// <returns>2 X positions in a int,int struct</returns>
 		EntryStartAndLenght MenuEntry<int>::EntryStartAndLenghtPosition()
