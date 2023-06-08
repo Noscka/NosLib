@@ -20,6 +20,7 @@ namespace NosStdLib
 		bool AssignedFunction = false; /* If the EventFunction pointer was actually set */
 
 		/* TODO: ALLOW FOR STACKING FUNCTIONS */
+		/* TODO: ADD RESTRICTIONS */
 	public:
 		/// <summary>
 		/// Default constructor
@@ -48,6 +49,20 @@ namespace NosStdLib
 		{
 			EventFunction = eventFunction;
 			AssignedFunction = true;
+		}
+
+		/// <summary>
+		/// Clears Event Function, so event does nothing
+		/// </summary>
+		/// <param name="deleteFunctionObject">(default = true) - if the functionstore object should get deleted on clear</param>
+		void ClearEventFunction(const bool& deleteFunctionObject = true)
+		{
+			if (deleteFunctionObject)
+			{
+				delete EventFunction;
+			}
+			EventFunction = nullptr;
+			AssignedFunction = false;
 		}
 
 		/// <summary>
