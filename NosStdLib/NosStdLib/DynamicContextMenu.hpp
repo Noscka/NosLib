@@ -3,7 +3,7 @@
 
 #include "Console.hpp"
 #include "String.hpp"
-#include "Vector.hpp"
+#include "DimensionVector.hpp"
 
 #include <Windows.h>
 #include <cstdint>
@@ -31,9 +31,9 @@ namespace NosStdLib
 			std::wstring Title;							/* Context menu title/basic description */
 			std::wstring Description;					/* Description of what is needed (shown inside the box) */
 
-			NosStdLib::Vector::VectorD2 MinSize;		/* Minimum size that is allowed for the box */
-			NosStdLib::Vector::VectorD2 MaxSize;		/* Maximum size allowed for the box */
-			NosStdLib::Vector::VectorD2 CurrentSize;	/* The current size of the box */
+			NosStdLib::Vector::VectorD2<int> MinSize;		/* Minimum size that is allowed for the box */
+			NosStdLib::Vector::VectorD2<int> MaxSize;		/* Maximum size allowed for the box */
+			NosStdLib::Vector::VectorD2<int> CurrentSize;	/* The current size of the box */
 		public:
 			/// <summary>
 			/// A default constructor
@@ -58,7 +58,7 @@ namespace NosStdLib
 			/// <param name="description">- Description shown inside the box</param>
 			/// <param name="minSize">- Minimum size of the box (in characters) as VectorD2</param>
 			/// <param name="maxSize">- Maximum size of the box (in characters) as VectorD2</param>
-			ContextMenu(const std::wstring& title, const std::wstring& description, const NosStdLib::Vector::VectorD2& minSize, const NosStdLib::Vector::VectorD2 maxSize)
+			ContextMenu(const std::wstring& title, const std::wstring& description, const NosStdLib::Vector::VectorD2<int>& minSize, const NosStdLib::Vector::VectorD2<int>& maxSize)
 			{
 				Title = title;
 				Description = description;

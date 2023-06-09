@@ -3,7 +3,7 @@
 
 #include "String.hpp"
 #include "DynamicArray.hpp"
-#include "EventHandling.hpp"
+#include "EventHandling\EventHandling.hpp"
 
 namespace NosStdLib
 {
@@ -31,7 +31,7 @@ namespace NosStdLib
 			{ /* TODO: Develop */
 				while (true)
 				{
-					switch (MsgWaitForMultipleObjects(1, &eventHandle, FALSE, 5, QS_ALLINPUT))
+					switch (MsgWaitForMultipleObjects(0, nullptr, FALSE, 5, QS_ALLINPUT))
 					{
 
 					}

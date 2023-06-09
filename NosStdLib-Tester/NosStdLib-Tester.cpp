@@ -3,6 +3,8 @@
 //#include "NosStdLib/DynamicMenuSystem.hpp"
 //#include "NosStdLib/DynamicLoadingScreen.hpp"
 
+#include "AllHeaders.hpp"
+
 #include <Windows.h>
 #include <iostream>
 #include <io.h>

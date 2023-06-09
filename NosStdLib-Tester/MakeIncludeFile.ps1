@@ -10,6 +10,6 @@ If (test-path $HEADER)
 $files = Get-ChildItem "..\NosStdLib\NosStdLib\" -Filter *.hpp
 foreach ($f in $files)
 {
-    "#include <$f>" >> $HEADER
+    "#include <NosStdLib\$f>" >> $HEADER
 }
 "#endif" >> $HEADER
