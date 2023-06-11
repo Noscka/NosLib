@@ -4,9 +4,11 @@
 #include "String.hpp"
 #include "DynamicArray.hpp"
 #include "EventHandling\EventHandling.hpp"
+#include "Definitions.hpp"
 
 #include <format>
 #include <thread>
+#include <queue>
 
 namespace NosStdLib
 {
@@ -22,6 +24,8 @@ namespace NosStdLib
 			HANDLE* ReceivedUserInputEventHandle = nullptr; /* Message Loop event which will triggered whenever the user has input a string */
 
 			bool ChatLoop; /* if the chat should continue looping (true -> yes, false -> no) */
+
+			std::deque<int> CrossThread_CharQueue;	/* input queue for the message loop */
 		public:
 			Event* OnMessageSend = nullptr; /* pointer to event object which will trigger when user wants to send a message */
 			Event* OnMessageReceived = nullptr; /* pointer to event object which will trigger when a message is added */
@@ -50,18 +54,24 @@ namespace NosStdLib
 			/// Function meant to run in a thread, will wait for user input and then send message to main loop
 			/// </summary>
 			/// <param name="eventHandle">- pointer to event handle</param>
-			void TakeUserInput_Thread(HANDLE* eventHandle)
+			void TakeUserInput_Thread()
 			{
+				int ch;
 				while (ChatLoop)
 				{
-					std::wstring output;
-					std::getline(std::wcin, output);
-
-					if (eventHandle != nullptr)
+					if (_kbhit()) /* check if there is any input to take in */
 					{
-						SetEvent(*eventHandle);
+						ch = _getch();
+						CrossThread_CharQueue.push_back(ch);
+						if (ReceivedUserInputEventHandle != nullptr)
+						{
+							SetEvent(*ReceivedUserInputEventHandle); /* tell message loop that there are keys in queue */
+						}
 					}
+
+					Sleep(10); /* cool down so it doesn't check 8905925157028157085 times per millisecond */
 				}
+				return;
 			}
 
 		public:
@@ -75,15 +85,17 @@ namespace NosStdLib
 
 				HANDLE tempReceivedMessageEventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);		/* Triggered whenever a message was added using the "AddMessage" function */
 				HANDLE tempReceivedUserInputEventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);	/* Triggered whenever the user has input a string */
-				ReceivedMessageEventHandle = &tempReceivedMessageEventHandle;
-				ReceivedUserInputEventHandle = &tempReceivedUserInputEventHandle;
 
-				std::thread messageReceiveThread([this, ReceivedUserInputEventHandle]() {TakeUserInput_Thread(ReceivedUserInputEventHandle); });
+				HANDLE handleArray[2] = {tempReceivedMessageEventHandle, tempReceivedUserInputEventHandle};
 
-				MSG msg; /* MSG structer used for message loop */
+				ReceivedMessageEventHandle = &handleArray[0];
+				ReceivedUserInputEventHandle = &handleArray[1];
+
+				std::thread messageReceiveThread([this]() {TakeUserInput_Thread(); });
+
 				while (ChatLoop)
 				{
-					switch (MsgWaitForMultipleObjects(2, {ReceivedMessageEventHandle, ReceivedUserInputEventHandle}, FALSE, 5, QS_ALLINPUT))
+					switch (WaitForMultipleObjects(2, handleArray, FALSE, INFINITE))
 					{
 					case WAIT_OBJECT_0 + 0: /* if event 0 (Received message) gets triggered */
 						NosStdLib::Console::ClearScreen();
@@ -94,14 +106,15 @@ namespace NosStdLib
 						{
 							wprintf(std::format(L"{}\n", message).c_str());
 						}
+						break;
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
+						wprintf(std::format(L"{}", (wchar_t)CrossThread_CharQueue.back()).c_str());
+						if (CrossThread_CharQueue.back() == Definitions::ENTER)
+						{
+							AddMessage(std::wstring(CrossThread_CharQueue.begin(), CrossThread_CharQueue.end()));
+							CrossThread_CharQueue.empty();
+						}
 						break;
-					case WAIT_OBJECT_0 + 2: /* if there is a message on the queue */
-						PeekMessage(&msg, NULL, 0, 0, PM_REMOVE);
-						TranslateMessage(&msg);
-						DispatchMessage(&msg);
-						break;
-
 					case WAIT_TIMEOUT:
 						break;
 					}

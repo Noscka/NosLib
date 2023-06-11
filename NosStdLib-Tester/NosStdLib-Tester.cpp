@@ -2,11 +2,6 @@
 #include "NosStdLib/Chat.hpp"
 
 #include <Windows.h>
-#include <iostream>
-#include <io.h>
-#include <fcntl.h>
-#include <iostream> 
-#include <cstdio> 
 #include <conio.h>
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */

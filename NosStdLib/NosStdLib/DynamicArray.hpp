@@ -21,7 +21,7 @@ namespace NosStdLib
 	class DynamicArray
 	{
 	private:
-		int ArraySize;						/* Array starting sizeand the size after it is resized */
+		int ArraySize;						/* Array starting size and the size after it is resized */
 		int ArrayDefaultSize;				/* Array starting size which doesn't change */
 		ArrayDataType* MainArray;			/* Pointer to Array */
 		int ArrayIndexPointer;				/* keeps track amount of objects in array */
