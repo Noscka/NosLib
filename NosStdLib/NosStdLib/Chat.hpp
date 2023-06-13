@@ -25,7 +25,7 @@ namespace NosStdLib
 
 			bool ChatLoop; /* if the chat should continue looping (true -> yes, false -> no) */
 
-			std::deque<int> CrossThread_CharQueue;	/* input queue for the message loop */
+			std::wstring CrossThread_UserString;	/* input for the message loop */
 		public:
 			Event* OnMessageSend = nullptr; /* pointer to event object which will trigger when user wants to send a message */
 			Event* OnMessageReceived = nullptr; /* pointer to event object which will trigger when a message is added */
@@ -56,13 +56,11 @@ namespace NosStdLib
 			/// <param name="eventHandle">- pointer to event handle</param>
 			void TakeUserInput_Thread()
 			{
-				int ch;
 				while (ChatLoop)
 				{
 					if (_kbhit()) /* check if there is any input to take in */
 					{
-						ch = _getch();
-						CrossThread_CharQueue.push_back(ch);
+						CrossThread_UserString.push_back(_getch());
 						if (ReceivedUserInputEventHandle != nullptr)
 						{
 							SetEvent(*ReceivedUserInputEventHandle); /* tell message loop that there are keys in queue */
@@ -105,14 +103,17 @@ namespace NosStdLib
 						for (std::wstring message : messages)
 						{
 							wprintf(std::format(L"{}\n", message).c_str());
+							wprintf(std::format(L"size: {}\n", message.size()).c_str());
 						}
 						break;
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
-						wprintf(std::format(L"{}", (wchar_t)CrossThread_CharQueue.back()).c_str());
-						if (CrossThread_CharQueue.back() == Definitions::ENTER)
+						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, (SHORT)NosStdLib::Console::GetConsoleSize().Rows });
+
+						wprintf(CrossThread_UserString.c_str());
+						if (CrossThread_UserString.back() == Definitions::ENTER)
 						{
-							AddMessage(std::wstring(CrossThread_CharQueue.begin(), CrossThread_CharQueue.end()));
-							CrossThread_CharQueue.empty();
+							AddMessage(CrossThread_UserString);
+							CrossThread_UserString.clear();
 						}
 						break;
 					case WAIT_TIMEOUT:
