@@ -27,7 +27,7 @@ namespace NosStdLib
 
 			std::wstring CrossThread_UserString;	/* input for the message loop */
 		public:
-			Event* OnMessageSend = nullptr; /* pointer to event object which will trigger when user wants to send a message */
+			Event* OnMessageSent = nullptr; /* pointer to event object which will trigger when user wants to send a message */
 			Event* OnMessageReceived = nullptr; /* pointer to event object which will trigger when a message is added */
 
 			DynamicChat()
@@ -46,6 +46,11 @@ namespace NosStdLib
 				if (ReceivedMessageEventHandle != nullptr)
 				{
 					SetEvent(*ReceivedMessageEventHandle); /* tell message loop that there are keys in queue */
+				}
+
+				if (OnMessageReceived != nullptr)
+				{
+					OnMessageReceived->TriggerEvent();
 				}
 			}
 
@@ -107,13 +112,18 @@ namespace NosStdLib
 						}
 						break;
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
-						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, (SHORT)NosStdLib::Console::GetConsoleSize().Rows });
+						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, (SHORT)(NosStdLib::Console::GetConsoleSize().Rows - 1) });
 
 						wprintf(CrossThread_UserString.c_str());
 						if (CrossThread_UserString.back() == Definitions::ENTER)
 						{
 							AddMessage(CrossThread_UserString);
 							CrossThread_UserString.clear();
+
+							if (OnMessageSent != nullptr)
+							{
+								OnMessageSent->TriggerEvent();
+							}
 						}
 						break;
 					case WAIT_TIMEOUT:
