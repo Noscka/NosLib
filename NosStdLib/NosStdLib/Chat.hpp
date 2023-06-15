@@ -1,6 +1,7 @@
 #ifndef _DYNAMICCHAT_NOSSTDLIB_HPP_
 #define _DYNAMICCHAT_NOSSTDLIB_HPP_
 
+#include "Console.hpp"
 #include "String.hpp"
 #include "DynamicArray.hpp"
 #include "EventHandling\EventHandling.hpp"
