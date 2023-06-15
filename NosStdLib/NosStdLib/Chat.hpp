@@ -23,6 +23,7 @@ namespace NosStdLib
 
 			HANDLE* ReceivedMessageEventHandle = nullptr;	/* Message Loop event which will triggered whenever a message was added using the "AddMessage" function */
 			HANDLE* ReceivedUserInputEventHandle = nullptr; /* Message Loop event which will triggered whenever the user has input a string */
+			HANDLE* InputOffsetChangedEventHandle = nullptr; /* Message Loop event which will triggered whenever the user changes input offset */
 
 			bool ChatLoop; /* if the chat should continue looping (true -> yes, false -> no) */
 
@@ -56,6 +57,8 @@ namespace NosStdLib
 			}
 
 		private:
+			unsigned int NegativeOffset = 0;
+
 			/// <summary>
 			/// Function meant to run in a thread, will wait for user input and then send message to main loop
 			/// </summary>
@@ -64,16 +67,72 @@ namespace NosStdLib
 			{
 				while (ChatLoop)
 				{
-					if (_kbhit()) /* check if there is any input to take in */
+					if (!_kbhit()) /* if no input, continue. done like this to reduce nesting */
 					{
-						CrossThread_UserString.push_back(_getch());
+						Sleep(10); /* cool down so it doesn't check 8905925157028157085 times per millisecond */
+						continue; /* skip execution */
+					}
+
+					int ch = _getch();
+
+					if (ch == NosStdLib::Definitions::BACKSPACE)
+					{
+						if (!CrossThread_UserString.empty())
+						{
+							CrossThread_UserString.erase(CrossThread_UserString.end() - (NegativeOffset+1));
+						}
+
 						if (ReceivedUserInputEventHandle != nullptr)
 						{
-							SetEvent(*ReceivedUserInputEventHandle); /* tell message loop that there are keys in queue */
+							SetEvent(*ReceivedUserInputEventHandle); /* tell message loop that there was an update to the string */
+						}
+						continue; /* skip printing and adding character to string */
+					}
+					else if (!(ch && ch != 224))
+					{
+						int exCh = _getch();
+
+						switch (exCh)
+						{
+						case NosStdLib::Definitions::ARROW_LEFT:
+							if (NegativeOffset < CrossThread_UserString.size()) /* only if less then the size of the current string */
+							{
+								NegativeOffset++; /* increase backwards offset */
+							}
+
+							if (InputOffsetChangedEventHandle != nullptr)
+							{
+								SetEvent(*InputOffsetChangedEventHandle); /* tell message loop that there are keys in queue */
+							}
+							continue; /* Don't process character */
+
+						case NosStdLib::Definitions::ARROW_RIGHT:
+							if (NegativeOffset > 0) /* only if offset is more then 0 */
+							{
+								NegativeOffset--;
+							}
+
+							if (InputOffsetChangedEventHandle != nullptr)
+							{
+								SetEvent(*InputOffsetChangedEventHandle); /* tell message loop that there are keys in queue */
+							}
+							continue; /* Don't process character */
 						}
 					}
 
-					Sleep(10); /* cool down so it doesn't check 8905925157028157085 times per millisecond */
+					if (ch == Definitions::ENTER) /* ALWAYS put enter last so event handler below knows when to send the message */
+					{
+						CrossThread_UserString.push_back(ch);
+					}
+					else
+					{
+						CrossThread_UserString.insert(CrossThread_UserString.end() - NegativeOffset, ch);
+					}
+
+					if (ReceivedUserInputEventHandle != nullptr)
+					{
+						SetEvent(*ReceivedUserInputEventHandle); /* tell message loop that there are keys in queue */
+					}
 				}
 				return;
 			}
@@ -89,17 +148,21 @@ namespace NosStdLib
 
 				HANDLE tempReceivedMessageEventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);		/* Triggered whenever a message was added using the "AddMessage" function */
 				HANDLE tempReceivedUserInputEventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);	/* Triggered whenever the user has input a string */
+				HANDLE tempInputOffsetChangedEventHandle = CreateEvent(NULL, FALSE, FALSE, NULL);	/* Triggered whenever the user has input a string */
 
-				HANDLE handleArray[2] = {tempReceivedMessageEventHandle, tempReceivedUserInputEventHandle};
+				HANDLE handleArray[3] = {tempReceivedMessageEventHandle, tempReceivedUserInputEventHandle, tempInputOffsetChangedEventHandle};
 
 				ReceivedMessageEventHandle = &handleArray[0];
 				ReceivedUserInputEventHandle = &handleArray[1];
+				InputOffsetChangedEventHandle = &handleArray[2];
 
 				std::thread messageReceiveThread([this]() {TakeUserInput_Thread(); });
 
+				int lastCrossThreadStringSize = 0;
+
 				while (ChatLoop)
 				{
-					switch (WaitForMultipleObjects(2, handleArray, FALSE, INFINITE))
+					switch (WaitForMultipleObjects(3, handleArray, FALSE, INFINITE))
 					{
 					case WAIT_OBJECT_0 + 0: /* if event 0 (Received message) gets triggered */
 						NosStdLib::Console::ClearScreen();
@@ -110,13 +173,17 @@ namespace NosStdLib
 						{
 							wprintf(std::format(L"{}\n", message).c_str());
 							wprintf(std::format(L"size: {}\n", message.size()).c_str());
-						}
+						} /* NO BREAK on purpose */
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
 						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, (SHORT)(NosStdLib::Console::GetConsoleSize().Rows - 1) });
 
-						wprintf(CrossThread_UserString.c_str());
+						wprintf((CrossThread_UserString + (lastCrossThreadStringSize > CrossThread_UserString.size() ? L" " :  L"")).c_str());
+
+						lastCrossThreadStringSize = CrossThread_UserString.size();
 						if (CrossThread_UserString.back() == Definitions::ENTER)
 						{
+							CrossThread_UserString.pop_back(); /* Remove last character since it is ENTER */
+
 							AddMessage(CrossThread_UserString);
 							CrossThread_UserString.clear();
 
@@ -124,8 +191,13 @@ namespace NosStdLib
 							{
 								OnMessageSent->TriggerEvent();
 							}
-						}
+
+							NegativeOffset = 0;
+						} /* NO BREAK on purpose */
+					case WAIT_OBJECT_0 + 2:
+						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)(CrossThread_UserString.size()-NegativeOffset), (SHORT)(NosStdLib::Console::GetConsoleSize().Rows - 1)});
 						break;
+
 					case WAIT_TIMEOUT:
 						break;
 					}
