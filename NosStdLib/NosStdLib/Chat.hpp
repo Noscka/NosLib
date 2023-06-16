@@ -167,12 +167,9 @@ namespace NosStdLib
 					case WAIT_OBJECT_0 + 0: /* if event 0 (Received message) gets triggered */
 						NosStdLib::Console::ClearScreen();
 
-						wprintf(L"Received message, printing\n");
-
 						for (std::wstring message : messages)
 						{
 							wprintf(std::format(L"{}\n", message).c_str());
-							wprintf(std::format(L"size: {}\n", message.size()).c_str());
 						} /* NO BREAK on purpose */
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
 						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, (SHORT)(NosStdLib::Console::GetConsoleSize().Rows - 1) });

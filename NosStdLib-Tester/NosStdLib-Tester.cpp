@@ -8,6 +8,15 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
+void AddMessageLoop(NosStdLib::Chat::DynamicChat* chatPointer)
+{
+    while (true)
+    {
+        chatPointer->AddMessage(L"Some Random Message");
+        Sleep(5000);
+    }
+}
+
 int main()
 {
     NosStdLib::Console::InitializeModifiers::EnableUnicode();
@@ -16,6 +25,8 @@ int main()
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
     NosStdLib::Chat::DynamicChat mainChat;
+
+    std::thread messageReceiveThread(AddMessageLoop, &mainChat);
 
     mainChat.StartChat();
 
