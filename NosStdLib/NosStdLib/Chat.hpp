@@ -33,8 +33,8 @@ namespace NosStdLib
 
 			std::wstring CrossThread_UserString;	/* input for the message loop */
 		public:
-			Event* OnMessageSent = nullptr; /* pointer to event object which will trigger when user wants to send a message */
-			Event* OnMessageReceived = nullptr; /* pointer to event object which will trigger when a message is added */
+			SpecializedEvent<void(const std::wstring&), std::wstring> OnMessageSent; /* pointer to event object which will trigger when user wants to send a message */
+			SpecializedEvent<void(const std::wstring&), std::wstring> OnMessageReceived; /* pointer to event object which will trigger when a message is added */
 
 			DynamicChat()
 			{
@@ -48,6 +48,7 @@ namespace NosStdLib
 			/// <param name="message">- the message to add</param>
 			void AddMessage(const std::wstring& message)
 			{
+				OnMessageReceived.TriggerEvent(message.c_str());
 				messages.Append(message);
 				
 				if (ReceivedMessageEventHandle != nullptr)
@@ -55,10 +56,6 @@ namespace NosStdLib
 					SetEvent(*ReceivedMessageEventHandle); /* tell message loop that there are keys in queue */
 				}
 
-				if (OnMessageReceived != nullptr)
-				{
-					OnMessageReceived->TriggerEvent();
-				}
 			}
 
 		private:
@@ -195,11 +192,8 @@ namespace NosStdLib
 
 							AddMessage(CrossThread_UserString);
 							CrossThread_UserString.clear();
-
-							if (OnMessageSent != nullptr)
-							{
-								OnMessageSent->TriggerEvent();
-							}
+							
+							OnMessageSent.TriggerEvent();
 
 							NegativeOffset = 0;
 						}

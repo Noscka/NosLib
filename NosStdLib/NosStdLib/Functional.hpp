@@ -21,7 +21,7 @@ namespace NosStdLib
         };
 
         /// <summary>
-        /// the class which actuallys stores the function and the parameters
+        /// the class which actually stores the function and the parameters
         /// </summary>
         /// <typeparam name="FuncType">- Function return type</typeparam>
         /// <typeparam name="...VariadicArgs">- parameter types</typeparam>
@@ -34,7 +34,7 @@ namespace NosStdLib
         public:
 
             /// <summary>
-            /// constructer of the class
+            /// constructor of the class
             /// </summary>
             /// <param name="funcPointer">- a pointer to the wanted function</param>
             /// <param name="...args">- the arguments</param>
@@ -50,6 +50,11 @@ namespace NosStdLib
             void RunFunction()
             {
                 std::apply(FuncPointer, Args);
+            }
+
+            void RunFunction(VariadicArgs&& ... args)
+            {
+                (*FuncPointer)(std::forward<VariadicArgs>(args)...);
             }
         };
 	}

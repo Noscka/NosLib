@@ -20,7 +20,6 @@ namespace NosStdLib
 		bool AssignedFunction = false; /* If the EventFunction pointer was actually set */
 
 		/* TODO: ALLOW FOR STACKING FUNCTIONS */
-		/* TODO: ADD RESTRICTIONS */
 	public:
 		/// <summary>
 		/// Default constructor
@@ -81,7 +80,106 @@ namespace NosStdLib
 			}
 		#endif
 		}
+	};
 
+	/// <summary>
+	/// Class which allows for storing specific functions for events
+	/// </summary>
+	template<class FuncType, typename ... VariadicArgs>
+	class SpecializedEvent
+	{
+	private:
+		NosStdLib::Functional::FunctionStore<FuncType, VariadicArgs...>* EventFunction = nullptr; /* pointer to FunctionStore which will be run on event trigger */
+		bool AssignedFunction = false; /* If the EventFunction pointer was actually set */
+
+		/* TODO: ALLOW FOR STACKING FUNCTIONS */
+	public:
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		SpecializedEvent() {}
+
+		/// <summary>
+		/// constructor with specified function to run when event is triggered
+		/// </summary>
+		/// <param name="eventFunction">- Function Store object to run (use the none base version)</param>
+		SpecializedEvent(NosStdLib::Functional::FunctionStore<FuncType, VariadicArgs...>* eventFunction)
+		{
+			AssignEventFunction(eventFunction);
+		}
+
+		~SpecializedEvent()
+		{
+			delete EventFunction;
+		}
+
+		/// <summary>
+		/// Used to assigned the function to the event
+		/// </summary>
+		/// <param name="eventFunction">- Function Store object to run (use the none base version)</param>
+		void AssignEventFunction(NosStdLib::Functional::FunctionStore<FuncType, VariadicArgs...>* eventFunction)
+		{
+			EventFunction = eventFunction;
+			AssignedFunction = true;
+		}
+
+		/// <summary>
+		/// Used to assigned the function to the event
+		/// </summary>
+		/// <param name="eventFunction">- Function Store object to run (use the none base version)</param>
+		void AssignEventFunction(FuncType* funcPointer, VariadicArgs&& ... args)
+		{
+			EventFunction = new NosStdLib::Functional::FunctionStore<FuncType, VariadicArgs...>(std::forward<FuncType*>(funcPointer), std::forward<VariadicArgs>(args)...);
+			AssignedFunction = true;
+		}
+
+		/// <summary>
+		/// Clears Event Function, so event does nothing
+		/// </summary>
+		/// <param name="deleteFunctionObject">(default = true) - if the functionstore object should get deleted on clear</param>
+		void ClearEventFunction(const bool& deleteFunctionObject = true)
+		{
+			if (deleteFunctionObject)
+			{
+				delete EventFunction;
+			}
+			EventFunction = nullptr;
+			AssignedFunction = false;
+		}
+
+		/// <summary>
+		/// Runs the event function
+		/// </summary>
+		void TriggerEvent()
+		{
+			if (AssignedFunction && EventFunction != nullptr)
+			{
+				EventFunction->RunFunction();
+			}
+		#ifndef NDEBUG
+			else
+			{
+				throw std::exception("Function wasn't set");
+			}
+		#endif
+		}
+
+		/// <summary>
+		/// Runs the event function with custom arguments
+		/// </summary>
+		void TriggerEvent(VariadicArgs&& ... args)
+		{
+			if (AssignedFunction && EventFunction != nullptr)
+			{
+				EventFunction->RunFunction(std::forward<VariadicArgs>(args)...);
+			}
+		#ifndef NDEBUG
+			else
+			{
+				throw std::exception("Function wasn't set");
+			}
+		#endif
+		}
 	};
 
 	/// <summary>

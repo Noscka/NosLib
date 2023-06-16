@@ -10,13 +10,20 @@
 
 void AddMessageLoop(NosStdLib::Chat::DynamicChat* chatPointer)
 {
-    int counter = 0;
-    while (true)
-    {
-        counter++;
-        chatPointer->AddMessage(std::format(L"{}) Some Random Message", counter));
-        Sleep(100);
-    }
+	int counter = 0;
+	while (true)
+	{
+		counter++;
+		chatPointer->AddMessage(std::format(L"{}) Some Random Message", counter));
+		Sleep(100);
+	}
+}
+
+void printMessageAgain(const std::wstring& message)
+{
+	wprintf(message.c_str());
+	Sleep(1000);
+	return;
 }
 
 int main()
@@ -26,13 +33,15 @@ int main()
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Drag and Drop Testing");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
 
-    NosStdLib::Console::ShowCaret(false);
+	NosStdLib::Console::ShowCaret(false);
 
-    NosStdLib::Chat::DynamicChat mainChat;
+	NosStdLib::Chat::DynamicChat mainChat;
 
-    std::thread messageReceiveThread(AddMessageLoop, &mainChat);
+	mainChat.OnMessageReceived.AssignEventFunction(&printMessageAgain, L"");
 
-    mainChat.StartChat();
+	std::thread messageReceiveThread(AddMessageLoop, &mainChat);
+
+	mainChat.StartChat();
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

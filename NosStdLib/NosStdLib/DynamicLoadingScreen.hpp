@@ -166,7 +166,7 @@ namespace NosStdLib
 	public:
 	#pragma region InitilizeFont
 		/// <summary>
-		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory. uses FilePath for path to font
+		/// Initializes font resource by getting it from exe, putting it in a place and then adding it to memory. uses FilePath for path to font
 		/// </summary>
 		/// <param name="filePathObj">(default = LR"(\Resources\)", L"CustomConsola.ttf") - FilePath object to were store the font</param>
 		static void InitilizeFont(const NosStdLib::FileManagement::FilePath& filePathObj = NosStdLib::FileManagement::FilePath(LR"(\Resources\)", L"CustomConsola.ttf"))
@@ -182,7 +182,7 @@ namespace NosStdLib
 				return;
 			}
 
-			std::filesystem::create_directories(std::filesystem::path(FontFilePath.GetAbsolutePath())); /* Make Resources Direcory */
+			std::filesystem::create_directories(std::filesystem::path(FontFilePath.GetAbsolutePath())); /* Make Resources Directory */
 
 			if (!std::filesystem::exists(FontFilePath.GetFilePath())) /* Check if Font file already exists*/
 			{
@@ -227,7 +227,7 @@ namespace NosStdLib
 		}
 
 		/// <summary>
-		/// Initilizes font resource by getting it from exe, putting it in a place and then adding it to memory
+		/// Initializes font resource by getting it from exe, putting it in a place and then adding it to memory
 		/// </summary>
 		/// <param name="Path">- relative path where to put font</param>
 		static void InitilizeFont(std::wstring Path)
