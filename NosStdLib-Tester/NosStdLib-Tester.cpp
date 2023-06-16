@@ -13,7 +13,7 @@ void AddMessageLoop(NosStdLib::Chat::DynamicChat* chatPointer)
     while (true)
     {
         chatPointer->AddMessage(L"Some Random Message");
-        Sleep(5000);
+        Sleep(100);
     }
 }
 

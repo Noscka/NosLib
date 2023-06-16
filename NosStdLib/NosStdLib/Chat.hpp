@@ -173,10 +173,12 @@ namespace NosStdLib
 					case WAIT_OBJECT_0 + 0: /* if event 0 (Received message) gets triggered */
 						SetConsoleCursorPosition(ConsoleHandle, { 0,0 });
 
-						for (int i = 0; i <= messages.GetArrayIndexPointer()-1; i++)
+						for (int i = 0; i <= (messages.GetArrayIndexPointer() - 1) && i <= (ConsoleSizeStruct.Rows - 1); i++) /* for I, do rows-amount with min */
 						{
 							wprintf((messages[i] + std::wstring(ConsoleSizeStruct.Columns - messages[i].size(), L' ')).c_str());
 						}
+
+						
 						/* NO BREAK on purpose */
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
 						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(ConsoleSizeStruct.Rows - 1) });
