@@ -21,6 +21,10 @@ namespace NosStdLib
 		private:
 			NosStdLib::DynamicArray<std::wstring> messages;
 
+			HANDLE ConsoleHandle;									/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
+			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;				/* global ConsoleScreenBI so it is synced across all operations */
+			NosStdLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console columns and rows */
+
 			HANDLE* ReceivedMessageEventHandle = nullptr;	/* Message Loop event which will triggered whenever a message was added using the "AddMessage" function */
 			HANDLE* ReceivedUserInputEventHandle = nullptr; /* Message Loop event which will triggered whenever the user has input a string */
 			HANDLE* InputOffsetChangedEventHandle = nullptr; /* Message Loop event which will triggered whenever the user changes input offset */
@@ -34,7 +38,8 @@ namespace NosStdLib
 
 			DynamicChat()
 			{
-
+				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
 			}
 
 			/// <summary>
@@ -136,7 +141,6 @@ namespace NosStdLib
 				}
 				return;
 			}
-
 		public:
 
 			/// <summary>
@@ -158,25 +162,27 @@ namespace NosStdLib
 
 				std::thread messageReceiveThread([this]() {TakeUserInput_Thread(); });
 
-				int lastCrossThreadStringSize = 0;
+				NosStdLib::Console::SetConsoleBuffer();
 
 				while (ChatLoop)
 				{
+					ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Every loop update the values */
+
 					switch (WaitForMultipleObjects(3, handleArray, FALSE, INFINITE))
 					{
 					case WAIT_OBJECT_0 + 0: /* if event 0 (Received message) gets triggered */
-						NosStdLib::Console::ClearScreen();
+						SetConsoleCursorPosition(ConsoleHandle, { 0,0 });
 
-						for (std::wstring message : messages)
+						for (int i = 0; i <= messages.GetArrayIndexPointer()-1; i++)
 						{
-							wprintf(std::format(L"{}\n", message).c_str());
-						} /* NO BREAK on purpose */
+							wprintf((messages[i] + std::wstring(ConsoleSizeStruct.Columns - messages[i].size(), L' ')).c_str());
+						}
+						/* NO BREAK on purpose */
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
-						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), { 0, (SHORT)(NosStdLib::Console::GetConsoleSize().Rows - 1) });
+						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(ConsoleSizeStruct.Rows - 1) });
 
-						wprintf((CrossThread_UserString + (lastCrossThreadStringSize > CrossThread_UserString.size() ? L" " :  L"")).c_str());
+						wprintf((CrossThread_UserString + std::wstring(ConsoleSizeStruct.Columns - CrossThread_UserString.size(), L' ')).c_str());
 
-						lastCrossThreadStringSize = CrossThread_UserString.size();
 						if (CrossThread_UserString.back() == Definitions::ENTER)
 						{
 							CrossThread_UserString.pop_back(); /* Remove last character since it is ENTER */
@@ -190,9 +196,10 @@ namespace NosStdLib
 							}
 
 							NegativeOffset = 0;
-						} /* NO BREAK on purpose */
+						}
+						/* NO BREAK on purpose */
 					case WAIT_OBJECT_0 + 2:
-						SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {(SHORT)(CrossThread_UserString.size()-NegativeOffset), (SHORT)(NosStdLib::Console::GetConsoleSize().Rows - 1)});
+						SetConsoleCursorPosition(ConsoleHandle, {(SHORT)(CrossThread_UserString.size()-NegativeOffset), (SHORT)(ConsoleSizeStruct.Rows - 1)});
 						break;
 
 					case WAIT_TIMEOUT:
