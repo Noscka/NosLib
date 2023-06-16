@@ -10,9 +10,11 @@
 
 void AddMessageLoop(NosStdLib::Chat::DynamicChat* chatPointer)
 {
+    int counter = 0;
     while (true)
     {
-        chatPointer->AddMessage(L"Some Random Message");
+        counter++;
+        chatPointer->AddMessage(std::format(L"{}) Some Random Message", counter));
         Sleep(100);
     }
 }
@@ -23,6 +25,8 @@ int main()
     NosStdLib::Console::InitializeModifiers::EnableANSI();
     NosStdLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Drag and Drop Testing");
     NosStdLib::Console::InitializeModifiers::InitializeEventHandler();
+
+    NosStdLib::Console::ShowCaret(false);
 
     NosStdLib::Chat::DynamicChat mainChat;
 
