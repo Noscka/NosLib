@@ -350,6 +350,52 @@ namespace NosStdLib
 		}
 	#pragma endregion
 
+#pragma region SetConsoleBuffer
+		/// <summary>
+		/// Set a console buffer size with a custom handle and size
+		/// </summary>
+		/// <param name="consoleHandle">- custom buffer</param>
+		/// <param name="newBufferSize">- custom size</param>
+		/// <returns>if succesful</returns>
+		bool SetConsoleBuffer(const HANDLE& consoleHandle, const COORD& newBufferSize)
+		{
+			return SetConsoleScreenBufferSize(consoleHandle, newBufferSize);
+		}
+
+		/// <summary>
+		/// Set a console buffer size to only the visiable amount with a custom handle
+		/// </summary>
+		/// <param name="consoleHandle">- custom handle</param>
+		/// <returns>if succesful</returns>
+		bool SetConsoleBuffer(const HANDLE& consoleHandle)
+		{
+			// retrieve screen buffer info
+			CONSOLE_SCREEN_BUFFER_INFO scrBufferInfo;
+			GetConsoleScreenBufferInfo(consoleHandle, &scrBufferInfo);
+
+			return SetConsoleBuffer(consoleHandle, { (SHORT)scrBufferInfo.dwSize.X , (SHORT)(scrBufferInfo.srWindow.Bottom - scrBufferInfo.srWindow.Top + 1) });
+		}
+
+		/// <summary>
+		/// Set a console buffer size to only the visiable amount
+		/// </summary>
+		/// <returns>if succesful</returns>
+		bool SetConsoleBuffer()
+		{
+			return SetConsoleBuffer(GetStdHandle(STD_OUTPUT_HANDLE));
+		}
+
+		/// <summary>
+		/// Set a console buffer size with a custom size
+		/// </summary>
+		/// <param name="consoleHandle">- custom buffer</param>
+		/// <returns>if succesful</returns>
+		bool SetConsoleBuffer(const COORD& newBufferSize)
+		{
+			return SetConsoleBuffer(GetStdHandle(STD_OUTPUT_HANDLE), newBufferSize);
+		}
+#pragma endregion
+
 	#pragma region NoneBlockingMessageLoop
 		/// <summary>
 		/// function which will create a none blocking message loop. used more as a template
