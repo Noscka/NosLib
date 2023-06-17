@@ -48,7 +48,6 @@ namespace NosStdLib
 			/// <param name="message">- the message to add</param>
 			void AddMessage(const std::wstring& message)
 			{
-				OnMessageReceived.TriggerEvent(message.c_str());
 				messages.Append(message);
 				
 				if (ReceivedMessageEventHandle != nullptr)
@@ -56,6 +55,7 @@ namespace NosStdLib
 					SetEvent(*ReceivedMessageEventHandle); /* tell message loop that there are keys in queue */
 				}
 
+				OnMessageReceived.TriggerEvent(message.c_str());
 			}
 
 		private:
@@ -178,11 +178,11 @@ namespace NosStdLib
 							wprintf((messages[i] + std::wstring(ConsoleSizeStruct.Columns - messages[i].size(), L' ')).c_str());
 						}
 
-
 						/* NO BREAK on purpose */
 					}
 					case WAIT_OBJECT_0 + 1: /* if event 1 (User put in input) gets triggered */
-						SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(ConsoleSizeStruct.Rows - 1) });
+					{
+						SetConsoleCursorPosition(ConsoleHandle, {0, (SHORT)(ConsoleSizeStruct.Rows - 1)});
 
 						wprintf((CrossThread_UserString + std::wstring(ConsoleSizeStruct.Columns - CrossThread_UserString.size(), L' ')).c_str());
 
@@ -191,16 +191,20 @@ namespace NosStdLib
 							CrossThread_UserString.pop_back(); /* Remove last character since it is ENTER */
 
 							AddMessage(CrossThread_UserString);
+							OnMessageSent.TriggerEvent(CrossThread_UserString);
+
 							CrossThread_UserString.clear();
-							
-							OnMessageSent.TriggerEvent();
 
 							NegativeOffset = 0;
 						}
+
 						/* NO BREAK on purpose */
+					}
 					case WAIT_OBJECT_0 + 2:
-						SetConsoleCursorPosition(ConsoleHandle, {(SHORT)(CrossThread_UserString.size()-NegativeOffset), (SHORT)(ConsoleSizeStruct.Rows - 1)});
+					{
+						SetConsoleCursorPosition(ConsoleHandle, {(SHORT)(CrossThread_UserString.size() - NegativeOffset), (SHORT)(ConsoleSizeStruct.Rows - 1)});
 						break;
+					}
 
 					case WAIT_TIMEOUT:
 						break;

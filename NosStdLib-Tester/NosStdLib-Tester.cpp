@@ -14,16 +14,9 @@ void AddMessageLoop(NosStdLib::Chat::DynamicChat* chatPointer)
 	while (true)
 	{
 		counter++;
-		chatPointer->AddMessage(std::format(L"{}) Some Random Message", counter));
+		//chatPointer->AddMessage(std::format(L"{}) Some Random Message", counter));
 		Sleep(100);
 	}
-}
-
-void printMessageAgain(const std::wstring& message)
-{
-	wprintf(message.c_str());
-	Sleep(1000);
-	return;
 }
 
 int main()
@@ -36,8 +29,6 @@ int main()
 	NosStdLib::Console::ShowCaret(false);
 
 	NosStdLib::Chat::DynamicChat mainChat;
-
-	mainChat.OnMessageReceived.AssignEventFunction(&printMessageAgain, L"");
 
 	std::thread messageReceiveThread(AddMessageLoop, &mainChat);
 

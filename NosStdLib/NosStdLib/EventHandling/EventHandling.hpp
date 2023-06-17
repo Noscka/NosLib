@@ -108,6 +108,16 @@ namespace NosStdLib
 			AssignEventFunction(eventFunction);
 		}
 
+		/// <summary>
+		/// constructor with specified function to run when event is triggered
+		/// </summary>
+		/// <param name="funcPointer">- function pointer</param>
+		/// <param name="...args">- function arguments</param>
+		SpecializedEvent(FuncType* funcPointer, VariadicArgs&& ... args)
+		{
+			AssignEventFunction(std::forward<FuncType*>(funcPointer), std::forward<VariadicArgs>(args)...);
+		}
+
 		~SpecializedEvent()
 		{
 			delete EventFunction;
@@ -126,10 +136,21 @@ namespace NosStdLib
 		/// <summary>
 		/// Used to assigned the function to the event
 		/// </summary>
-		/// <param name="eventFunction">- Function Store object to run (use the none base version)</param>
+		/// <param name="funcPointer">- function pointer</param>
+		/// <param name="...args">- function arguments</param>
 		void AssignEventFunction(FuncType* funcPointer, VariadicArgs&& ... args)
 		{
 			EventFunction = new NosStdLib::Functional::FunctionStore<FuncType, VariadicArgs...>(std::forward<FuncType*>(funcPointer), std::forward<VariadicArgs>(args)...);
+			AssignedFunction = true;
+		}
+
+		/// <summary>
+		/// Used to assigned the function to the event without preset arguements
+		/// </summary>
+		/// <param name="funcPointer">- function pointer</param>
+		void AssignEventFunction(FuncType* funcPointer)
+		{
+			EventFunction = new NosStdLib::Functional::FunctionStore<FuncType, VariadicArgs...>(std::forward<FuncType*>(funcPointer));
 			AssignedFunction = true;
 		}
 
@@ -152,6 +173,12 @@ namespace NosStdLib
 		/// </summary>
 		void TriggerEvent()
 		{
+			if (!EventFunction->HasPresetArguements()) /* if event function doesn't have preset variables, throw exception | TODO: convert to compile error */
+			{
+				throw std::logic_error("Cannot run functional without parameters if the arguments are not preset");
+				return;
+			}
+
 			if (AssignedFunction && EventFunction != nullptr)
 			{
 				EventFunction->RunFunction();
@@ -167,6 +194,25 @@ namespace NosStdLib
 		/// <summary>
 		/// Runs the event function with custom arguments
 		/// </summary>
+		/// <param name="...args">- the custom arguments</param>
+		void TriggerEvent(VariadicArgs& ... args)
+		{
+			if (AssignedFunction && EventFunction != nullptr)
+			{
+				EventFunction->RunFunction(std::forward<VariadicArgs>(args)...);
+			}
+		#ifndef NDEBUG
+			else
+			{
+				throw std::exception("Function wasn't set");
+			}
+		#endif
+		}
+
+		/// <summary>
+		/// Runs the event function with custom arguments
+		/// </summary>
+		/// <param name="...args">- the custom arguments</param>
 		void TriggerEvent(VariadicArgs&& ... args)
 		{
 			if (AssignedFunction && EventFunction != nullptr)
