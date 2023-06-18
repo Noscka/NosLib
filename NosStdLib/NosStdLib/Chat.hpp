@@ -29,7 +29,7 @@ namespace NosStdLib
 			HANDLE* ReceivedUserInputEventHandle = nullptr; /* Message Loop event which will triggered whenever the user has input a string */
 			HANDLE* InputOffsetChangedEventHandle = nullptr; /* Message Loop event which will triggered whenever the user changes input offset */
 
-			bool ChatLoop; /* if the chat should continue looping (true -> yes, false -> no) */
+			bool ChatLoop = true; /* if the chat should continue looping (true -> yes, false -> no) */
 
 			std::wstring CrossThread_UserString;	/* input for the message loop */
 		public:
@@ -56,6 +56,15 @@ namespace NosStdLib
 				}
 
 				OnMessageReceived.TriggerEvent(message.c_str());
+			}
+
+			/// <summary>
+			/// if the chat loop is still going or not
+			/// </summary>
+			/// <returns>the chatloop bool</returns>
+			bool GetChatLoopState()
+			{
+				return ChatLoop;
 			}
 
 		private:
