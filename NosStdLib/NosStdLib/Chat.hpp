@@ -10,6 +10,7 @@
 #include <format>
 #include <thread>
 #include <queue>
+#include <string>
 
 namespace NosStdLib
 {
@@ -44,8 +45,14 @@ namespace NosStdLib
 			/// </summary>
 			/// <param name="autoAddSentMessage">(default = true) - if chat should automatically add "sent" message to self</param>
 			/// <param name="selfAddSentMessageFormat">(default = L"{}") - the format to use for the self added sent message, needs one {} somewhere</param>
-			DynamicChat(const bool& autoAddSentMessage = true, const std::wstring& selfAddSentMessageFormat = L"{}")
+			DynamicChat(const bool& autoAddSentMessage = true, const std::wstring& selfAddSentMessageFormat = L"{}") /* TODO: MAKE CONSTANT AND ADD STATIC_ASSERT */
 			{
+				int count = NosStdLib::String::SubstringContainCount<wchar_t>(selfAddSentMessageFormat, L"{}");
+				if (count == 0 || count > 1) /* if there is 0 or more then 1 bracket */
+				{
+					throw std::invalid_argument("Format string must contain only one set of {} brackets");
+				}
+
 				AutoAddSentMessage = autoAddSentMessage;
 				SelfAddSentMessageFormat = selfAddSentMessageFormat;
 

@@ -324,6 +324,21 @@ namespace NosStdLib
 			return tmpString;
 		}
 	#pragma endregion
+
+	#pragma region SubstringContainCount0
+		template <typename CharT>
+		int SubstringContainCount(const std::basic_string<CharT>& string, const std::basic_string<CharT>& substring)
+		{
+			int count = 0;
+			size_t pos = 0;
+			while ((pos = string.find(substring, pos)) != std::basic_string<CharT>::npos) {
+				count++;
+				pos += substring.length();
+			}
+
+			return count;
+		}
+	#pragma endregion
 	}
 }
 #endif
