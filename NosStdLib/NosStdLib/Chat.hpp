@@ -32,12 +32,23 @@ namespace NosStdLib
 			bool ChatLoop = true; /* if the chat should continue looping (true -> yes, false -> no) */
 
 			std::wstring CrossThread_UserString;	/* input for the message loop */
+
+			bool AutoAddSentMessage = true;			/* if chat should automatically add "sent" message to self */
+			std::wstring SelfAddSentMessageFormat;	/* the format to use for the self added sent message, needs one {} somewhere */
 		public:
 			SpecializedEvent<void(const std::wstring&), std::wstring> OnMessageSent; /* pointer to event object which will trigger when user wants to send a message */
 			SpecializedEvent<void(const std::wstring&), std::wstring> OnMessageReceived; /* pointer to event object which will trigger when a message is added */
 
-			DynamicChat()
+			/// <summary>
+			/// Constructor
+			/// </summary>
+			/// <param name="autoAddSentMessage">(default = true) - if chat should automatically add "sent" message to self</param>
+			/// <param name="selfAddSentMessageFormat">(default = L"{}") - the format to use for the self added sent message, needs one {} somewhere</param>
+			DynamicChat(const bool& autoAddSentMessage = true, const std::wstring& selfAddSentMessageFormat = L"{}")
 			{
+				AutoAddSentMessage = autoAddSentMessage;
+				SelfAddSentMessageFormat = selfAddSentMessageFormat;
+
 				ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 				ConsoleSizeStruct = NosStdLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
 			}
@@ -199,7 +210,10 @@ namespace NosStdLib
 						{
 							CrossThread_UserString.pop_back(); /* Remove last character since it is ENTER */
 
-							AddMessage(CrossThread_UserString);
+							if (AutoAddSentMessage) /* only add if enabled | TODO: convert to constexpr */
+							{
+								AddMessage(std::vformat(SelfAddSentMessageFormat, std::make_wformat_args(CrossThread_UserString)));
+							}
 							OnMessageSent.TriggerEvent(CrossThread_UserString);
 
 							CrossThread_UserString.clear();
