@@ -45,8 +45,8 @@ namespace NosLib
 			}
 		}
 
-		#define ToString ConvertString<char, wchar_t>
-		#define ToWstring ConvertString<wchar_t, char> 
+		const auto ToString = ConvertString<char, wchar_t>;
+		const auto ToWstring = ConvertString<wchar_t, char>;
 	#pragma endregion
 
 	#pragma region Character Conversion
@@ -301,7 +301,7 @@ namespace NosLib
 			FindNextWord<CharT>(string, startPosition, word, wordStartPosition, delimiter);
 			for (int i = 0; i < wordCount; i++)
 			{
-				FindNextWord<CharT>(string, ((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
+				FindNextWord<CharT>(string, NosLib::Cast::Cast<int>((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
 			}
 			return *word;
 		}

@@ -34,7 +34,7 @@ namespace NosLib
 
 		static inline HANDLE ConsoleHandle;												/* global and static Console Handle */
 		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;									/* global and static Console ScreenBI */
-		static inline NosLib::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* global and static colums and rows */
+		static inline NosLib::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* global and static columns and rows */
 
 		LoadType BarType; /* bar type of the object */
 
@@ -47,10 +47,10 @@ namespace NosLib
 			PreviousWriteRow = CurrentWriteRow; /* before recalculating new writing row, save it incase its different and the old one needs clearing */
 
 			/* recalculate writing row, either 4 above the bottom (with status message) or right below the splash screen */
-			CurrentWriteRow = max((ConsoleSizeStruct.Rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1));
+			CurrentWriteRow = NosLib::Cast::Cast<int>(max((ConsoleSizeStruct.Rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1)));
 
 			if (CurrentWriteRow != PreviousWriteRow) /* if CurrentWriteRow and PreviousWriteRow are not equal (write position changed), clear previous */
-				NosLib::Console::ClearRange(PreviousWriteRow, std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1);
+				NosLib::Console::ClearRange(PreviousWriteRow, NosLib::Cast::Cast<int>(std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1));
 		}
 
 		/// <summary>
@@ -195,9 +195,9 @@ namespace NosLib
 
 				size_t ResourceLenght = SizeofResource(hResInstance, ResourceHandle);
 				HANDLE hFile = CreateFile(FontFilePath.GetFilePath().c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
-				DWORD bytesWritten = ResourceLenght;
+				DWORD bytesWritten = NosLib::Cast::Cast<DWORD>(ResourceLenght);
 
-				WriteFile(hFile, ResourceData, ResourceLenght, &bytesWritten, NULL);
+				WriteFile(hFile, ResourceData, NosLib::Cast::Cast<DWORD>(ResourceLenght), &bytesWritten, NULL);
 				CloseHandle(hFile);
 			}
 			/* Extract font from resource */
@@ -331,12 +331,12 @@ namespace NosLib
 		std::wstring MoveRight(std::wstring* string)
 		{
 			wchar_t LastChar = (*string)[string->length() - 1];
-			for (int ii = string->length() - 1; ii >= 0; ii--)
+			for (int i = NosLib::Cast::Cast<int>(string->length() - 1); i >= 0; i--)
 			{
-				if (ii == 0)
+				if (i == 0)
 					(*string)[0] = LastChar;
 				else
-					(*string)[ii] = (*string)[ii - 1];
+					(*string)[i] = (*string)[i - 1];
 			}
 
 			return *string;
@@ -350,14 +350,14 @@ namespace NosLib
 		std::wstring MoveLeft(std::wstring* string)
 		{
 			wchar_t LastChar = (*string)[0];
-			for (int ii = 0; ii <= string->length() - 1; ii++)
+			for (int i = 0; i <= NosLib::Cast::Cast<int>(string->length() - 1); i++)
 			{
-				if (ii == string->length() - 1)
+				if (i == string->length() - 1)
 				{
-					(*string)[ii] = LastChar;
+					(*string)[i] = LastChar;
 				}
 				else
-					(*string)[ii] = (*string)[ii + 1];
+					(*string)[i] = (*string)[i + 1];
 			}
 
 			return *string;

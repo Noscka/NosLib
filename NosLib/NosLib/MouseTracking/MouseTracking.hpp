@@ -160,8 +160,8 @@ namespace NosLib
 
 			GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
 
-			int16_t charX = (((mouseHookStruct->pt.x - windowX) - 6) / consoleFontInfo.dwFontSize.X),
-					charY = (((mouseHookStruct->pt.y - windowY) - 31) / consoleFontInfo.dwFontSize.Y);
+			int16_t charX = NosLib::Cast::Cast<int16_t>(((mouseHookStruct->pt.x - windowX) - 6) / consoleFontInfo.dwFontSize.X),
+					charY = NosLib::Cast::Cast<int16_t>(((mouseHookStruct->pt.y - windowY) - 31) / consoleFontInfo.dwFontSize.Y);
 
 			NosLib::Vector::VectorD2<int16_t> currentPosition(NosLib::Cast::Cast<int16_t, int>(charX), NosLib::Cast::Cast<int16_t, int>(charY));
 

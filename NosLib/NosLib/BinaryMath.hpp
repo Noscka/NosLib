@@ -3,6 +3,8 @@
 
 #include <math.h>
 
+#include "Cast.hpp"
+
 namespace NosLib
 {
 	/// <summary>
@@ -20,7 +22,7 @@ namespace NosLib
 			int maxValue = 0;
 			for (int i = 0; bitCount > i; i++)
 			{
-				maxValue += pow(2, i);
+				maxValue += NosLib::Cast::Cast<int>(pow(2, i));
 			}
 			return maxValue;
 		}
