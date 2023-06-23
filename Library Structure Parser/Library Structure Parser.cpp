@@ -1,7 +1,7 @@
-﻿#include <NosStdLib/FileManagement.hpp>
-#include <NosStdLib/DynamicArray.hpp>
-#include <NosStdLib/String.hpp>
-#include <NosStdLib/Console.hpp>
+﻿#include <NosLib/FileManagement.hpp>
+#include <NosLib/DynamicArray.hpp>
+#include <NosLib/String.hpp>
+#include <NosLib/Console.hpp>
 
 #include <iostream>
 #include <io.h>
@@ -23,7 +23,7 @@ private:
     std::wstring Name; /* Item name */
 
     /* Item Relation ships */
-    NosStdLib::DynamicArray<Item*> Children; /* Array Pointer of children */
+    NosLib::DynamicArray<Item*> Children; /* Array Pointer of children */
     Item* Parent; /* Pointer to parent */
 public:
     /* Tracking Properties */
@@ -82,7 +82,7 @@ void ParseHeader(const std::wstring& filePath)
     std::wstring line;
     Item* currentItem = new Item(Item::Type::Namespace, L"Root", nullptr);
 
-    //ParserStream.read(line.data(), NosStdLib::FileManagement::GetFileSize<wchar_t>(filePath)); /* Maybe make the parsing use whole file instead of line by line */
+    //ParserStream.read(line.data(), NosLib::FileManagement::GetFileSize<wchar_t>(filePath)); /* Maybe make the parsing use whole file instead of line by line */
 
     while (std::getline(ParserStream, line)) /* iterate over each line in the header file */
     {
@@ -218,9 +218,9 @@ void ParseHeader(const std::wstring& filePath)
 
         if (size_t point = line.find(L"namespace") != std::string::npos)
         {
-            wprintf((L"namespace " + NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
+            wprintf((L"namespace " + NosLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
 
-            Item *namespaceItem = new Item(Item::Type::Namespace, NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' '), currentItem);
+            Item *namespaceItem = new Item(Item::Type::Namespace, NosLib::String::FindNthWord<wchar_t>(line, point, 2, L' '), currentItem);
 
             if (currentItem != nullptr)
                 currentItem->AddChild(namespaceItem);
@@ -229,9 +229,9 @@ void ParseHeader(const std::wstring& filePath)
         }
         else if (size_t point = line.find(L"class") != std::string::npos)
         {
-            wprintf((L"class " + NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
+            wprintf((L"class " + NosLib::String::FindNthWord<wchar_t>(line, point, 2, L' ') + L"\n").c_str());
 
-            Item *classItem = new Item(Item::Type::Class, NosStdLib::String::FindNthWord<wchar_t>(line, point, 2, L' '), currentItem);
+            Item *classItem = new Item(Item::Type::Class, NosLib::String::FindNthWord<wchar_t>(line, point, 2, L' '), currentItem);
 
             if (currentItem != nullptr)
                 currentItem->AddChild(classItem);
@@ -274,7 +274,7 @@ void RecureThrouDir(const std::wstring& root)
             wprintf(L"Directory\n");
             RecureThrouDir(entry.path());
         }
-        else if (NosStdLib::FileManagement::GetFileExtension<wchar_t>(entry.path()) == L"hpp" || NosStdLib::FileManagement::GetFileExtension<wchar_t>(entry.path()) == L"h") /* if not a directory and is a header (hpp or h extention), parse it */
+        else if (NosLib::FileManagement::GetFileExtension<wchar_t>(entry.path()) == L"hpp" || NosLib::FileManagement::GetFileExtension<wchar_t>(entry.path()) == L"h") /* if not a directory and is a header (hpp or h extention), parse it */
         {
             wprintf(L"Header File\n");
             ParseHeader(entry.path());
@@ -288,18 +288,18 @@ void RecureThrouDir(const std::wstring& root)
 
 int main()
 {
-    NosStdLib::Console::InitializeModifiers::EnableUnicode();
-    NosStdLib::Console::InitializeModifiers::EnableANSI();
+    NosLib::Console::InitializeModifiers::EnableUnicode();
+    NosLib::Console::InitializeModifiers::EnableANSI();
 
-    ParseHeader(LR"(D:\Libraries\NosStdLib\Build\Library Structure Parser\x64\Release\abc.hpp)");
+    ParseHeader(LR"(D:\Libraries\NosLib\Build\Library Structure Parser\x64\Release\abc.hpp)");
     
     wprintf(L"Press any button to continue"); _getch();
     return 0;
 
     std::wstring AbsoluteCurrentPath = std::filesystem::current_path();
 
-    //RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosStdLib\NosStdLib)");
-    RecureThrouDir(LR"(D:\Libraries\NosStdLib\Build\Library Structure Parser\x64\Release)");
+    //RecureThrouDir(AbsoluteCurrentPath + LR"(\..\..\..\..\NosLib\NosLib)");
+    RecureThrouDir(LR"(D:\Libraries\NosLib\Build\Library Structure Parser\x64\Release)");
 
     wprintf(L"Press any button to continue"); getchar();
     return 0;
