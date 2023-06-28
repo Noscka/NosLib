@@ -248,7 +248,7 @@ namespace NosLib
             switch (eventCode)
             {
             case CTRL_CLOSE_EVENT:
-                for (int i = 0; i < ClosingCleanupFunctionArray.GetArrayIndexPointer(); i++)
+                for (int i = 0; i < ClosingCleanupFunctionArray.GetLastArrayIndex(); i++)
                 {
                     ClosingCleanupFunctionArray[i]();
                 }

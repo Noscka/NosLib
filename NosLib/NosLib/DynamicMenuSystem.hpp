@@ -281,7 +281,7 @@ namespace NosLib
 				int ch, exCh; /* for getting input data */
 				OldIndex = CurrentIndex = 0; /* Assign both old and current index ints */
 				TitleSize = 0; /* title size (for calculations where actual menu entries start) */
-				int lastMenuSize = MenuEntryList.GetArrayIndexPointer(); /* for checking if the menu has increased/descreased */
+				int lastMenuSize = MenuEntryList.GetLastArrayIndex(); /* for checking if the menu has increased/descreased */
 				ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
 				NosLib::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
 				MSG msg;	/* MSG structer used for message loop */
@@ -334,7 +334,7 @@ namespace NosLib
 									}
 									break;
 								case NosLib::Definitions::ARROW_DOWN:
-									if (CurrentIndex < MenuEntryList.GetArrayIndexPointer() - 1) /* Increment only if smaller then List size */
+									if (CurrentIndex < MenuEntryList.GetLastArrayIndex()) /* Increment only if smaller then List size */
 									{
 										CurrentIndex++; /* Increment the Indentation */
 									}
@@ -386,8 +386,8 @@ namespace NosLib
 
 								if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
 									finalPosition = { 0,0 };
-								else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
-									finalPosition = { 0, (SHORT)(MenuEntryList.GetArrayIndexPointer() + TitleSize - 1) };
+								else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex())
+									finalPosition = { 0, (SHORT)(MenuEntryList.GetLastArrayIndex() + TitleSize) };
 								else
 									finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2)) };
 							}
@@ -398,8 +398,8 @@ namespace NosLib
 
 								if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
 									finalPosition = { 0,0 };
-								else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetArrayIndexPointer())
-									finalPosition = { 0, (SHORT)MenuEntryList.GetArrayIndexPointer() };
+								else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex())
+									finalPosition = { 0, (SHORT)MenuEntryList.GetLastArrayIndex() };
 								else
 									finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2)) };
 
@@ -476,8 +476,8 @@ namespace NosLib
 
 						if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) < 0)
 							finalPosition = {0,0};
-						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetArrayIndexPointer())
-							finalPosition = {0, (SHORT)((*parentMenu)->MenuEntryList.GetArrayIndexPointer() + (*parentMenu)->TitleSize - 1)};
+						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetLastArrayIndex())
+							finalPosition = {0, (SHORT)((*parentMenu)->MenuEntryList.GetLastArrayIndex() + (*parentMenu)->TitleSize)};
 						else
 							finalPosition = {0, (SHORT)(((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2))};
 					}
@@ -485,8 +485,8 @@ namespace NosLib
 					{
 						if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) < 0)
 							finalPosition = {0,0};
-						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetArrayIndexPointer())
-							finalPosition = {0, (SHORT)(*parentMenu)->MenuEntryList.GetArrayIndexPointer()};
+						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetLastArrayIndex())
+							finalPosition = {0, (SHORT)(*parentMenu)->MenuEntryList.GetLastArrayIndex() };
 						else
 							finalPosition = {0, (SHORT)(((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2))};
 					}
@@ -514,7 +514,7 @@ namespace NosLib
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
-				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + MenuEntryList.GetArrayIndexPointer()), xxValue.X2, (TitleSize + MenuEntryList.GetArrayIndexPointer())));
+				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex())));
 				Entry->ModifyEnableBool(&ButtonStatus);
 				MenuEntryList.Append(Entry);
 			}
@@ -571,7 +571,7 @@ namespace NosLib
 				UpdateTitleSize();
 
 				// for loop using counter to get the index so to add the >< to the selected option
-				for (int i = 0; i < MenuEntryList.GetArrayIndexPointer(); i++)
+				for (int i = 0; i < MenuEntryList.GetLastArrayIndex(); i++)
 				{
 					if (i == CurrentIndex)
 					{
