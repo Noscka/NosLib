@@ -1,5 +1,5 @@
 ﻿#include "NosLib/Console.hpp"
-#include "NosLib/DynamicArray.hpp"
+#include "NosLib/DynamicMenuSystem.hpp"
 
 #include <Windows.h>
 #include <conio.h>
@@ -13,24 +13,7 @@ int main()
     NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Dynamic Array Updating");
     NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	NosLib::DynamicArray<int> testArray;
-
-	for (int i = 0; i <= 10; i++)
-	{
-		/* double append */
-
-		testArray.Append(i);
-		testArray.Append(i+10);
-	}
-
-	for (int entry : testArray)
-	{
-		wprintf(L"%d\n", entry);
-	}
-
-	/*int variable1 = 0;
-	int variable2 = 0;
-	int variable3 = 0;
+	int variable1 = 0;
 
 	NosLib::Menu::DynamicMenu mainMenu(L"Basic Menu");
 
@@ -38,11 +21,12 @@ int main()
 
 	mainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry<NosLib::Menu::DynamicMenu>(L"second menu", &secondMenu));
 
-	mainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry<int>(L"int 1", &variable1));
-	mainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry<int>(L"int 2", &variable2));
-	mainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry<int>(L"int 3", &variable3));
+	for (int i = 0; i <= 40; i++)
+	{
+		mainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry<int>(std::format(L"int {}", i), &variable1));
+	}
 
-	mainMenu.StartMenu();*/
+	mainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;

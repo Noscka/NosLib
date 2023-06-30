@@ -281,7 +281,6 @@ namespace NosLib
 				int ch, exCh; /* for getting input data */
 				OldIndex = CurrentIndex = 0; /* Assign both old and current index ints */
 				TitleSize = 0; /* title size (for calculations where actual menu entries start) */
-				int lastMenuSize = MenuEntryList.GetLastArrayIndex(); /* for checking if the menu has increased/descreased */
 				ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
 				NosLib::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
 				MSG msg;	/* MSG structer used for message loop */
@@ -514,7 +513,7 @@ namespace NosLib
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
-				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex())));
+				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()+1), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex() + 1)));
 				Entry->ModifyEnableBool(&ButtonStatus);
 				MenuEntryList.Append(Entry);
 			}
@@ -571,7 +570,7 @@ namespace NosLib
 				UpdateTitleSize();
 
 				// for loop using counter to get the index so to add the >< to the selected option
-				for (int i = 0; i < MenuEntryList.GetLastArrayIndex(); i++)
+				for (int i = 0; i <= MenuEntryList.GetLastArrayIndex(); i++)
 				{
 					if (i == CurrentIndex)
 					{
