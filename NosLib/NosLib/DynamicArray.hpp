@@ -10,7 +10,10 @@
 
 namespace NosLib
 {
-	/* TODO: Add modes (such as double mode were the array doubles in size instead of increasing by stepsize) */
+	/* TODO: Add modes such as: 
+	 - increase by step size
+	 - increase by multiplying (double, triple, etc)
+	*/
 	/* TODO: (Aly's Idea), add continues array. instead of moving full area to a bigger area, just continue the area in a empty place */
 
 	/// <summary>
@@ -35,10 +38,10 @@ namespace NosLib
 		/// <summary>
 		/// Constructor with starting size and step size params for custom objects
 		/// </summary>
-		/// <param name="StartSize"> - Starting size of the array</param>
-		/// <param name="StepSize"> - how much the array will increase each time it reaches the limit</param>
+		/// <param name="StartSize">(default = 10) - Starting size of the array</param>
+		/// <param name="StepSize">(default = 10) - how much the array will increase each time it reaches the limit</param>
 		/// <param name="deleteObjectsOnDestruction">(default = true) - If the array should destroy all the objects (if possible) when getting destroyed</param>
-		DynamicArray(const int& startSize, const int& stepSize, const bool& deleteObjectsOnDestruction = true)
+		DynamicArray(const int& startSize = 10, const int& stepSize = 10, const bool& deleteObjectsOnDestruction = true)
 		{
 			ArrayDefaultSize = ArraySize = startSize;
 			ArrayStepSize = stepSize;
@@ -47,14 +50,6 @@ namespace NosLib
 			// ! DO NOT CHANGE !
 			CurrentArrayIndex = 0;
 			MainArray = new ArrayDataType[ArraySize]();
-		}
-
-		/// <summary>
-		/// Constructor to set all the variables
-		/// </summary>
-		DynamicArray()
-		{
-			new (this) DynamicArray<ArrayDataType>(10, 10);
 		}
 
 		/// Destroy array contained in object
@@ -84,29 +79,19 @@ namespace NosLib
 		{
 			if (CurrentArrayIndex >= ArraySize) // if Current Index pointer is more then the array size (trying to add to OutOfRange space)
 			{
-				ArrayDataType* TempArray = new ArrayDataType[ArraySize](); // Create new array which will store the original values
+				int oldArraySize = ArraySize;
+				ArrayDataType* tempArray = MainArray; /* Set tempArray as the main old array */
 
-				for (int i = 0; i < ArraySize; i++) // assign/copy all values from Array to Temp
-				{
-					TempArray[i] = MainArray[i];
-				}
-
-				delete[] MainArray;
-
-				ArraySize += ArrayStepSize; // expand the Array size
-				MainArray = new ArrayDataType[ArraySize](); // over ride MainArray with new, bigger, array
+				ArraySize += ArrayStepSize; /* expand the Array size */
+				MainArray = new ArrayDataType[ArraySize](); /* over ride MainArray with new, bigger, array */
 
 				/*
-				ArraySize-ArrayStepSize calculates TempArray size
+				(ArraySize-ArrayStepSize) calculates TempArray size
 				Copy all values from Temp array to "old" expanded array
 				*/
-				for (int i = 0; i < ArraySize - ArrayStepSize; i++)
-				{
-					MainArray[i] = TempArray[i];
+				std::copy(tempArray, tempArray+ oldArraySize, MainArray);
 
-				}
-
-				delete[] TempArray;
+				delete[] tempArray;
 			}
 
 			if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
@@ -133,7 +118,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="beginning">- the beginning address</param>
 		/// <param name="end">- the end address</param>
-		void MultiAppend(ArrayDataType* beginning, ArrayDataType* end) /* TODO: Allow for custom starting point */
+		void MultiAppend(ArrayDataType* beginning, ArrayDataType* end) /* TODO: Allow for custom starting point with offset */
 		{
 			int distance = std::distance(beginning, end);
 			MultiAppend(beginning, distance);
