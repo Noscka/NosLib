@@ -358,14 +358,7 @@ namespace NosLib
 								}
 							}
 
-							ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
-							/* if the console dimensions have changed (console window has increased or decreased). then redraw whole menu */
-							if (OldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || OldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
-							{
-								OldConsoleSizeStruct = ConsoleSizeStruct;
-								NosLib::Console::ShowCaret(false); /* hide the caret again */
-								DrawMenu();
-							}
+							RedrawMenuCheck();
 
 							/*
 								What needs to be redrawing depending on if its up for down
@@ -480,14 +473,7 @@ namespace NosLib
 						return;
 					}
 
-					//(*parentMenu)->ConsoleSizeStruct = NosLib::Console::GetConsoleSize((*parentMenu)->ConsoleHandle, &((*parentMenu)->ConsoleScreenBI));
-					///* if the console dimensions have changed (console window has increased or decreased). then redraw whole menu */
-					//if ((*parentMenu)->OldConsoleSizeStruct.Columns != (*parentMenu)->ConsoleSizeStruct.Columns || (*parentMenu)->OldConsoleSizeStruct.Rows != (*parentMenu)->ConsoleSizeStruct.Rows)
-					//{
-					//	(*parentMenu)->OldConsoleSizeStruct = (*parentMenu)->ConsoleSizeStruct;
-					//	NosLib::Console::ShowCaret(false); /* hide the caret again */
-					//	(*parentMenu)->DrawMenu();
-					//}
+					(*parentMenu)->RedrawMenuCheck();
 
 					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, {0, (SHORT)((*parentMenu)->TitleSize + (*parentMenu)->OldIndex)});
 					wprintf((*parentMenu)->MenuEntryList[(*parentMenu)->OldIndex]->EntryString(false).c_str());
@@ -549,6 +535,24 @@ namespace NosLib
 			}
 
 			/// <summary>
+			/// Checks and redraws the menu if necessary
+			/// </summary>
+			void RedrawMenuCheck()
+			{
+				ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
+				/* if the console dimensions haven't changed (console window has increased or decreased). then return */
+				if (OldConsoleSizeStruct.Columns == ConsoleSizeStruct.Columns && OldConsoleSizeStruct.Rows == ConsoleSizeStruct.Rows)
+				{
+					return;
+				}
+				/* else redraw menu */
+
+				OldConsoleSizeStruct = ConsoleSizeStruct;
+				NosLib::Console::ShowCaret(false); /* hide the caret again */
+				DrawMenu();
+			}
+
+			/// <summary>
 			/// Draws the menu
 			/// </summary>
 			/// <param name="CurrentIndex">- currrent index</param>
@@ -583,6 +587,9 @@ namespace NosLib
 					{
 						outputString += MenuEntryList[i]->EntryString(false);
 					}
+
+					EntryStartAndLenght xxValue = MenuEntryList[i]->EntryStartAndLenghtPosition();
+					MenuEntryList[i]->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + i), xxValue.X2, (TitleSize + i)));
 				}
 
 				wprintf(outputString.c_str());
