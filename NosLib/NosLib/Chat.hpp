@@ -198,9 +198,9 @@ namespace NosLib
 					{
 						SetConsoleCursorPosition(ConsoleHandle, {0,0});
 
-						int iterateFrom = max(((messages.GetArrayIndexPointer() - 1) - (ConsoleSizeStruct.Rows - 1)), 0);
+						int iterateFrom = max((messages.GetLastArrayIndex() - (ConsoleSizeStruct.Rows - 1)), 0);
 
-						for (int i = iterateFrom; i <= (messages.GetArrayIndexPointer() - 1) && i <= (ConsoleSizeStruct.Rows - 1) + iterateFrom; i++) /* for I, do rows-amount with min */
+						for (int i = iterateFrom; i <= messages.GetLastArrayIndex() && i <= (ConsoleSizeStruct.Rows - 1) + iterateFrom; i++) /* for I, do rows-amount with min */
 						{
 							wprintf((messages[i] + std::wstring(ConsoleSizeStruct.Columns - messages[i].size(), L' ')).c_str());
 						}
