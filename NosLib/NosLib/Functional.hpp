@@ -50,6 +50,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="funcPointer">- a pointer to the wanted function</param>
 			/// <param name="...args">- the arguments</param>
+            template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>>/* only enabled if there are more then 0 variadic arguments */
 			FunctionStore(FuncType* funcPointer)
 			{
 				FuncPointer = funcPointer;
@@ -74,6 +75,7 @@ namespace NosLib
             /// Runs the functions with custom arguments
             /// </summary>
             /// <param name="...args">- the custom arguments</param>
+            template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>> /* only enabled if there are more then 0 variadic arguments */
             void RunFunction(VariadicArgs&& ... args)
             {
                 (*FuncPointer)(std::forward<VariadicArgs>(args)...);
