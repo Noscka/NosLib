@@ -31,7 +31,7 @@ namespace NosLib
 			VectorD2(){}
 
 			/// <summary>
-			/// Creates a 2 dimensional vector object
+			/// Creates a 2 dimensional vector object with x,y
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
@@ -39,6 +39,26 @@ namespace NosLib
 			{
 				X = x;
 				Y = y;
+			}
+
+			/// <summary>
+			/// Creates a 2 dimensional vector object with COORD struct
+			/// </summary>
+			/// <param name="coordPoint">- the coord to use</param>
+			VectorD2(const COORD& coordPoint)
+			{
+				X = coordPoint.X;
+				Y = coordPoint.Y;
+			}
+
+			/// <summary>
+			/// Creates a 2 dimensional vector object with POINT struct
+			/// </summary>
+			/// <param name="point">- the point to use</param>
+			VectorD2(const POINT& point)
+			{
+				X = point.x;
+				Y = point.y;
 			}
 
 			/// <summary>
@@ -77,6 +97,14 @@ namespace NosLib
 			operator COORD()
 			{
 				return COORD(X,Y);
+			}
+
+			/// <summary>
+			/// Convert to POINT
+			/// </summary>
+			operator POINT()
+			{
+				return POINT(X, Y);
 			}
 
 			/// <summary>
@@ -169,12 +197,14 @@ namespace NosLib
 		/// <summary>
 		/// class which holds 2 points which are used for drawing a box
 		/// </summary>
+		template<typename ArithmeticType>
 		class DimensionD2
 		{
+			static_assert(std::is_arithmetic_v<ArithmeticType>, "Vector datatype has to be an arithmetic type");
 		public:
-			NosLib::Vector::VectorD2<int16_t> PointOne;	/* Top Left Coord vector */
-			NosLib::Vector::VectorD2<int16_t> PointTwo;	/* Bottom Right Coord vector */
-			NosLib::Vector::VectorD2<int16_t> Offset;	/* Vector which holds offset values */
+			NosLib::Vector::VectorD2<ArithmeticType> PointOne;	/* Top Left Coord vector */
+			NosLib::Vector::VectorD2<ArithmeticType> PointTwo;	/* Bottom Right Coord vector */
+			NosLib::Vector::VectorD2<ArithmeticType> Offset;	/* Vector which holds offset values */
 
 			DimensionD2() {}
 
@@ -187,11 +217,9 @@ namespace NosLib
 			/// <param name="pointTwoY">- Right Y</param>
 			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
 			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
-			DimensionD2(const int16_t& pointOneX, const int16_t& pointOneY, const int16_t& pointTwoX, const int16_t& pointTwoY, const int16_t& offsetX = 0, const int16_t& offsetY = 0)
+			DimensionD2(const ArithmeticType& pointOneX, const ArithmeticType& pointOneY, const ArithmeticType& pointTwoX, const ArithmeticType& pointTwoY, const ArithmeticType& offsetX = 0, const ArithmeticType& offsetY = 0)
 			{
-				PointOne = NosLib::Vector::VectorD2<int16_t>(pointOneX, pointOneY);
-				PointTwo = NosLib::Vector::VectorD2<int16_t>(pointTwoX, pointTwoY);
-				Offset = NosLib::Vector::VectorD2<int16_t>(offsetX, offsetY);
+				UpdateDimension(pointOneX, pointOneY, pointTwoX, pointTwoY, offsetX, offsetY);
 			}
 
 			/// <summary>
@@ -199,8 +227,35 @@ namespace NosLib
 			/// </summary>
 			/// <param name="pointOne">- Top Left</param>
 			/// <param name="pointTwo">- Bottom Right</param>
-			/// <param name="Offset">- vector which containts amount that will get added/taken away from in calculations</param>
-			DimensionD2(const NosLib::Vector::VectorD2<int16_t>& pointOne, const NosLib::Vector::VectorD2<int16_t>& pointTwo, const NosLib::Vector::VectorD2<int16_t>& offset = NosLib::Vector::VectorD2<int16_t>(0, 0))
+			/// <param name="Offset">(default = (0,0))- vector which containts amount that will get added/taken away from in calculations</param>
+			DimensionD2(const NosLib::Vector::VectorD2<ArithmeticType>& pointOne, const NosLib::Vector::VectorD2<ArithmeticType>& pointTwo, const NosLib::Vector::VectorD2<ArithmeticType>& offset = NosLib::Vector::VectorD2<ArithmeticType>(0, 0))
+			{
+				UpdateDimension(pointOne, pointTwo, offset);
+			}
+
+			/// <summary>
+			/// update object with int coords
+			/// </summary>
+			/// <param name="pointOneX">- Top X</param>
+			/// <param name="pointOneY">- Left Y</param>
+			/// <param name="pointTwoX">- Bottom X</param>
+			/// <param name="pointTwoY">- Right Y</param>
+			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
+			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
+			void UpdateDimension(const ArithmeticType& pointOneX, const ArithmeticType& pointOneY, const ArithmeticType& pointTwoX, const ArithmeticType& pointTwoY, const ArithmeticType& offsetX = 0, const ArithmeticType& offsetY = 0)
+			{
+				PointOne = NosLib::Vector::VectorD2<ArithmeticType>(pointOneX, pointOneY);
+				PointTwo = NosLib::Vector::VectorD2<ArithmeticType>(pointTwoX, pointTwoY);
+				Offset = NosLib::Vector::VectorD2<ArithmeticType>(offsetX, offsetY);
+			}
+
+			/// <summary>
+			/// update object with Vector objects
+			/// </summary>
+			/// <param name="pointOne">- Top Left</param>
+			/// <param name="pointTwo">- Bottom Right</param>
+			/// <param name="Offset">(default = (0,0))- vector which containts amount that will get added/taken away from in calculations</param>
+			void UpdateDimension(const NosLib::Vector::VectorD2<ArithmeticType>& pointOne, const NosLib::Vector::VectorD2<ArithmeticType>& pointTwo, const NosLib::Vector::VectorD2<ArithmeticType>& offset = NosLib::Vector::VectorD2<ArithmeticType>(0, 0))
 			{
 				PointOne = pointOne;
 				PointTwo = pointTwo;
@@ -212,7 +267,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="position">- position to check for</param>
 			/// <returns>true if position is inside, false if outside</returns>
-			bool CheckIfPositionInside(const NosLib::Vector::VectorD2<int16_t>& position)
+			bool CheckIfPositionInside(const NosLib::Vector::VectorD2<ArithmeticType>& position)
 			{
 				return (position.X >= PointOne.X && position.Y >= PointOne.Y) &&
 						(position.X <= PointTwo.X && position.Y <= PointTwo.Y);
@@ -223,7 +278,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="offset">(default = true) - if calculation should take offset into considuration</param>
 			/// <returns>VectorD2 with X and Y being sizes</returns>
-			NosLib::Vector::VectorD2<int16_t> CalculateSize(const bool& offset = true)
+			NosLib::Vector::VectorD2<ArithmeticType> CalculateSize(const bool& offset = true)
 			{
 				if (offset)
 				{
@@ -240,7 +295,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="offset">- the offset which will get used in the calculation</param>
 			/// <returns>VectorD2 with X and Y being sizes that are offset</returns>
-			NosLib::Vector::VectorD2<int16_t> CalculateSize(const NosLib::Vector::VectorD2<int16_t>& offset)
+			NosLib::Vector::VectorD2<ArithmeticType> CalculateSize(const NosLib::Vector::VectorD2<ArithmeticType>& offset)
 			{
 				return (PointTwo - PointOne) + offset;
 			}
