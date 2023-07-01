@@ -502,7 +502,7 @@ namespace NosLib
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
-				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()+1), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex() + 1)));
+				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2<int16_t>(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()+1), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex() + 1)));
 				Entry->ModifyEnableBool(&ButtonStatus);
 				MenuEntryList.Append(Entry);
 			}
@@ -589,7 +589,7 @@ namespace NosLib
 					}
 
 					EntryStartAndLenght xxValue = MenuEntryList[i]->EntryStartAndLenghtPosition();
-					MenuEntryList[i]->ModifyClickablePosition(NosLib::Dimension::DimensionD2(xxValue.X1, (TitleSize + i), xxValue.X2, (TitleSize + i)));
+					MenuEntryList[i]->ModifyClickablePosition(NosLib::Dimension::DimensionD2<int16_t>(xxValue.X1, (TitleSize + i), xxValue.X2, (TitleSize + i)));
 				}
 
 				wprintf(outputString.c_str());

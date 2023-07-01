@@ -2,6 +2,7 @@
 #define _CONSOLE_NosLib_HPP_
 
 #include "String.hpp"
+#include "DimensionVector.hpp"
 #include "EventHandling/EventHandling.hpp"
 
 #include <Windows.h>
@@ -262,40 +263,37 @@ namespace NosLib
 		}
 	#pragma endregion
 
-	#pragma region GetWindowSize
+	#pragma region GetWindowDimensions
 		/// <summary>
-		/// Get Window Size with custom console handle
+		/// Get Window Dimensions with custom console handle
 		/// </summary>
 		/// <param name="hWnd">- console handle</param>
-		/// <param name="x">- pointer to x int</param>
-		/// <param name="y">- pointer to y int</param>
-		/// <returns>if succesful or not</returns>
-		bool GetWindowSize(const HWND& hWnd, int* x, int* y)
+		/// <returns>Dimensions, will return -1 for 1x, 1y, 2x, 2y if went wrong</returns>
+		NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions(const HWND& hWnd)
 		{
+			NosLib::Dimension::DimensionD2<LONG> output(-1,-1,-1,-1);
+
 			RECT rect = {NULL};
 			if (GetWindowRect(hWnd, &rect))
 			{
-				*x = rect.right - rect.left;
-				*y = rect.bottom - rect.top;
-				return true;
+				output.UpdateDimension(rect.left, rect.top, rect.right, rect.bottom);
 			}
-			return false;
+
+			return output;
 		}
 
 		/// <summary>
-		/// Get Window Size
+		/// Get Window Dimensions
 		/// </summary>
-		/// <param name="x">- pointer to x int</param>
-		/// <param name="y">- pointer to y int</param>
-		/// <returns>if succesful or not</returns>
-		bool GetWindowSize(int* x, int* y)
+		/// <returns>Dimensions, will return -1 for 1x, 1y, 2x, 2y if went wrong</returns>
+		NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions()
 		{
-			return GetWindowSize(GetConsoleWindow(), x, y);
+			return GetWindowDimensions(GetConsoleWindow());
 		}
 	#pragma endregion
 
 		/// <summary>
-		/// a struct to represent ConsoleSize with Colums and Rows members
+		/// a struct to represent ConsoleSize with Columns and Rows members
 		/// </summary>
 		struct ConsoleSizeStruct
 		{

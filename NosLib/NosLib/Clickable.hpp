@@ -24,7 +24,7 @@ namespace NosLib
 		{
 		protected:
 			static inline NosLib::DynamicArray<Clickable*> ClickableArray;	/* Array containing all buttons */
-			NosLib::Dimension::DimensionD2 Position;						/* position of the button */
+			NosLib::Dimension::DimensionD2<int16_t> Position;				/* position of the button */
 
 			bool Initialized = false;				/* boolean to check if the class (the position) has been initialized */
 			bool FirstEnableBoolDeletion = false;	/* if the enabled bool pointer has deleted/changed it old value (for memory leak management) */
@@ -108,7 +108,7 @@ namespace NosLib
 			/// Create clickable object with position
 			/// </summary>
 			/// <param name="position">- position of object</param>
-			Clickable(const NosLib::Dimension::DimensionD2& position)
+			Clickable(const NosLib::Dimension::DimensionD2<int16_t>& position)
 			{
 				Position = position;
 
@@ -121,7 +121,7 @@ namespace NosLib
 			/// Change the position of the clickable object
 			/// </summary>
 			/// <param name="position">- the new position</param>
-			void ModifyClickablePosition(const NosLib::Dimension::DimensionD2& position)
+			void ModifyClickablePosition(const NosLib::Dimension::DimensionD2<int16_t>& position)
 			{
 				Position = position;
 
@@ -195,7 +195,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="buttonText">- text to show inside button</param>
 			/// <param name="position">- position and dimentions of button</param>
-			Button(const std::wstring& buttonText, const NosLib::Dimension::DimensionD2& position) : Clickable(position)
+			Button(const std::wstring& buttonText, const NosLib::Dimension::DimensionD2<int16_t>& position) : Clickable(position)
 			{
 				ButtonText = buttonText;
 
