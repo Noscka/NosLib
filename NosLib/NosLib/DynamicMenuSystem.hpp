@@ -6,6 +6,7 @@
 #include "Console.hpp"
 #include "RGB.hpp"
 #include "Clickable.hpp"
+#include "Functional.hpp"
 #include "DynamicArray/ArrayPositionTrack.hpp"
 #include "MouseTracking/MouseTracking.hpp"
 
@@ -231,12 +232,15 @@ namespace NosLib
 			NosLib::Console::ConsoleSizeStruct OldConsoleSizeStruct;/* a struct container for the old Console columns and rows */
 			NosLib::DynamicArray<MenuEntryBase*> MenuEntryList;		/* array of MenuEntries */
 
+			std::mutex InputThreadMutexControlling;
+			std::condition_variable InputThreadConditionVariable;
+
 			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
 				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
 				 AddExitEntry,			/* if to add a quit option/entry at the bottom */
 				 CenterTitle,			/* if the title should be centered */
 				 AddedQuit,				/* if quit entry was already added. TODO: store int of position and if more entries are added (last isn't quit), move quit to last */
-				 ButtonStatus = false;	/* if the buttons are enabled or disabled currently */
+				 MenuFocused = false;	/* if the menu is focused (taking input and etc) */
 
 			int TitleSize,				/* title size (for calculations where actual menu entries start) and also to create the clickable object boundaries */
 				CurrentIndex,			/* Which item is currently selected */
@@ -271,7 +275,7 @@ namespace NosLib
 				NosLib::MouseTracking::InitializeMouseTracking(); /* Initialize Mouse Tracking incase it was disabled */
 
 				MenuLoop = true; /* incase menu was quit before */
-				ButtonStatus = true; /* enable buttons for current menu */
+				MenuFocused = true; /* set Menu focused to true */
 
 				if (AddExitEntry && !AddedQuit)
 				{
@@ -312,7 +316,14 @@ namespace NosLib
 							if (ch == NosLib::Definitions::ENTER)
 							{ /* WARNING: Might need to show the caret again not mattering what EntryType it is, as for some functions. it might be necessary */
 								NosLib::MouseTracking::TemporaryTerminateMouseTracking();
-								ButtonStatus = false; /* temporarily disable buttons */
+
+								/* Notify thread that menu is out of focus */
+								{
+									std::lock_guard<std::mutex> lock(InputThreadMutexControlling);
+								}
+								MenuFocused = false; /* menu out of focus */
+								InputThreadConditionVariable.notify_all();
+
 								EntryInputPassStruct InputPassStruct{ CurrentIndex, TitleSize, this, EntryInputPassStruct::InputType::Enter, false };
 								MenuEntryList[CurrentIndex]->EntryInput(&InputPassStruct);
 								if (InputPassStruct.Redraw)
@@ -320,7 +331,13 @@ namespace NosLib
 									DrawMenu();
 								}
 								NosLib::Console::ShowCaret(false); /* hide the caret again */
-								ButtonStatus = true; /* re-enable buttons */
+
+								/* Notify thread that menu is back in focus */
+								{
+									std::lock_guard<std::mutex> lock(InputThreadMutexControlling);
+								}
+								MenuFocused = true; /* menu back in focus */
+								InputThreadConditionVariable.notify_all();
 								NosLib::MouseTracking::InitializeMouseTracking();
 							}
 							else if (!(ch && ch != 224))
@@ -401,7 +418,7 @@ namespace NosLib
 								}
 								else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex()+1)
 								{
-									finalPosition = {0, (SHORT)MenuEntryList.GetLastArrayIndex()-1};
+									finalPosition = {0, (SHORT)(MenuEntryList.GetLastArrayIndex()-1)};
 								}
 								else
 								{
@@ -431,7 +448,7 @@ namespace NosLib
 							break;
 					}
 				}
-				ButtonStatus = false;	/* disable buttons for current menu */
+				MenuFocused = false;	/* menu out of focus, as it exits */
 				NosLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
 				NosLib::Console::ShowCaret(true); /* show the caret again */
 				NosLib::MouseTracking::TerminateMouseTracking(); /* Terminate mouse tracking hook */
@@ -451,7 +468,7 @@ namespace NosLib
 				case MouseEventEnum::OnClick:
 				{
 					NosLib::MouseTracking::TemporaryTerminateMouseTracking();
-					(*parentMenu)->ButtonStatus = false; /* temporarily disable buttons */
+					(*parentMenu)->MenuFocused = false; /* menu out of focus */
 					(*parentMenu)->CurrentIndex = *entryPosition;
 					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize,*parentMenu, EntryInputPassStruct::InputType::Enter, false};
 					(*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryInput(&InputPassStruct);
@@ -460,7 +477,7 @@ namespace NosLib
 						(*parentMenu)->DrawMenu();
 					}
 					NosLib::Console::ShowCaret(false); /* hide the caret again */
-					(*parentMenu)->ButtonStatus = true; /* re-enable button */
+					(*parentMenu)->MenuFocused = true; /* menu back in focus */
 					NosLib::MouseTracking::InitializeMouseTracking();
 					break;
 				}
@@ -503,7 +520,7 @@ namespace NosLib
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
 				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2<int16_t>(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()+1), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex() + 1)));
-				Entry->ModifyEnableBool(&ButtonStatus);
+				Entry->ModifyEnableBool(&MenuFocused);
 				MenuEntryList.Append(Entry);
 			}
 
@@ -517,6 +534,12 @@ namespace NosLib
 				int ch, exCh;
 				while (MenuLoop)
 				{
+					/* check if needs to be blocked */
+					{
+						std::unique_lock<std::mutex> lock(InputThreadMutexControlling);
+						InputThreadConditionVariable.wait(lock, [this] { return MenuFocused; });
+					}
+
 					if (_kbhit()) /* check if there is any input to take in */
 					{
 						ch = _getch();
@@ -531,6 +554,7 @@ namespace NosLib
 
 					Sleep(10); /* cool down so it doesn't check 8905925157028157085 times per millisecond */
 				}
+				FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
 				return;
 			}
 
