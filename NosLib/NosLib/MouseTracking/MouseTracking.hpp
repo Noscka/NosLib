@@ -152,18 +152,23 @@ namespace NosLib
 
 		void ButtonManagement(const PMSLLHOOKSTRUCT& mouseHookStruct, const WPARAM& wParam)
 		{
-			int windowX, windowY;
-			NosLib::Console::GetWindowPosition(&windowX, &windowY); /* get the coords of the window */
+			NosLib::Dimension::DimensionD2<LONG> windowDimensions = NosLib::Console::GetWindowDimensions(); /* get the dimensions of the window */
 
-			CONSOLE_FONT_INFOEX consoleFontInfo;
-			consoleFontInfo.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+			if (!(windowDimensions.CheckIfPositionInside(mouseHookStruct->pt))) /* if outside of window, just ignore */
+			{
+				return;
+			}
 
+			CONSOLE_FONT_INFOEX consoleFontInfo{sizeof(CONSOLE_FONT_INFOEX)};
 			GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
 
-			int16_t charX = NosLib::Cast::Cast<int16_t>(((mouseHookStruct->pt.x - windowX) - 6) / consoleFontInfo.dwFontSize.X),
-					charY = NosLib::Cast::Cast<int16_t>(((mouseHookStruct->pt.y - windowY) - 31) / consoleFontInfo.dwFontSize.Y);
+			SCROLLINFO info{sizeof(SCROLLINFO), SIF_POS};
+			GetScrollInfo(GetConsoleWindow(), SB_VERT, &info); /* Get scroll bar info to add to the CharY position */
 
-			NosLib::Vector::VectorD2<int16_t> currentPosition(NosLib::Cast::Cast<int16_t, int>(charX), NosLib::Cast::Cast<int16_t, int>(charY));
+			int16_t charX = NosLib::Cast::Cast<int16_t>(((mouseHookStruct->pt.x - windowDimensions.PointOne.X) - 6 /* Left+Right border sizes */) / consoleFontInfo.dwFontSize.X),
+					charY = NosLib::Cast::Cast<int16_t>((((mouseHookStruct->pt.y - windowDimensions.PointOne.Y) - 31 /* Top border size */) / consoleFontInfo.dwFontSize.Y) + info.nPos);
+
+			NosLib::Vector::VectorD2<int16_t> currentPosition(charX, charY);
 
 			switch (wParam)
 			{
@@ -185,8 +190,6 @@ namespace NosLib
 			{
 				PMSLLHOOKSTRUCT mouseHookStruct = (PMSLLHOOKSTRUCT)lParam;
 
-				NosLib::Console::ShowCaret(false);
-
 				ButtonManagement(mouseHookStruct, wParam);
 			}
 
@@ -194,9 +197,9 @@ namespace NosLib
 		}
 
 		/// <summary>
-		/// Initialize and create lowlevel Mouse callback hook
+		/// Initialize and create low level Mouse callback hook
 		/// </summary>
-		/// <returns>true if succesful, false if not</returns>
+		/// <returns>true if successful, false if not</returns>
 		bool InitializeMouseTracking()
 		{
 			return (GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &PreviousConsoleMode) &&
@@ -207,7 +210,7 @@ namespace NosLib
 		/// <summary>
 		/// Terminates LowLevel mouse callback hook without setting console back to highlightable
 		/// </summary>
-		/// <returns>true if succesful, false if not</returns>
+		/// <returns>true if successful, false if not</returns>
 		bool TemporaryTerminateMouseTracking()
 		{
 			return UnhookWindowsHookEx(MouseHook);
@@ -216,7 +219,7 @@ namespace NosLib
 		/// <summary>
 		/// Terminates LowLevel mouse callback hook
 		/// </summary>
-		/// <returns>true if succesful, false if not</returns>
+		/// <returns>true if successful, false if not</returns>
 		bool TerminateMouseTracking()
 		{
 			return (UnhookWindowsHookEx(MouseHook) && SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), PreviousConsoleMode));
