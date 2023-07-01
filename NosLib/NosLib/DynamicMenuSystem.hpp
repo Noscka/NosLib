@@ -227,8 +227,9 @@ namespace NosLib
 			std::wstring Title;										/* Menu Title */
 			HANDLE ConsoleHandle;									/* global Console Handle so it is synced across all operations and so it doesn't have to retrieved */
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;				/* global ConsoleScreenBI so it is synced across all operations */
-			NosLib::Console::ConsoleSizeStruct ConsoleSizeStruct;/* a struct container for the Console columns and rows */
-			NosLib::DynamicArray<MenuEntryBase*> MenuEntryList;	/* array of MenuEntries */
+			NosLib::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* a struct container for the Console columns and rows */
+			NosLib::Console::ConsoleSizeStruct OldConsoleSizeStruct;/* a struct container for the old Console columns and rows */
+			NosLib::DynamicArray<MenuEntryBase*> MenuEntryList;		/* array of MenuEntries */
 
 			bool MenuLoop,				/* if the menu should continue looping (true -> yes, false -> no) */
 				 GenerateUnicodeTitle,	/* if to generate a big Unicode title */
@@ -282,7 +283,7 @@ namespace NosLib
 				OldIndex = CurrentIndex = 0; /* Assign both old and current index ints */
 				TitleSize = 0; /* title size (for calculations where actual menu entries start) */
 				ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI); /* Update the ConsoleSize first time */
-				NosLib::Console::ConsoleSizeStruct oldConsoleSizeStruct = ConsoleSizeStruct;
+				OldConsoleSizeStruct = ConsoleSizeStruct;
 				MSG msg;	/* MSG structer used for message loop */
 
 				DrawMenu(); /* Draw menu first time */
@@ -359,9 +360,9 @@ namespace NosLib
 
 							ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
 							/* if the console dimensions have changed (console window has increased or decreased). then redraw whole menu */
-							if (oldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || oldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
+							if (OldConsoleSizeStruct.Columns != ConsoleSizeStruct.Columns || OldConsoleSizeStruct.Rows != ConsoleSizeStruct.Rows)
 							{
-								oldConsoleSizeStruct = ConsoleSizeStruct;
+								OldConsoleSizeStruct = ConsoleSizeStruct;
 								NosLib::Console::ShowCaret(false); /* hide the caret again */
 								DrawMenu();
 							}
@@ -378,33 +379,50 @@ namespace NosLib
 
 							COORD finalPosition = {0,0};
 
-							if (CurrentIndex > OldIndex && OldIndex != CurrentIndex) /* Going Down */
+							if (CurrentIndex > OldIndex) /* Going Down */
 							{
-								SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex - 1) });
+								SetConsoleCursorPosition(ConsoleHandle, {0, (SHORT)(TitleSize + CurrentIndex - 1)});
 								wprintf((MenuEntryList[OldIndex]->EntryString(false) + MenuEntryList[CurrentIndex]->EntryString(true)).c_str());
 
 								if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) < 0)
-									finalPosition = { 0,0 };
-								else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex())
-									finalPosition = { 0, (SHORT)(MenuEntryList.GetLastArrayIndex() + TitleSize) };
+								{
+									finalPosition = {0,0};
+								}
+								else if ((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex()+1)
+								{
+									finalPosition = {0, (SHORT)(MenuEntryList.GetLastArrayIndex() + TitleSize)};
+								}
 								else
-									finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2)) };
+								{
+									finalPosition = {0, (SHORT)((TitleSize + CurrentIndex) + (ConsoleSizeStruct.Rows / 2))};
+								}
 							}
-							else if(OldIndex != CurrentIndex)/* Going Up */
+							else if (CurrentIndex < OldIndex) /* Going Up */
 							{
-								SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(TitleSize + CurrentIndex) });
+								SetConsoleCursorPosition(ConsoleHandle, {0, (SHORT)(TitleSize + CurrentIndex)});
 								wprintf((MenuEntryList[CurrentIndex]->EntryString(true) + MenuEntryList[OldIndex]->EntryString(false)).c_str());
 
-								if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) < 0)
-									finalPosition = { 0,0 };
-								else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex())
-									finalPosition = { 0, (SHORT)MenuEntryList.GetLastArrayIndex() };
+								if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) <= 0)
+								{
+									finalPosition = {0,0};
+								}
+								else if ((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2) > MenuEntryList.GetLastArrayIndex()+1)
+								{
+									finalPosition = {0, (SHORT)MenuEntryList.GetLastArrayIndex()-1};
+								}
 								else
-									finalPosition = { 0, (SHORT)((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2)) };
-
+								{
+									finalPosition = {0, (SHORT)((TitleSize + CurrentIndex) - (ConsoleSizeStruct.Rows / 2))};
+								}
+							}
+							else
+							{
+								goto SkipSetConsoleCursorPosition;
 							}
 
 							SetConsoleCursorPosition(ConsoleHandle, finalPosition);
+
+							SkipSetConsoleCursorPosition:
 
 							OldIndex = CurrentIndex;
 						}
@@ -462,35 +480,20 @@ namespace NosLib
 						return;
 					}
 
+					//(*parentMenu)->ConsoleSizeStruct = NosLib::Console::GetConsoleSize((*parentMenu)->ConsoleHandle, &((*parentMenu)->ConsoleScreenBI));
+					///* if the console dimensions have changed (console window has increased or decreased). then redraw whole menu */
+					//if ((*parentMenu)->OldConsoleSizeStruct.Columns != (*parentMenu)->ConsoleSizeStruct.Columns || (*parentMenu)->OldConsoleSizeStruct.Rows != (*parentMenu)->ConsoleSizeStruct.Rows)
+					//{
+					//	(*parentMenu)->OldConsoleSizeStruct = (*parentMenu)->ConsoleSizeStruct;
+					//	NosLib::Console::ShowCaret(false); /* hide the caret again */
+					//	(*parentMenu)->DrawMenu();
+					//}
+
 					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, {0, (SHORT)((*parentMenu)->TitleSize + (*parentMenu)->OldIndex)});
 					wprintf((*parentMenu)->MenuEntryList[(*parentMenu)->OldIndex]->EntryString(false).c_str());
 
 					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, {0, (SHORT)((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex)});
 					wprintf((*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryString(true).c_str());
-
-					COORD finalPosition = {0,0};
-
-					if ((*parentMenu)->CurrentIndex > (*parentMenu)->OldIndex) /* Going Down */
-					{
-
-						if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) < 0)
-							finalPosition = {0,0};
-						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetLastArrayIndex())
-							finalPosition = {0, (SHORT)((*parentMenu)->MenuEntryList.GetLastArrayIndex() + (*parentMenu)->TitleSize)};
-						else
-							finalPosition = {0, (SHORT)(((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) + ((*parentMenu)->ConsoleSizeStruct.Rows / 2))};
-					}
-					else /* Going Up */
-					{
-						if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) < 0)
-							finalPosition = {0,0};
-						else if (((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2) > (*parentMenu)->MenuEntryList.GetLastArrayIndex())
-							finalPosition = {0, (SHORT)(*parentMenu)->MenuEntryList.GetLastArrayIndex() };
-						else
-							finalPosition = {0, (SHORT)(((*parentMenu)->TitleSize + (*parentMenu)->CurrentIndex) - ((*parentMenu)->ConsoleSizeStruct.Rows / 2))};
-					}
-
-					SetConsoleCursorPosition((*parentMenu)->ConsoleHandle, finalPosition);
 
 					(*parentMenu)->OldIndex = (*parentMenu)->CurrentIndex;
 					break;

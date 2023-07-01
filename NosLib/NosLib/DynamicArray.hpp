@@ -89,7 +89,7 @@ namespace NosLib
 				(ArraySize-ArrayStepSize) calculates TempArray size
 				Copy all values from Temp array to "old" expanded array
 				*/
-				std::copy(tempArray, tempArray+ oldArraySize, MainArray);
+				std::copy(tempArray, tempArray + oldArraySize, MainArray);
 
 				delete[] tempArray;
 			}
@@ -168,9 +168,8 @@ namespace NosLib
 				}
 			}
 
-			if (deleteObject)
-			{delete MainArray[CurrentArrayIndex - 1];}
-			MainArray[CurrentArrayIndex - 1] = nullptr; // make last character blank
+			if (deleteObject) {delete MainArray[CurrentArrayIndex - 1];}
+			MainArray[CurrentArrayIndex - 1] = nullptr; /* make last element be nullptr | TODO: test and create check for if the datatype is actually pointer or not */
 			CurrentArrayIndex--;
 		}
 
@@ -228,9 +227,9 @@ namespace NosLib
 		}
 
 		/// <summary>
-		/// Returns the 
+		/// Returns the last array index
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>will return -1 if no elements are added</returns>
 		int GetLastArrayIndex()
 		{
 			return CurrentArrayIndex-1;

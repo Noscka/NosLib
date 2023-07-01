@@ -1,22 +1,10 @@
 ﻿#include "NosLib/Console.hpp"
 #include "NosLib/DynamicMenuSystem.hpp"
-#include "NosLib/EventHandling/EventHandling.hpp"
 
 #include <Windows.h>
 #include <conio.h>
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
-
-void testFunction()
-{
-	wprintf(L"\nsup\n");
-}
-
-void waitFunction()
-{
-	wprintf(L"waiting...\n");
-	_getch();
-}
 
 int main()
 {
@@ -25,10 +13,7 @@ int main()
     NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Dynamic Array Updating");
     NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	NosLib::EventHandling::AddCleanupFunction(&testFunction);
-	NosLib::EventHandling::AddCleanupFunction(&waitFunction);
-
-	/*int variable1 = 0;
+	int variable1 = 0;
 
 	NosLib::Menu::DynamicMenu mainMenu(L"Basic Menu");
 
@@ -41,7 +26,7 @@ int main()
 		mainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry<int>(std::format(L"int {}", i), &variable1));
 	}
 
-	mainMenu.StartMenu();*/
+	mainMenu.StartMenu();
 
     wprintf(L"Press any button to continue"); _getch();
     return 0;
