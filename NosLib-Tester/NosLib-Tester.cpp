@@ -41,6 +41,14 @@ int main()
 
 	NosLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
 	NosLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
+	NosLib::Menu::DynamicMenu IteratedMenu(L"Iterated Menu", true, true, true);
+
+	int sharedInt = 30;
+
+	for (int i = 0; i <= 40; i++)
+	{
+		IteratedMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(std::format(L"Iterated Int {}", i), &sharedInt));
+	}
 
 	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Number", &number));
 	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Check Number", new NosLib::Functional::FunctionStore(&CheckNumber)));
@@ -53,7 +61,8 @@ int main()
 
 	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Run Function", new NosLib::Functional::FunctionStore(&SomeFunction, &param1, &param2)));
 
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Another Menu", &SecondaryMenu));
+	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Secondary Menu", &SecondaryMenu));
+	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Iterated Menu", &IteratedMenu));
 
 	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Toggle", &SomeBool));
 	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Check Bool", new NosLib::Functional::FunctionStore(&CheckBool)));

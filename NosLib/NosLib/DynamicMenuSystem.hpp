@@ -468,7 +468,13 @@ namespace NosLib
 				case MouseEventEnum::OnClick:
 				{
 					NosLib::MouseTracking::TemporaryTerminateMouseTracking();
+
+					/* Notify thread that menu is out of focus */
+					{
+						std::lock_guard<std::mutex> lock((*parentMenu)->InputThreadMutexControlling);
+					}
 					(*parentMenu)->MenuFocused = false; /* menu out of focus */
+					(*parentMenu)->InputThreadConditionVariable.notify_all();
 					(*parentMenu)->CurrentIndex = *entryPosition;
 					EntryInputPassStruct InputPassStruct{(*parentMenu)->CurrentIndex, (*parentMenu)->TitleSize,*parentMenu, EntryInputPassStruct::InputType::Enter, false};
 					(*parentMenu)->MenuEntryList[(*parentMenu)->CurrentIndex]->EntryInput(&InputPassStruct);
@@ -477,7 +483,13 @@ namespace NosLib
 						(*parentMenu)->DrawMenu();
 					}
 					NosLib::Console::ShowCaret(false); /* hide the caret again */
+
+					/* Notify thread that menu is back in focus */
+					{
+						std::lock_guard<std::mutex> lock((*parentMenu)->InputThreadMutexControlling);
+					}
 					(*parentMenu)->MenuFocused = true; /* menu back in focus */
+					(*parentMenu)->InputThreadConditionVariable.notify_all();
 					NosLib::MouseTracking::InitializeMouseTracking();
 					break;
 				}
