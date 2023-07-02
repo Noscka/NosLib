@@ -169,7 +169,7 @@ namespace NosLib
 					std::wstring output = (selected ?
 										   std::wstring(SpaceLenght - 3, ' ') + L">> " + EntryName + L" <<" :
 										   std::wstring(SpaceLenght - 0, ' ') + L"" + EntryName + L"");
-					output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
+					output += std::wstring(max(MenuConsoleSizeStruct->Columns - output.size(), 0), L' ') + L'\n';
 					return output;
 				}
 				else
@@ -594,6 +594,7 @@ namespace NosLib
 			/// <param name="CurrentIndex">- currrent index</param>
 			void DrawMenu()
 			{
+				NosLib::MouseTracking::TemporaryTerminateMouseTracking();
 				NosLib::Console::ClearScreen();
 
 				ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
@@ -606,7 +607,7 @@ namespace NosLib
 				}
 				else
 				{
-					if (CenterTitle) {outputString = std::wstring(((ConsoleSizeStruct.Columns / 2) - Title.length() / 2), ' ') + Title;}
+					if (CenterTitle) {outputString = NosLib::String::CenterString<wchar_t>(Title);}
 					else {outputString = Title;}
 				}
 
@@ -631,6 +632,7 @@ namespace NosLib
 				wprintf(outputString.c_str());
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(CurrentIndex) });
+				NosLib::MouseTracking::InitializeMouseTracking();
 			}
 
 			/// <summary>
@@ -683,7 +685,7 @@ namespace NosLib
 			std::wstring output = (selected ?
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + L">> " + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]") + L" <<" :
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(4, ' ') + (*TypePointerStore ? L"[X]" : L"[ ]"));
-			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
+			output += std::wstring(max(MenuConsoleSizeStruct->Columns - output.size(), 0), L' ') + L'\n';
 			return output;
 		}
 
@@ -734,7 +736,7 @@ namespace NosLib
 			std::wstring output = (selected ?
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(4, ' ') + L"<" + std::to_wstring(*TypePointerStore) + L">" :
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + EntryName + std::wstring(5, ' ') + std::to_wstring(*TypePointerStore));
-			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L'\n';
+			output += std::wstring(max(MenuConsoleSizeStruct->Columns - output.size(), 0), L' ') + L'\n';
 			return output;
 		}
 
@@ -856,7 +858,7 @@ namespace NosLib
 			std::wstring output = (selected ?
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) - 3, ' ') + NosLib::RGB::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + L">> " + EntryName + L" <<" :
 								   std::wstring(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2), ' ') + NosLib::RGB::NosRGB(212, 155, 55).MakeANSICode<wchar_t>() + EntryName);
-			output += std::wstring(max((MenuConsoleSizeStruct->Columns - (output.size() + ((MenuConsoleSizeStruct->Columns / 2) - output.size() / 2))), 0), L' ') + L"\033[0m\n";
+			output += std::wstring(max(MenuConsoleSizeStruct->Columns - output.size(), 0), L' ') + L"\033[0m\n";
 			return output;
 		}
 

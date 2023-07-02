@@ -45,7 +45,7 @@ int main()
 
 	int sharedInt = 30;
 
-	for (int i = 0; i <= 40; i++)
+	for (int i = 0; i <= 80; i++)
 	{
 		IteratedMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(std::format(L"Iterated Int {}", i), &sharedInt));
 	}

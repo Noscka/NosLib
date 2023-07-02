@@ -179,6 +179,11 @@ namespace NosLib
 			case WM_MOUSEMOVE:
 				NosLib::Clickable::Clickable::TriggerHoverEventAtPosition(currentPosition, lastPosition);
 				break;
+			case WM_MOUSEWHEEL:
+				//short scrollMagnitude = GET_WHEEL_DELTA_WPARAM(mouseHookStruct->mouseData) / WHEEL_DELTA;
+				// TODO: IMPLEMENT SCROLL WHEEL CONTROLS
+				//std::wcout << L"Scroll Magnitude: " << scrollMagnitude << std::endl;
+				break;
 			}
 
 			lastPosition = currentPosition;
@@ -186,7 +191,7 @@ namespace NosLib
 
 		LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 		{
-			if (nCode <= 0)
+			if (nCode <= HC_ACTION)
 			{
 				PMSLLHOOKSTRUCT mouseHookStruct = (PMSLLHOOKSTRUCT)lParam;
 
