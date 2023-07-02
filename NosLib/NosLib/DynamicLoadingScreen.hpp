@@ -32,8 +32,8 @@ namespace NosLib
 		std::wstring StatusMessage;					/* Status message (Might need to move to local instead of global) */
 		bool CenterStatusMesage;					/* if the StatusMessage should get centered. takes stress off the work thread and gets done on the drawing thread */
 
-		static inline HANDLE ConsoleHandle;												/* global and static Console Handle */
-		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;									/* global and static Console ScreenBI */
+		static inline HANDLE ConsoleHandle;									/* global and static Console Handle */
+		static inline CONSOLE_SCREEN_BUFFER_INFO csbi;						/* global and static Console ScreenBI */
 		static inline NosLib::Console::ConsoleSizeStruct ConsoleSizeStruct;	/* global and static columns and rows */
 
 		LoadType BarType; /* bar type of the object */
