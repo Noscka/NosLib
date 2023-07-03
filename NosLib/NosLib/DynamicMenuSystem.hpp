@@ -191,7 +191,7 @@ namespace NosLib
 					case EntryInputPassStruct::InputType::Enter:
 						NosLib::Console::ClearScreen();
 						TypePointerStore->RunFunction();
-						inputStruct->Redraw = true;
+						inputStruct->Redraw = false;
 						break;
 					case EntryInputPassStruct::InputType::ArrowLeft:
 						break;
@@ -448,10 +448,11 @@ namespace NosLib
 							break;
 					}
 				}
+
 				MenuFocused = false;	/* menu out of focus, as it exits */
+				NosLib::MouseTracking::TerminateMouseTracking(); /* Terminate mouse tracking hook */
 				NosLib::Console::ClearScreen(); /* Clear the screen to remove the menu */
 				NosLib::Console::ShowCaret(true); /* show the caret again */
-				NosLib::MouseTracking::TerminateMouseTracking(); /* Terminate mouse tracking hook */
 				inputListenThread.join(); /* wait for thread to join */
 			}
 
