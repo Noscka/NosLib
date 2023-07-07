@@ -7,29 +7,110 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
-bool SomeBool = false;
-int number = 1;
-void CheckBool()
+// Custom implementation of the IDropTarget interface
+class CustomDropTarget : public IDropTarget
 {
-	wprintf((SomeBool ? L"true\n" : L"false\n"));
-	wprintf(L"Press any button to continue"); _getch();
-	return;
-}
-void CheckNumber()
+
+private:
+	ULONG m_refCount = 0; // Reference count
+
+public:
+
+	// Constructor
+	CustomDropTarget() : m_refCount(1)
+	{
+
+	}
+
+	// IDropTarget interface methods
+	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject) override
+	{
+		if (riid == IID_IUnknown || riid == IID_IDropTarget)
+		{
+			*ppvObject = static_cast<IDropTarget*>(this);
+			AddRef();
+			return S_OK;
+		}
+
+		*ppvObject = nullptr;
+		return E_NOINTERFACE;
+	}
+
+	ULONG STDMETHODCALLTYPE AddRef() override
+	{
+		return InterlockedIncrement(&m_refCount);
+	}
+
+	ULONG STDMETHODCALLTYPE Release() override
+	{
+		ULONG refCount = InterlockedDecrement(&m_refCount);
+		if (refCount == 0)
+		{
+			delete this;
+		}
+		return refCount;
+	}
+
+	HRESULT STDMETHODCALLTYPE DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override
+	{
+		wprintf(L"Drag Enter\n");
+
+		return S_OK;
+	}
+
+	HRESULT STDMETHODCALLTYPE DragOver(DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override
+	{
+		wprintf(L"Drag Over\n");
+
+		return S_OK;
+	}
+
+	HRESULT STDMETHODCALLTYPE DragLeave() override
+	{
+		wprintf(L"Drag Leave\n");
+
+		return S_OK;
+	}
+
+	HRESULT STDMETHODCALLTYPE Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override
+	{
+		wprintf(L"Drop\n");
+
+		return S_OK;
+	}
+};
+
+// Global instance of the IDropTarget interface
+CustomDropTarget* g_pDropTarget = nullptr;
+
+// Window procedure for the main window
+LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	wprintf((std::to_wstring(number) + L"\n").c_str());
-	wprintf(L"Press any button to continue"); _getch();
-	return;
-}
-void SomeFunction(int* param1, int* param2)
-{
-	std::wcout << L"Param1: " << *param1 << L" | Param2: " << *param2 << std::endl;
-	wprintf(L"Press any button to continue"); _getch();
-	return;
-}
-void PrintingFunction(std::wstring input)
-{
-	wprintf(input.c_str());
+	switch (uMsg)
+	{
+	case WM_CREATE:
+	{
+		// Register the custom window as a drop target
+		if (g_pDropTarget)
+		{
+			RegisterDragDrop(hWnd, g_pDropTarget);
+		}
+		break;
+	}
+	case WM_DESTROY:
+	{
+		// Unregister the drop target before destroying the window
+		if (g_pDropTarget)
+		{
+			RevokeDragDrop(hWnd);
+		}
+		PostQuitMessage(0);
+		break;
+	}
+	// Handle other window messages as needed
+	}
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 int main()
@@ -39,38 +120,39 @@ int main()
 	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Dynamic Array Updating");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	NosLib::Menu::DynamicMenu MainMenu(L"Main Menu", true, true, true);
-	NosLib::Menu::DynamicMenu SecondaryMenu(L"Second Menu", true, true, true);
-	NosLib::Menu::DynamicMenu IteratedMenu(L"Iterated Menu", true, true, true);
+	//SetWindowLongPtr();
 
-	int sharedInt = 30;
-
-	for (int i = 0; i <= 80; i++)
+	// Create the main window
+	HWND hWnd = CreateWindowEx(0, L"STATIC", nullptr, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, nullptr, nullptr);
+	if (hWnd == nullptr)
 	{
-		IteratedMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(std::format(L"Iterated Int {}", i), &sharedInt));
+		// Handle window creation error
+		return -1;
 	}
 
-	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Number", &number));
-	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Check Number", new NosLib::Functional::FunctionStore(&CheckNumber)));
+	// Create an instance of the custom IDropTarget implementation
+	g_pDropTarget = new CustomDropTarget();
 
-	int param1 = 0,
-		param2 = 10;
+	// Register the window class and show the window
+	ShowWindow(hWnd, SW_SHOWNORMAL);
 
-	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"param1", &param1));
-	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"param2", &param2));
+	// Register the custom window as a drop target
+	if (g_pDropTarget)
+	{
+		RegisterDragDrop(hWnd, g_pDropTarget);
+	}
 
-	SecondaryMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Run Function", new NosLib::Functional::FunctionStore(&SomeFunction, &param1, &param2)));
+	// Run the message loop
+	MSG msg;
+	while (GetMessage(&msg, nullptr, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
 
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Secondary Menu", &SecondaryMenu));
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Iterated Menu", &IteratedMenu));
-
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Toggle", &SomeBool));
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Check Bool", new NosLib::Functional::FunctionStore(&CheckBool)));
-
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Number", &number));
-	MainMenu.AddMenuEntry(new NosLib::Menu::MenuEntry(L"Check Number", new NosLib::Functional::FunctionStore(&CheckNumber)));
-
-	MainMenu.StartMenu();
+	// Cleanup
+	delete g_pDropTarget;
 
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;
