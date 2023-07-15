@@ -109,10 +109,10 @@ namespace NosLib
 		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 		/// <returns>pointer to modified vector</returns>
 		template <typename CharT>
-		std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, std::basic_string<CharT>* input, const CharT& delimiter = L' ')
+		std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
 		{
 			std::basic_string<CharT> tmp;
-			std::basic_stringstream<CharT> ss(*input);
+			std::basic_stringstream<CharT> ss(input);
 
 			while (std::getline(ss, tmp, delimiter))
 			{
@@ -131,10 +131,10 @@ namespace NosLib
 		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 		/// <returns>pointer to modified DynamicArray</returns>
 		template <typename CharT>
-		NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, std::basic_string<CharT>* input, const CharT& delimiter = L' ')
+		NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
 		{
 			std::basic_string<CharT> tmp;
-			std::basic_stringstream<CharT> ss(*input);
+			std::basic_stringstream<CharT> ss(input);
 
 			while (std::getline(ss, tmp, delimiter))
 			{
@@ -164,7 +164,7 @@ namespace NosLib
 			{
 				NosLib::DynamicArray<std::basic_string<CharT>> inputSplit;
 				std::basic_string<CharT> output;
-				NosLib::String::Split<CharT>(&inputSplit, &input, L'\n');
+				NosLib::String::Split<CharT>(&inputSplit, input, L'\n');
 
 				for (std::basic_string<CharT> Singleinput : inputSplit)
 				{
