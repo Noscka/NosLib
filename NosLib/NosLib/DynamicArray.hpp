@@ -85,10 +85,7 @@ namespace NosLib
 				ArraySize += ArrayStepSize; /* expand the Array size */
 				MainArray = new ArrayDataType[ArraySize](); /* over ride MainArray with new, bigger, array */
 
-				/*
-				(ArraySize-ArrayStepSize) calculates TempArray size
-				Copy all values from Temp array to "old" expanded array
-				*/
+				/* Copy all values from Temp array back to the "old" expanded array */
 				std::copy(tempArray, tempArray + oldArraySize, MainArray);
 
 				delete[] tempArray;
@@ -122,6 +119,53 @@ namespace NosLib
 		{
 			int distance = std::distance(beginning, end);
 			MultiAppend(beginning, distance);
+		}
+
+		/// <summary>
+		/// insert an object anywhere into the array
+		/// </summary>
+		/// <param name="insertObject">- object to insert</param>
+		/// <param name="position">- position/index to insert into</param>
+		void Insert(const ArrayDataType& insertObject, const int& position)
+		{
+			if (position >= (CurrentArrayIndex - 1) || position < 0)// check if the position to remove is in array range
+			{
+				throw std::out_of_range("position was out of range of the array");
+				return;
+			}
+
+			if (CurrentArrayIndex >= ArraySize) // if Current Index pointer is more then the array size (trying to add to OutOfRange space)
+			{
+				int oldArraySize = ArraySize;
+				ArrayDataType* tempArray = MainArray; /* Set tempArray as the main old array */
+
+				ArraySize += ArrayStepSize; /* expand the Array size */
+				MainArray = new ArrayDataType[ArraySize](); /* over ride MainArray with new, bigger, array */
+
+				/* Copy all values from Temp array back to the "old" expanded array */
+				std::copy(tempArray, tempArray + oldArraySize, MainArray);
+
+				delete[] tempArray;
+			}
+
+			/* move all objects after the insert position forward */
+			for (int i = CurrentArrayIndex; i  >= position; i--)
+			{
+				MainArray[i] = MainArray[i - 1];
+
+				if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
+				{
+					NosLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
+				}
+			}
+
+			if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
+			{
+				NosLib::Pointers::OneOffRootPointer<ArrayDataType>(insertObject)->ModifyArrayPosition(position);
+			}
+
+			MainArray[position] = insertObject;
+			CurrentArrayIndex++;
 		}
 
 		/// <summary>
@@ -233,6 +277,14 @@ namespace NosLib
 		int GetLastArrayIndex()
 		{
 			return CurrentArrayIndex-1;
+		}
+
+		/// <summary>
+		/// returns the amount of objects in array
+		/// </summary>
+		int GetItemCount()
+		{
+			return CurrentArrayIndex;
 		}
 
 		/// <summary>
