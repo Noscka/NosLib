@@ -29,7 +29,7 @@ int main()
 
 	wprintf(std::format(L"count: {}\n\n", insertTesting.GetItemCount()).c_str());
 
-	insertTesting.Insert(L"Added Item\n", 4);
+	insertTesting.Insert(L"Added Item\n", 0);
 
 	for (std::wstring entry : insertTesting)
 	{

@@ -128,7 +128,7 @@ namespace NosLib
 		/// <param name="position">- position/index to insert into</param>
 		void Insert(const ArrayDataType& insertObject, const int& position)
 		{
-			if (position >= (CurrentArrayIndex - 1) || position < 0)// check if the position to remove is in array range
+			if (position >= CurrentArrayIndex || position < 0)// check if the position to remove is in array range
 			{
 				throw std::out_of_range("position was out of range of the array");
 				return;
@@ -149,7 +149,7 @@ namespace NosLib
 			}
 
 			/* move all objects after the insert position forward */
-			for (int i = CurrentArrayIndex; i  >= position; i--)
+			for (int i = CurrentArrayIndex; i  > position; i--)
 			{
 				MainArray[i] = MainArray[i - 1];
 
