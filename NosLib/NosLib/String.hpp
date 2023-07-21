@@ -313,7 +313,7 @@ namespace NosLib
 		/// <param name="string">- the string to look through</param>
 		/// <param name="startPosition">- position to start looking from</param>
 		/// <param name="wordCount">- how many words to go over</param>
-		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
+		/// <param name="delimiters">(default = ' ') - what character to ignore</param>
 		/// <returns>the word</returns>
 		template <typename CharT>
 		std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, const CharT& delimiter = L' ')
@@ -325,7 +325,14 @@ namespace NosLib
 		}
 	#pragma endregion
 
-	#pragma region SubstringContainCount0
+	#pragma region SubstringContainCount
+		/// <summary>
+		/// Counts the amount of times a substring is contained inside another string
+		/// </summary>
+		/// <typeparam name="CharT">- string type template</typeparam>
+		/// <param name="string">- main string</param>
+		/// <param name="substring">- substring to be searched for</param>
+		/// <returns>count of amount of times substring is in string</returns>
 		template <typename CharT>
 		int SubstringContainCount(const std::basic_string<CharT>& string, const std::basic_string<CharT>& substring)
 		{
@@ -339,6 +346,51 @@ namespace NosLib
 			return count;
 		}
 	#pragma endregion
+
+		/// <summary>
+		/// removes whitespace characters either side of the string
+		/// </summary>
+		/// <typeparam name="CharT">- string type template</typeparam>
+		/// <param name="string">- string to remove from</param>
+		/// <param name="whitespace">(default = " \t") - whitespace characters</param>
+		/// <returns>trimmed string</returns>
+		template <typename CharT>
+		std::basic_string<CharT> Trim(const std::basic_string<CharT>& string, const std::basic_string<CharT>& whitespace = NosLib::String::ConvertString < CharT, wchar_t>(L" \t"))
+		{
+			size_t strBegin = string.find_first_not_of(whitespace);
+			if (strBegin == std::basic_string<CharT>::npos)
+			{
+				return NosLib::String::ConvertString<CharT, wchar_t>(L""); // no content
+			}
+
+			return string.substr(strBegin, string.find_last_not_of(whitespace) - strBegin + 1);
+		}
+
+		/// <summary>
+		/// Reduces all whitespaces to just 1 together. "abc     edf" -> "abc edf"
+		/// </summary>
+		/// <typeparam name="CharT">- string type template</typeparam>
+		/// <param name="string">- string to reduce from</param>
+		/// <param name="fill">(default = " ") - what to replace whitespaces with</param>
+		/// <param name="whitespace">(default = " \t") - whitespace character</param>
+		/// <returns>reduced string</returns>
+		template <typename CharT>
+		std::basic_string<CharT> Reduce(const std::basic_string<CharT>& string, const std::basic_string<CharT>& fill = NosLib::String::ConvertString<CharT, wchar_t>(L" "), const std::basic_string<CharT>& whitespace = NosLib::String::ConvertString < CharT, wchar_t>(L" \t"))
+		{
+			// trim first
+			std::basic_string<CharT> result = Trim<CharT>(string, whitespace);
+
+			// replace sub ranges
+			size_t beginSpace = result.find_first_of(whitespace);
+			while (beginSpace != std::wstring::npos)
+			{
+				result.replace(beginSpace, result.find_first_not_of(whitespace, beginSpace) - beginSpace, fill);
+
+				beginSpace = result.find_first_of(whitespace, beginSpace + fill.length());
+			}
+
+			return result;
+		}
 	}
 }
 #endif
