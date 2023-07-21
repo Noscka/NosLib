@@ -155,7 +155,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi; /* TODO: change from using consoleHandle or add overload to use ConsoleSizeStruct */
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
@@ -188,7 +188,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			return CenterString<CharT>(consoleHandle, input, rightPadding, all);
 		}
@@ -201,7 +201,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
 		}
@@ -214,7 +214,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
 		}

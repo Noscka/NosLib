@@ -18,7 +18,7 @@ namespace NosLib
 	class LoadingScreen
 	{
 	public:
-		enum LoadType
+		enum class LoadType
 		{
 			Unknown = 0,	/* progress cannot be counted or it is unknown */
 			Known = 1,		/* progress can be counted */
@@ -69,17 +69,12 @@ namespace NosLib
 
 			ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &csbi);
 
-			std::wstring bar = L"";
-
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
 				int maxLenght = max(ConsoleSizeStruct.Columns - 60, 20);
-				float left = PercentageDone * maxLenght;
 
-				bar += std::wstring((left / 1.0), L'█');
-				
-				bar += std::wstring(fmod(left, 1.0)/ 0.5, L'▌');
+				std::wstring bar = GenerateProgressBar(PercentageDone * maxLenght);
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 				wprintf((std::wstring(max(((ConsoleSizeStruct.Columns/ 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
@@ -87,7 +82,6 @@ namespace NosLib
 
 				Sleep(100);
 				MidOperationUpdate();
-				bar = L"";
 			}
 
 			FunctionThread.join();
@@ -223,7 +217,7 @@ namespace NosLib
 			/* Make console use font */
 
 			/* Add TerminateFont function to premature closing line up */
-			NosLib::EventHandling::AddCleanupFunction(*TerminateFont);
+			NosLib::EventHandling::AddCleanupFunction(&TerminateFont);
 		}
 
 		/// <summary>
@@ -263,7 +257,7 @@ namespace NosLib
 		/// <param name="barType">- the bar type which will be displayed when started</param>
 		/// <param name="splashScreen">(default = L"") - what the should display above the bar</param>
 		/// <param name="centerString">(default = true) - if the splashScreen should be centered</param>
-		LoadingScreen(const LoadType& barType, std::wstring splashScreen = L"", const bool& centerString = true)
+		LoadingScreen(const LoadType& barType, const std::wstring& splashScreen = L"", const bool& centerString = true)
 		{
 			BarType = barType;
 			SplashScreen = centerString ? NosLib::String::CenterString(splashScreen, true) : splashScreen;
@@ -283,6 +277,8 @@ namespace NosLib
 		template <typename Func, typename ... VariadicArgs>
 		void StartLoading(Func&& callable, VariadicArgs&& ... args)
 		{
+			NosLib::Console::ClearScreen();
+
 			ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &csbi); /* Update the ConsoleSize first time */
 
 			CrossThreadFinishBoolean = false;
@@ -291,10 +287,10 @@ namespace NosLib
 
 			switch (BarType)
 			{
-			case Unknown:
+			case LoadType::Unknown:
 				UnknownProgressLoad(std::forward<Func>(callable), std::forward<VariadicArgs>(args)...);
 				break;
-			case Known:
+			case LoadType::Known:
 				KnownProgressLoad(std::forward<Func>(callable), std::forward<VariadicArgs>(args)...);
 				break;
 			}
@@ -321,6 +317,15 @@ namespace NosLib
 			CrossThreadFinishBoolean = true;
 		}
 
+		static std::wstring GenerateProgressBar(float amountDone)
+		{
+			std::wstring bar((amountDone / 1.0), L'█');
+			bar += std::wstring(fmod(amountDone, 1.0) / 0.5, L'▌');
+			
+			return bar;
+		}
+
+		private:
 		// TODO: put MoveRight and MoveLeft to Global namespace
 
 		/// <summary>
