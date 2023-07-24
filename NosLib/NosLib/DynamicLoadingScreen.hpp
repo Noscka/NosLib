@@ -72,12 +72,8 @@ namespace NosLib
 			SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 			while (PercentageDone < 1 && !CrossThreadFinishBoolean)
 			{
-				int maxLenght = max(ConsoleSizeStruct.Columns - 60, 20);
-
-				std::wstring bar = GenerateProgressBar(PercentageDone * maxLenght);
-
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-				wprintf(NosLib::String::CenterString(bar).c_str());
+				wprintf(NosLib::String::CenterString(GenerateProgressBar(PercentageDone)).c_str());
 				wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
@@ -317,13 +313,21 @@ namespace NosLib
 			CrossThreadFinishBoolean = true;
 		}
 
-		static std::wstring GenerateProgressBar(float amountDone)
+		static std::wstring GenerateProgressBar(const float& percentDone, const float& maxLenght)
 		{
-			std::wstring bar((amountDone / 1.0), L'█');
-			bar += std::wstring(fmod(amountDone, 1.0) / 0.5, L'▌');
-			
+			float spaceNeeded = percentDone * maxLenght;
+			std::wstring bar((spaceNeeded / 1.0f), L'█');
+			bar += std::wstring(fmod(spaceNeeded, 1.0f) / 0.5f, L'▌');
+			bar += std::wstring(max(NosLib::Cast<int>(maxLenght-bar.size()), 0), L' ');
+
 			return bar;
 		}
+
+		static std::wstring GenerateProgressBar(const float& percentDone)
+		{
+			return GenerateProgressBar(percentDone, max(NosLib::Console::GetConsoleSize().Columns - 60, 20));
+		}
+
 
 		private:
 		// TODO: put MoveRight and MoveLeft to Global namespace
