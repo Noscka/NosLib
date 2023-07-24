@@ -363,9 +363,23 @@ namespace NosLib
 			}
 			/* ELSE, if string is equal or bigger then size */
 
-			/* get substring which is from beginning to size, minus size of "putAtEnd" string */
-			std::wstring output = string.substr(0, size-putAtEnd.size());
-			output += putAtEnd; /* append "putAtEnd" String */
+			std::wstring output;
+
+			NosLib::DynamicArray<std::basic_string<CharT>> stringSplit;
+			NosLib::String::Split<CharT>(&stringSplit, string, L'\n');
+
+			for (int i = 0; i <= stringSplit.GetLastArrayIndex(); i++)
+			{
+				if (stringSplit[i].size() < size) /* if the string is less than the size, just return string straight away */
+				{
+					output += stringSplit[i] + (i != stringSplit.GetLastArrayIndex() ? L"\n" : L"" /* DO NOTHING */);
+					continue;
+				}
+
+				/* get substring from beginning to size, minus size of "putAtEnd" string */
+				output += stringSplit[i].substr(0, size - putAtEnd.size());
+				output += (putAtEnd + (i != stringSplit.GetLastArrayIndex() ? L"\n" : L"" /* DO NOTHING */)); /* append "putAtEnd" String */
+			}
 
 			return output;
 		}
