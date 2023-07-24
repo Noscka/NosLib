@@ -75,7 +75,7 @@ namespace NosLib
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 				wprintf(NosLib::String::CenterString(GenerateProgressBar(PercentageDone)).c_str());
 				wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
-
+				SetConsoleCursorPosition(ConsoleHandle, {0, 0});
 				Sleep(100);
 				MidOperationUpdate();
 			}
@@ -274,6 +274,7 @@ namespace NosLib
 		void StartLoading(Func&& callable, VariadicArgs&& ... args)
 		{
 			NosLib::Console::ClearScreen();
+			NosLib::Console::ShowCaret(false);
 
 			ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &csbi); /* Update the ConsoleSize first time */
 
@@ -290,6 +291,8 @@ namespace NosLib
 				KnownProgressLoad(std::forward<Func>(callable), std::forward<VariadicArgs>(args)...);
 				break;
 			}
+
+			NosLib::Console::ShowCaret(true);
 		}
 
 		/// <summary>
