@@ -345,6 +345,48 @@ namespace NosLib
 		}
 	#pragma endregion
 
+	#pragma region Shorten
+		/// <summary>
+		/// Shortens string to set size
+		/// </summary>
+		/// <typeparam name="CharT">- string type template</typeparam>
+		/// <param name="string">- string to shorten if needed</param>
+		/// <param name="size">- size the string should be within</param>
+		/// <param name="putAtEnd">(default = "(Shortened)") - string to put at the end IF the main string is longer than size</param>
+		/// <returns>string that is within "size"</returns>
+		template <typename CharT>
+		std::basic_string<CharT> Shorten(const std::basic_string<CharT>& string, const size_t& size, const std::basic_string<CharT>& putAtEnd = NosLib::String::ConvertString<CharT, wchar_t>(L"(Shortened)"))
+		{
+			if (string.size() < size) /* if the string is less than the size, just return string straight away */
+			{
+				return string;
+			}
+			/* ELSE, if string is equal or bigger then size */
+
+			/* get substring which is from beginning to size, minus size of "putAtEnd" string */
+			std::wstring output = string.substr(0, size-putAtEnd.size());
+			output += putAtEnd; /* append "putAtEnd" String */
+
+			return output;
+		}
+
+		/// <summary>
+		/// Shortens string to fit within console size
+		/// </summary>
+		/// <typeparam name="CharT">- string type template</typeparam>
+		/// <param name="string">- string to shorten if needed</param>
+		/// <param name="putAtEnd">(default = "(Shortened)") - string to put at the end IF the main string is longer than size</param>
+		/// <returns>string that is within console "size"</returns>
+		template <typename CharT>
+		std::basic_string<CharT> Shorten(const std::basic_string<CharT>& string, const std::basic_string<CharT>& putAtEnd = NosLib::String::ConvertString<CharT, wchar_t>(L"(Shortened)"))
+		{
+			CONSOLE_SCREEN_BUFFER_INFO csbi; /* TODO: change from using consoleHandle or add overload to use ConsoleSizeStruct */
+			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+
+			return Shorten(string, (csbi.srWindow.Right - csbi.srWindow.Left + 1), putAtEnd);
+		}
+	#pragma endregion
+
 		/// <summary>
 		/// removes whitespace characters either side of the string
 		/// </summary>

@@ -12,12 +12,13 @@ int main()
 {
 	NosLib::Console::InitializeModifiers::EnableUnicode();
 	NosLib::Console::InitializeModifiers::EnableANSI();
-	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Rewriting Center String");
+	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Shorten String Testing");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	std::wstring stringToCenter(158, L'█');
+	wprintf(L"Press any button to continue\n"); _getch();
+	std::wstring stringToShorten(158, L'█');
 	
-	wprintf(NosLib::String::CenterString(stringToCenter, true).c_str());
+	wprintf(NosLib::String::Shorten(stringToShorten).c_str());
 
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;

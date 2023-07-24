@@ -77,7 +77,7 @@ namespace NosLib
 				std::wstring bar = GenerateProgressBar(PercentageDone * maxLenght);
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
-				wprintf((std::wstring(max(((ConsoleSizeStruct.Columns/ 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
+				wprintf(NosLib::String::CenterString(bar).c_str());
 				wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
