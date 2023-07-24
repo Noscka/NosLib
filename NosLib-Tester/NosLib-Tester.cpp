@@ -1,5 +1,5 @@
 ﻿#include "NosLib/Console.hpp"
-#include "NosLib/FileManagement.hpp"
+#include "NosLib/String.hpp"
 
 #include "AllHeaders.hpp"
 
@@ -12,15 +12,12 @@ int main()
 {
 	NosLib::Console::InitializeModifiers::EnableUnicode();
 	NosLib::Console::InitializeModifiers::EnableANSI();
-	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Trim\\Reduce Testing");
+	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Rewriting Center String");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	std::wstring megaSpace = L"          afagf an        gagawg   gwagwa  aw sss  sssssssss     \t\t\t\t\t       ";
-
-	wprintf(megaSpace.c_str());
-	wprintf(L"||\n");
-	wprintf(NosLib::String::Reduce<wchar_t>(megaSpace).c_str());
-	wprintf(L"||\n");
+	std::wstring stringToCenter(158, L'█');
+	
+	wprintf(NosLib::String::CenterString(stringToCenter, true).c_str());
 
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;

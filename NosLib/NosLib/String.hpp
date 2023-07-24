@@ -63,7 +63,7 @@ namespace NosLib
 			static_assert(NosLib::TypeTraits::is_character<CharTo>::value, "type getting converted into must be character type");
 			static_assert(NosLib::TypeTraits::is_character<CharFrom>::value, "type getting converted from must be character type");
 
-			return NosLib::Cast::Cast<CharTo, CharFrom>(charIn);
+			return NosLib::Cast<CharTo, CharFrom>(charIn);
 		}
 	#pragma endregion
 
@@ -155,28 +155,26 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>& input, const bool& rightPadding = false)
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi; /* TODO: change from using consoleHandle or add overload to use ConsoleSizeStruct */
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
 			int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-			if (all)
-			{
-				NosLib::DynamicArray<std::basic_string<CharT>> inputSplit;
-				std::basic_string<CharT> output;
-				NosLib::String::Split<CharT>(&inputSplit, input, L'\n');
+			std::basic_string<CharT> output;
 
-				for (std::basic_string<CharT> Singleinput : inputSplit)
-				{
-					output += (std::basic_string<CharT>(((columns / 2) - Singleinput.size() / 2), ' ') + Singleinput + (rightPadding ? std::wstring(max((columns - (Singleinput.size() + ((columns / 2) - Singleinput.size() / 2))), 0), L' ') : L"") + NosLib::String::ConvertCharacter<CharT, wchar_t>(L'\n'));
-				}
+			NosLib::DynamicArray<std::basic_string<CharT>> inputSplit;
+			NosLib::String::Split<CharT>(&inputSplit, input, L'\n');
 
-				return output;
-			}
-			else
+			for (std::basic_string<CharT> Singleinput : inputSplit)
 			{
-				return (std::basic_string<CharT>(((columns / 2) - input.size() / 2), ' ') + input + (rightPadding ? std::wstring(max((columns - (input.size() + ((columns / 2) - input.size() / 2))), 0), L' ') : L"") + NosLib::String::ConvertCharacter<CharT, wchar_t>(L'\n'));
+				int leftPadding = max(NosLib::Cast<int>((columns / 2) - Singleinput.size() / 2), 0);
+				int rightPadding = max(NosLib::Cast<int>(columns - (Singleinput.size() + leftPadding)), 0);
+
+				output += (std::basic_string<CharT>(leftPadding, (CharT)' ') + Singleinput + (rightPadding ? std::wstring(rightPadding, (CharT)' ') : NosLib::String::ConvertString<CharT, wchar_t>(L"")) + NosLib::String::ConvertCharacter<CharT, wchar_t>(L'\n'));
 			}
+
+			return output;
+			
 		}
 
 		/// <summary>
@@ -188,9 +186,9 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>&& input, const bool& rightPadding = false)
 		{
-			return CenterString<CharT>(consoleHandle, input, rightPadding, all);
+			return CenterString<CharT>(consoleHandle, input, rightPadding);
 		}
 
 		/// <summary>
@@ -201,9 +199,9 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const std::basic_string<CharT>& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const std::basic_string<CharT>& input, const bool& rightPadding = false)
 		{
-			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
+			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding);
 		}
 
 		/// <summary>
@@ -214,9 +212,9 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const std::basic_string<CharT>&& input, const bool& rightPadding = false, const bool& all = true)
+		std::basic_string<CharT> CenterString(const std::basic_string<CharT>&& input, const bool& rightPadding = false)
 		{
-			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding, all);
+			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding);
 		}
 	#pragma endregion
 
@@ -301,7 +299,7 @@ namespace NosLib
 			FindNextWord<CharT>(string, startPosition, word, wordStartPosition, delimiter);
 			for (int i = 0; i < wordCount; i++)
 			{
-				FindNextWord<CharT>(string, NosLib::Cast::Cast<int>((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
+				FindNextWord<CharT>(string, NosLib::Cast<int>((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
 			}
 			return *word;
 		}

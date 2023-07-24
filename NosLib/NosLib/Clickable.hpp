@@ -228,8 +228,8 @@ namespace NosLib
 				}
 				else if (nameInput.size() < size) /* if name is more then size, center it in the space */
 				{
-					float spacingSize = NosLib::Cast::Cast<float>(size - NosLib::Cast::Cast<int>(nameInput.size()));
-					outputString = (std::wstring(NosLib::Cast::Cast<int>(std::floorf(spacingSize / 2)), L' ') + nameInput + std::wstring(NosLib::Cast::Cast<int>(std::ceilf(spacingSize / 2)), L' '));
+					float spacingSize = NosLib::Cast<float>(size - NosLib::Cast<int>(nameInput.size()));
+					outputString = (std::wstring(NosLib::Cast<int>(std::floorf(spacingSize / 2)), L' ') + nameInput + std::wstring(NosLib::Cast<int>(std::ceilf(spacingSize / 2)), L' '));
 				}
 				else /* if name is same length as size. return name for efficiency */
 				{

@@ -162,7 +162,7 @@ namespace NosLib
 			{
 				*MenuConsoleSizeStruct = NosLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-				int SpaceLenght = NosLib::Cast::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
+				int SpaceLenght = NosLib::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2);
 
 				if constexpr (std::is_base_of_v<NosLib::Functional::FunctionStoreBase, EntryType>)
 				{
@@ -213,7 +213,7 @@ namespace NosLib
 			{
 				*MenuConsoleSizeStruct = NosLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-				int x1 = NosLib::Cast::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
+				int x1 = NosLib::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
 
 				return {x1, (int)(x1 + EntryName.length()-1)};
 			}
@@ -647,7 +647,7 @@ namespace NosLib
 				}
 				else
 				{
-					TitleSize = NosLib::Cast::Cast<int>(std::count(Title.begin(), Title.end(), L'\n'));
+					TitleSize = NosLib::Cast<int>(std::count(Title.begin(), Title.end(), L'\n'));
 				}
 			}
 
@@ -718,7 +718,7 @@ namespace NosLib
 		{
 			*MenuConsoleSizeStruct = NosLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-			int x1 = NosLib::Cast::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
+			int x1 = NosLib::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
 
 			return {x1, (int)(x1 + EntryName.length()+6)};
 		}
@@ -755,7 +755,7 @@ namespace NosLib
 				int ch;
 				bool ContinueIntType = true;
 
-				COORD NumberPosition = {NosLib::Cast::Cast<SHORT>(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), NosLib::Cast::Cast<SHORT>(inputStruct->CurrentIndex + inputStruct->TitleSize)};
+				COORD NumberPosition = {NosLib::Cast<SHORT>(((MenuConsoleSizeStruct->Columns / 2) - EntryName.length() / 2) + EntryName.length() + 5), NosLib::Cast<SHORT>(inputStruct->CurrentIndex + inputStruct->TitleSize)};
 
 				SetConsoleCursorPosition(*MenuConsoleHandle, NumberPosition);
 				NosLib::Console::ShowCaret(true);
@@ -840,7 +840,7 @@ namespace NosLib
 		{
 			*MenuConsoleSizeStruct = NosLib::Console::GetConsoleSize(*MenuConsoleHandle, MenuConsoleScreenBI); /* Update values */
 
-			int x1 = NosLib::Cast::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
+			int x1 = NosLib::Cast<int>((MenuConsoleSizeStruct->Columns / 2) - (EntryName.length() / 2));
 
 			return {x1, (int)(x1 + EntryName.length() + 5 + std::to_wstring(*TypePointerStore).length())};
 		}

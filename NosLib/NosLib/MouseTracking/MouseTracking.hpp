@@ -134,7 +134,7 @@ namespace NosLib
 
 				GetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &consoleFontInfo);
 
-				CharCoordPrint({NosLib::Cast::Cast<SHORT, int>((consoleDisplayX / consoleFontInfo.dwFontSize.X)), NosLib::Cast::Cast<SHORT, int>((consoleDisplayY / consoleFontInfo.dwFontSize.Y))});
+				CharCoordPrint({NosLib::Cast<SHORT, int>((consoleDisplayX / consoleFontInfo.dwFontSize.X)), NosLib::Cast<SHORT, int>((consoleDisplayY / consoleFontInfo.dwFontSize.Y))});
 				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
 			}
 		}
@@ -165,8 +165,8 @@ namespace NosLib
 			SCROLLINFO info{sizeof(SCROLLINFO), SIF_POS};
 			GetScrollInfo(GetConsoleWindow(), SB_VERT, &info); /* Get scroll bar info to add to the CharY position */
 
-			int16_t charX = NosLib::Cast::Cast<int16_t>(((mouseHookStruct->pt.x - windowDimensions.PointOne.X) - 6 /* Left+Right border sizes */) / consoleFontInfo.dwFontSize.X),
-					charY = NosLib::Cast::Cast<int16_t>((((mouseHookStruct->pt.y - windowDimensions.PointOne.Y) - 31 /* Top border size */) / consoleFontInfo.dwFontSize.Y) + info.nPos);
+			int16_t charX = NosLib::Cast<int16_t>(((mouseHookStruct->pt.x - windowDimensions.PointOne.X) - 6 /* Left+Right border sizes */) / consoleFontInfo.dwFontSize.X),
+				charY = NosLib::Cast<int16_t>((((mouseHookStruct->pt.y - windowDimensions.PointOne.Y) - 31 /* Top border size */) / consoleFontInfo.dwFontSize.Y) + info.nPos);
 
 			NosLib::Vector::VectorD2<int16_t> currentPosition(charX, charY);
 

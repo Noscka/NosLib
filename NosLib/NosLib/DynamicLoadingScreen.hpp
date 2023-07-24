@@ -47,10 +47,10 @@ namespace NosLib
 			PreviousWriteRow = CurrentWriteRow; /* before recalculating new writing row, save it incase its different and the old one needs clearing */
 
 			/* recalculate writing row, either 4 above the bottom (with status message) or right below the splash screen */
-			CurrentWriteRow = NosLib::Cast::Cast<int>(max((ConsoleSizeStruct.Rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1)));
+			CurrentWriteRow = NosLib::Cast<int>(max((ConsoleSizeStruct.Rows - 4) - (std::count(StatusMessage.begin(), StatusMessage.end(), L'\n')), (std::count(SplashScreen.begin(), SplashScreen.end(), L'\n') + 1)));
 
 			if (CurrentWriteRow != PreviousWriteRow) /* if CurrentWriteRow and PreviousWriteRow are not equal (write position changed), clear previous */
-				NosLib::Console::ClearRange(PreviousWriteRow, NosLib::Cast::Cast<int>(std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1));
+				NosLib::Console::ClearRange(PreviousWriteRow, NosLib::Cast<int>(std::count(StatusMessage.begin(), StatusMessage.end(), L'\n') + 1));
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace NosLib
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 				wprintf((std::wstring(max(((ConsoleSizeStruct.Columns/ 2) - maxLenght / 2), 0), L' ') + bar + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-				wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
+				wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 
 				Sleep(100);
 				MidOperationUpdate();
@@ -118,14 +118,14 @@ namespace NosLib
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 					wprintf((std::wstring(max(((ConsoleSizeStruct.Columns / 2) - maxLenght / 2), 0), L' ') + MoveRight(&bar) + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-					wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 					MidPosition++;
 				}
 				else
 				{
 					SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)CurrentWriteRow });
 					wprintf((std::wstring(max(((ConsoleSizeStruct.Columns / 2) - maxLenght / 2), 0), L' ') + MoveLeft(&bar) + std::wstring(max((ConsoleSizeStruct.Columns - (bar.size() + ((ConsoleSizeStruct.Columns / 2) - maxLenght / 2))), 0), L' ') + L"\n").c_str());
-					wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true, true).c_str() : StatusMessage.c_str());
+					wprintf(CenterStatusMesage ? NosLib::String::CenterString(StatusMessage, true).c_str() : StatusMessage.c_str());
 					MidPosition--;
 				}
 
@@ -189,9 +189,9 @@ namespace NosLib
 
 				size_t ResourceLenght = SizeofResource(hResInstance, ResourceHandle);
 				HANDLE hFile = CreateFile(FontFilePath.GetFilePath().c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
-				DWORD bytesWritten = NosLib::Cast::Cast<DWORD>(ResourceLenght);
+				DWORD bytesWritten = NosLib::Cast<DWORD>(ResourceLenght);
 
-				WriteFile(hFile, ResourceData, NosLib::Cast::Cast<DWORD>(ResourceLenght), &bytesWritten, NULL);
+				WriteFile(hFile, ResourceData, NosLib::Cast<DWORD>(ResourceLenght), &bytesWritten, NULL);
 				CloseHandle(hFile);
 			}
 			/* Extract font from resource */
@@ -260,7 +260,7 @@ namespace NosLib
 		LoadingScreen(const LoadType& barType, const std::wstring& splashScreen = L"", const bool& centerString = true)
 		{
 			BarType = barType;
-			SplashScreen = centerString ? NosLib::String::CenterString(splashScreen, true) : splashScreen;
+			SplashScreen = (centerString ? NosLib::String::CenterString(splashScreen, true) : splashScreen);
 
 			PercentageDone = 0;
 			CrossThreadFinishBoolean = false;
@@ -336,7 +336,7 @@ namespace NosLib
 		std::wstring MoveRight(std::wstring* string)
 		{
 			wchar_t LastChar = (*string)[string->length() - 1];
-			for (int i = NosLib::Cast::Cast<int>(string->length() - 1); i >= 0; i--)
+			for (int i = NosLib::Cast<int>(string->length() - 1); i >= 0; i--)
 			{
 				if (i == 0)
 					(*string)[0] = LastChar;
@@ -355,7 +355,7 @@ namespace NosLib
 		std::wstring MoveLeft(std::wstring* string)
 		{
 			wchar_t LastChar = (*string)[0];
-			for (int i = 0; i <= NosLib::Cast::Cast<int>(string->length() - 1); i++)
+			for (int i = 0; i <= NosLib::Cast<int>(string->length() - 1); i++)
 			{
 				if (i == string->length() - 1)
 				{

@@ -39,7 +39,7 @@ namespace NosLib
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
 
 			std::wstring output;
-			int SpaceLenght = NosLib::Cast::Cast<int>(((csbi.srWindow.Right - csbi.srWindow.Left + 1) / 2) - ((input.length() * 8) / 2));
+			int SpaceLenght = NosLib::Cast<int>(((csbi.srWindow.Right - csbi.srWindow.Left + 1) / 2) - ((input.length() * 8) / 2));
 
 			if (center)
 				output += std::wstring(SpaceLenght, ' ');
