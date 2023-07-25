@@ -7,6 +7,7 @@
 #include "TypeTraits.hpp"
 
 #include <iostream>
+#include <minmax.h>
 
 namespace NosLib
 {
@@ -367,6 +368,19 @@ namespace NosLib
 		ArrayDataType& operator[](const int& position)
 		{
 			return MainArray[position];
+		}
+
+		/// <summary>
+		/// Inserts object into self
+		/// </summary>
+		/// <param name="insersationObject">- the object to insert</param>
+		/// <returns>combined objects</returns>
+		DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>& rightObject)
+		{
+			NosLib::DynamicArray<ArrayDataType> out(this->GetItemCount() + rightObject.GetItemCount(), this->ArrayStepSize, this->DeleteObjectsOnDestruction);
+			out.MultiAppend(this->begin(), this->end());
+			out.MultiAppend(rightObject.begin(), rightObject.end());
+			return out;
 		}
 
 		/// <summary>
