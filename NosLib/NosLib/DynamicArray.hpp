@@ -27,7 +27,7 @@ namespace NosLib
 		int ArraySize;						/* Array starting size and the size after it is resized */
 		int ArrayDefaultSize;				/* Array starting size which doesn't change */
 		ArrayDataType* MainArray;			/* Pointer to Array */
-		int CurrentArrayIndex;				/* keeps track amount of objects in array */
+		int CurrentArrayIndex = 0;			/* keeps track amount of objects in array */
 		int ArrayStepSize;					/* how much the array will get increased by when it reaches the limit */
 		bool DeleteObjectsOnDestruction;	/* If the array should destroy all the objects (if possible) when getting destroyed */
 
@@ -47,9 +47,30 @@ namespace NosLib
 			ArrayStepSize = stepSize;
 			DeleteObjectsOnDestruction = deleteObjectsOnDestruction;
 
-			// ! DO NOT CHANGE !
-			CurrentArrayIndex = 0;
 			MainArray = new ArrayDataType[ArraySize]();
+		}
+
+		/// <summary>
+		/// Constructor that takes in C-Style array
+		/// </summary>
+		/// <typeparam name="size">- templated size, should auto deduce</typeparam>
+		/// <param name="inputArray">- the array to take in and wrap</param>
+		/// <param name="StepSize">(default = 10) - how much the array will increase each time it reaches the limit</param>
+		/// <param name="deleteObjectsOnDestruction">(default = true) - If the array should destroy all the objects (if possible) when getting destroyed</param>
+		template <std::size_t size>
+		DynamicArray(const ArrayDataType(&inputArray)[size], const int& stepSize = 10, const bool& deleteObjectsOnDestruction = true)
+		{
+			ArrayDefaultSize = ArraySize = size;
+			ArrayStepSize = 10;
+			DeleteObjectsOnDestruction = deleteObjectsOnDestruction;
+
+			CurrentArrayIndex = size;
+			MainArray = new ArrayDataType[ArraySize]();
+
+			for (std::size_t i = 0; i < size; ++i)
+			{
+				MainArray[i] = inputArray[i];
+			}
 		}
 
 		/// Destroy array contained in object

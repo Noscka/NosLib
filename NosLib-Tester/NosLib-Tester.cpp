@@ -12,13 +12,12 @@ int main()
 {
 	NosLib::Console::InitializeModifiers::EnableUnicode();
 	NosLib::Console::InitializeModifiers::EnableANSI();
-	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Shorten String Testing");
+	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Array Initializing Testing");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	wprintf(L"Press any button to continue\n"); _getch();
-	std::wstring stringToShorten(158, L'█');
+	NosLib::DynamicArray<int> testInitialize({1,2,3,4,5,6,7,8,9,10});
 	
-	wprintf(NosLib::String::Shorten(stringToShorten).c_str());
+	std::wcout << testInitialize << std::endl;
 
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;
