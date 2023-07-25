@@ -532,9 +532,17 @@ namespace NosLib
 			{
 				Entry->SetEntryVariables(this, &ConsoleHandle, &ConsoleScreenBI, &ConsoleSizeStruct);
 				EntryStartAndLenght xxValue = Entry->EntryStartAndLenghtPosition();
-				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2<int16_t>(xxValue.X1, (TitleSize + MenuEntryList.GetLastArrayIndex()+1), xxValue.X2, (TitleSize + MenuEntryList.GetLastArrayIndex() + 1)));
+				Entry->ModifyClickablePosition(NosLib::Dimension::DimensionD2<int16_t>(xxValue.X1, (TitleSize + MenuEntryList.GetItemCount()), xxValue.X2, (TitleSize + MenuEntryList.GetItemCount())));
 				Entry->ModifyEnableBool(&MenuFocused);
 				MenuEntryList.Append(Entry);
+			}
+
+			/// <summary>
+			/// stops the menu MIGHT BE TEMPORARY
+			/// </summary>
+			void StopMenu()
+			{
+				MenuLoop = false;
 			}
 
 		private:
@@ -648,6 +656,11 @@ namespace NosLib
 				else
 				{
 					TitleSize = NosLib::Cast<int>(std::count(Title.begin(), Title.end(), L'\n'));
+					if (Title.back() != L'\n')
+					{
+						TitleSize++;
+					}
+
 				}
 			}
 
