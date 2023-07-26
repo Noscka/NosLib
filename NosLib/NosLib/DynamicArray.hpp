@@ -264,6 +264,26 @@ namespace NosLib
 		}
 	#pragma endregion
 
+	#pragma region MainArray Operations
+		/// <summary>
+		/// checks if an object already exists in array. will use == operator to check
+		/// </summary>
+		/// <param name="objectToFind">- the object to search for</param>
+		/// <returns>if object exists</returns>
+		bool Exists(ArrayDataType objectToFind)
+		{
+			for (ArrayDataType entry : *this)
+			{
+				if (entry == objectToFind)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	#pragma endregion
+
 	#pragma region Variable Returns
 		/// <summary>
 		/// Return array contained in the object
