@@ -12,28 +12,10 @@ int main()
 {
 	NosLib::Console::InitializeModifiers::EnableUnicode();
 	NosLib::Console::InitializeModifiers::EnableANSI();
-	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Array Addition Testing");
+	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"File Shortcut Testing");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	NosLib::DynamicArray<int> array1({1,2,3,4});
-	NosLib::DynamicArray<int> array2(5);
-	int basicArray[] = {10,20,30,40};
-	array2.MultiAppend(basicArray, basicArray+4);
-
-	for (int entry : array2)
-	{
-		std::wcout << entry << std::endl;
-	}
-
-	NosLib::DynamicArray<int> totalArray = array1 + array2;
-
-	wprintf(L"=====================================================\n");
-
-	for (int entry : totalArray)
-	{
-		std::wcout << entry << std::endl;
-	}
-
+	NosLib::FileManagement::CreateFileShortcut(LR"(C:\Programing Projects\C++\NorzkasGammaInstaller\Build\NorzkasGammaInstaller\x64\Release\NorzkasGammaInstaller.exe)",LR"(D:\Libraries\NosLib\Build\NosLib-Tester\x64\Release\here.lnk)", L"description", L"");
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;
 }

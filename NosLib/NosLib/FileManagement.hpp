@@ -5,6 +5,7 @@
 
 #include <string>
 #include <filesystem>
+#include <ShlObj_core.h>
 
 namespace NosLib
 {
@@ -109,6 +110,39 @@ namespace NosLib
             return rc == 0 ? stat_buf.st_size : -1;
         }
     #pragma endregion
+
+		HRESULT CreateFileShortcut(LPCWSTR lpszPathObj1, LPCWSTR lpszPathLink, LPCWSTR lpszDesc, LPCWSTR lpszarg)
+		{
+			(void)CoInitialize(NULL);
+			HRESULT hres;
+			IShellLinkW* psl;
+
+			// Get a pointer to the IShellLink interface. It is assumed that CoInitialize
+			// has already been called.
+			hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&psl));
+			if (SUCCEEDED(hres))
+			{
+				IPersistFile* ppf;
+
+				// Set the path to the shortcut target and add the description.
+				psl->SetPath(lpszPathObj1);
+				psl->SetArguments(lpszarg);
+				psl->SetDescription(lpszDesc);
+
+				// Query IShellLink for the IPersistFile interface, used for saving the
+				// shortcut in persistent storage.
+				hres = psl->QueryInterface(IID_PPV_ARGS(&ppf));
+				if (SUCCEEDED(hres))
+				{
+					// Save the link by calling IPersistFile::Save.
+					hres = ppf->Save(lpszPathLink, TRUE);
+					ppf->Release();
+				}
+				psl->Release();
+			}
+			(void)CoUninitialize();
+			return hres;
+		}
     }
 }
 #endif
