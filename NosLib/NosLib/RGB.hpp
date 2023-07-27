@@ -60,7 +60,7 @@ namespace NosLib
 			}
 
 			/// <summary>
-			/// Create necesacry ANSI escape code to give wanted color
+			/// Create necessary ANSI escape code to give wanted color
 			/// </summary>
 			/// <typeparam name="CharT">- string type</typeparam>
 			/// <param name="value">- the RGB values wanted</param>
@@ -70,6 +70,12 @@ namespace NosLib
 			std::basic_string<CharT> MakeANSICode(const bool& foreGroundBackGround = true) const
 			{
 				return std::vformat(NosLib::String::ConvertString<CharT, wchar_t>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(this->R, this->G, this->B));
+			}
+
+			template <typename CharT>
+			static std::basic_string<CharT> ANSIResetCode()
+			{
+				return NosLib::String::ConvertString < CharT, wchar_t>(L"\033[0m\n");
 			}
 
 			/// <summary>
