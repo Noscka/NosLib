@@ -111,7 +111,7 @@ namespace NosLib
         }
     #pragma endregion
 
-		HRESULT CreateFileShortcut(LPCWSTR lpszPathObj1, LPCWSTR lpszPathLink, LPCWSTR lpszDesc, LPCWSTR lpszarg)
+        HRESULT CreateFileShortcut(const LPCWSTR& lpszTargetfile, const LPCWSTR& lpszShortcutLocation, const LPCWSTR& lpszIconFile = L"", const int& iIconIndex = 0, const LPCWSTR& lpszDescription = L"", const LPCWSTR& lpszArgument = L"")
 		{
 			(void)CoInitialize(NULL);
 			HRESULT hres;
@@ -124,10 +124,13 @@ namespace NosLib
 			{
 				IPersistFile* ppf;
 
-				// Set the path to the shortcut target and add the description.
-				psl->SetPath(lpszPathObj1);
-				psl->SetArguments(lpszarg);
-				psl->SetDescription(lpszDesc);
+                std::filesystem::path resolvedFilePath = std::filesystem::canonical(lpszTargetfile).wstring();
+
+				psl->SetPath(resolvedFilePath.c_str());
+                psl->SetWorkingDirectory(resolvedFilePath.remove_filename().c_str());
+                psl->SetIconLocation(std::filesystem::canonical(lpszIconFile).c_str(), iIconIndex);
+				psl->SetArguments(lpszArgument);
+				psl->SetDescription(lpszDescription);
 
 				// Query IShellLink for the IPersistFile interface, used for saving the
 				// shortcut in persistent storage.
@@ -135,7 +138,7 @@ namespace NosLib
 				if (SUCCEEDED(hres))
 				{
 					// Save the link by calling IPersistFile::Save.
-					hres = ppf->Save(lpszPathLink, TRUE);
+					hres = ppf->Save(lpszShortcutLocation, TRUE);
 					ppf->Release();
 				}
 				psl->Release();

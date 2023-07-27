@@ -15,7 +15,7 @@ int main()
 	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"File Shortcut Testing");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
 
-	NosLib::FileManagement::CreateFileShortcut(LR"(C:\Programing Projects\C++\NorzkasGammaInstaller\Build\NorzkasGammaInstaller\x64\Release\NorzkasGammaInstaller.exe)",LR"(D:\Libraries\NosLib\Build\NosLib-Tester\x64\Release\here.lnk)", L"description", L"");
+	NosLib::FileManagement::CreateFileShortcut(LR"(..\..\..\..\ANSI TABLE.md)", L"here.lnk");
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;
 }
