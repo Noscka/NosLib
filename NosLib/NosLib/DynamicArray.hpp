@@ -88,7 +88,10 @@ namespace NosLib
 					}
 				}
 			}
-			delete[] MainArray;
+			if (DeleteObjectsOnDestruction)
+			{
+				delete[] MainArray;
+			}
 		}
 	#pragma endregion
 
@@ -251,6 +254,57 @@ namespace NosLib
 			{
 				if (object == MainArray[i]) { Remove(i, deleteObject); if (!checkAll) { return; } }
 			}
+		}
+
+		/// <summary>
+		/// Creates a copy of the array and exclude the position from the array
+		/// </summary>
+		/// <param name="excludePosition">- position to exclude</param>
+		/// <returns>copy of the array without the object</returns>
+		DynamicArray<ArrayDataType> Exclude(const int& excludePosition)
+		{
+			if (excludePosition >= CurrentArrayIndex || excludePosition < 0)// check if the position to remove is in array range
+			{
+				throw std::out_of_range("position was out of range of the array");
+				return *this;
+			}
+
+			DynamicArray<ArrayDataType> outArray(ArraySize, ArrayStepSize, false);
+
+			for (int i = 0; i <= GetLastArrayIndex(); i++)
+			{
+				if (i != excludePosition)
+				{
+					outArray.Append(MainArray[i]);
+				}
+			}
+
+			return outArray;
+		}
+
+		/// <summary>
+		/// Creates a copy of the array and excludes object
+		/// </summary>
+		/// <param name="excludeObject">- object to exclude</param>
+		/// <param name="checkAll">(default = false) - if the whole array should be checked for this object</param>
+		/// <returns>copy of the array without specified object</returns>
+		DynamicArray<ArrayDataType> ObjectExclude(const ArrayDataType& excludeObject, const bool& checkAll = false)
+		{
+			DynamicArray<ArrayDataType> outArray(ArraySize, ArrayStepSize, DeleteObjectsOnDestruction);
+
+			for (ArrayDataType entry : *this)
+			{
+				if (entry != excludeObject)
+				{
+					outArray.Append(entry);
+					if (!checkAll)
+					{
+						return outArray;
+					}
+				}
+			}
+
+			return outArray;
 		}
 
 		/// <summary>
