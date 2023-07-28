@@ -286,9 +286,8 @@ namespace NosLib
 		/// Creates a copy of the array and excludes object
 		/// </summary>
 		/// <param name="excludeObject">- object to exclude</param>
-		/// <param name="checkAll">(default = false) - if the whole array should be checked for this object</param>
 		/// <returns>copy of the array without specified object</returns>
-		DynamicArray<ArrayDataType> ObjectExclude(const ArrayDataType& excludeObject, const bool& checkAll = false)
+		DynamicArray<ArrayDataType> ObjectExclude(const ArrayDataType& excludeObject)
 		{
 			DynamicArray<ArrayDataType> outArray(ArraySize, ArrayStepSize, DeleteObjectsOnDestruction);
 
@@ -297,10 +296,6 @@ namespace NosLib
 				if (entry != excludeObject)
 				{
 					outArray.Append(entry);
-					if (!checkAll)
-					{
-						return outArray;
-					}
 				}
 			}
 
@@ -450,6 +445,19 @@ namespace NosLib
 		/// <param name="insersationObject">- the object to insert</param>
 		/// <returns>combined objects</returns>
 		DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>& rightObject)
+		{
+			NosLib::DynamicArray<ArrayDataType> out(this->GetItemCount() + rightObject.GetItemCount(), this->ArrayStepSize, this->DeleteObjectsOnDestruction);
+			out.MultiAppend(this->begin(), this->end());
+			out.MultiAppend(rightObject.begin(), rightObject.end());
+			return out;
+		}
+
+		/// <summary>
+		/// Inserts object into self
+		/// </summary>
+		/// <param name="insersationObject">- the object to insert</param>
+		/// <returns>combined objects</returns>
+		DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>&& rightObject)
 		{
 			NosLib::DynamicArray<ArrayDataType> out(this->GetItemCount() + rightObject.GetItemCount(), this->ArrayStepSize, this->DeleteObjectsOnDestruction);
 			out.MultiAppend(this->begin(), this->end());
