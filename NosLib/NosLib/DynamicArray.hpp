@@ -227,7 +227,11 @@ namespace NosLib
 				return;
 			}
 
-			for (int i = position; i < (CurrentArrayIndex - 1); i++) // moving all back
+			if (deleteObject) { delete MainArray[position]; }
+			CurrentArrayIndex--;
+
+
+			for (int i = position; i < CurrentArrayIndex; i++) // moving all back
 			{
 				MainArray[i] = MainArray[i + 1];
 
@@ -235,11 +239,9 @@ namespace NosLib
 				{
 					NosLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
 				}
-			}
+			}		
 
-			if (deleteObject) {delete MainArray[CurrentArrayIndex - 1];}
-			MainArray[CurrentArrayIndex - 1] = nullptr; /* make last element be nullptr | TODO: test and create check for if the datatype is actually pointer or not */
-			CurrentArrayIndex--;
+			MainArray[CurrentArrayIndex] = nullptr; /* make last element be nullptr | TODO: test and create check for if the datatype is actually pointer or not */
 		}
 
 		/// <summary>
