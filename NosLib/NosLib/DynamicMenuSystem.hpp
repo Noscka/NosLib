@@ -191,7 +191,7 @@ namespace NosLib
 					case EntryInputPassStruct::InputType::Enter:
 						NosLib::Console::ClearScreen();
 						TypePointerStore->RunFunction();
-						inputStruct->Redraw = false;
+						inputStruct->Redraw = true;
 						break;
 					case EntryInputPassStruct::InputType::ArrowLeft:
 						break;
@@ -603,7 +603,7 @@ namespace NosLib
 			/// <param name="CurrentIndex">- currrent index</param>
 			void DrawMenu()
 			{
-				NosLib::MouseTracking::TemporaryTerminateMouseTracking();
+				//NosLib::MouseTracking::TemporaryTerminateMouseTracking();
 				NosLib::Console::ClearScreen();
 
 				ConsoleSizeStruct = NosLib::Console::GetConsoleSize(ConsoleHandle, &ConsoleScreenBI);
@@ -641,7 +641,7 @@ namespace NosLib
 				wprintf(outputString.c_str());
 
 				SetConsoleCursorPosition(ConsoleHandle, { 0, (SHORT)(CurrentIndex) });
-				NosLib::MouseTracking::InitializeMouseTracking();
+				//NosLib::MouseTracking::InitializeMouseTracking();
 			}
 
 			/// <summary>
