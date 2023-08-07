@@ -243,7 +243,7 @@ namespace NosLib
             static inline bool Initialized = false;
         }
 
-        BOOL WINAPI HandlerRoutine(DWORD eventCode)
+		inline BOOL WINAPI HandlerRoutine(DWORD eventCode)
         {
             switch (eventCode)
             {
@@ -263,7 +263,7 @@ namespace NosLib
         /// Creates hook which handles events
         /// </summary>
         /// <returns>true for succesful and false for unsuccesful</returns>
-        bool InitializeEventHandler()
+        inline bool InitializeEventHandler()
         {
             Initialized = SetConsoleCtrlHandler(HandlerRoutine, TRUE);
             return Initialized;
@@ -273,7 +273,7 @@ namespace NosLib
         /// Add function to cleanup array
         /// </summary>
         /// <param name="functionPointer">- pointer to function</param>
-        void AddCleanupFunction(void(*functionPointer)())
+        inline void AddCleanupFunction(void(*functionPointer)())
         {
             if (!Initialized) /* if not Initialized, initialize so it works */
             {

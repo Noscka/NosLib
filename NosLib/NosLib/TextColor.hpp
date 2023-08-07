@@ -25,7 +25,7 @@ namespace NosLib
 		/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
 		/// <returns>the string containing the ANSI escape code</returns>
 		template <typename CharT>
-		std::basic_string<CharT> MakeANSICode(const NosLib::RGB::NosRGB& value, const bool& foreGroundBackGround = true)
+		inline std::basic_string<CharT> MakeANSICode(const NosLib::RGB::NosRGB& value, const bool& foreGroundBackGround = true)
 		{
 			return value.MakeANSICode<CharT>(foreGroundBackGround);
 		}
@@ -41,7 +41,7 @@ namespace NosLib
 			/// <param name="columnCount">- the amount of columns</param>
 			/// <param name="rgbValue">(default = (20, 180, 170)) - the RGB value wanted</param>
 			/// <returns>a row with a color</returns>
-			std::wstring ColorRow(const int& columnCount,const NosLib::RGB::NosRGB& rgbValue = NosLib::RGB::NosRGB(20, 180, 170))
+			inline std::wstring ColorRow(const int& columnCount,const NosLib::RGB::NosRGB& rgbValue = NosLib::RGB::NosRGB(20, 180, 170))
 			{
 				return NosLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
 			}
@@ -51,7 +51,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="singleRow">(singleRow = false) - if it should only output on 1 row or file the whole console</param>
 			/// <param name="sleepSpeed">(default = 1) - the speed to output at</param>
-			void IterateRainbow(const bool& singleRow = false, const int& sleepSpeed = 1)
+			inline void IterateRainbow(const bool& singleRow = false, const int& sleepSpeed = 1)
 			{
 				NosLib::Console::ShowCaret(false);
 

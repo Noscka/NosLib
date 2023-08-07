@@ -39,7 +39,7 @@ namespace NosLib
 			/// <param name="mouseHookStruct">- mouse hook struct (gotten from casting lParam)</param>
 			/// <param name="brushThickness">- how thick the brush is</param>
 			/// <param name="brushType">(default = BrushType::square) - the brush type</param>
-			void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, const int& brushThickness, const BrushType& brushType = BrushType::square)
+			inline void ConsoleMSPaint(const PMSLLHOOKSTRUCT& mouseHookStruct, const int& brushThickness, const BrushType& brushType = BrushType::square)
 			{
 				if ((GetKeyState(VK_LBUTTON) & 0x8000) != 0) /* check if left mouse button is pressed */
 				{
@@ -81,7 +81,7 @@ namespace NosLib
 			/// <summary>
 			/// Function needed to make ConsoleMSPaint actually run
 			/// </summary>
-			void ConsoleMSPaintInit()
+			inline void ConsoleMSPaintInit()
 			{
 				wprintf(L"Press any button to enter NosPaint"); _getch();
 
@@ -93,7 +93,7 @@ namespace NosLib
 		{
 			COORD LastPosition;
 
-			void CharCoordPrint(const COORD& currentPosition)
+			inline void CharCoordPrint(const COORD& currentPosition)
 			{
 				NosLib::Console::ConsoleSizeStruct size = NosLib::Console::GetConsoleSize();
 
@@ -120,7 +120,7 @@ namespace NosLib
 			/// Calculates the position of the mouse in character terms
 			/// </summary>
 			/// <param name="mouseHookStruct">- for finding mouse position</param>
-			void CalcCharPixel(const PMSLLHOOKSTRUCT& mouseHookStruct)
+			inline void CalcCharPixel(const PMSLLHOOKSTRUCT& mouseHookStruct)
 			{
 				int windowX, windowY;
 				NosLib::Console::GetWindowPosition(&windowX, &windowY); /* get the coords of the window */
@@ -150,7 +150,7 @@ namespace NosLib
 
 		NosLib::Vector::VectorD2<int16_t> lastPosition;
 
-		void ButtonManagement(const PMSLLHOOKSTRUCT& mouseHookStruct, const WPARAM& wParam)
+		inline void ButtonManagement(const PMSLLHOOKSTRUCT& mouseHookStruct, const WPARAM& wParam)
 		{
 			NosLib::Dimension::DimensionD2<LONG> windowDimensions = NosLib::Console::GetWindowDimensions(); /* get the dimensions of the window */
 
@@ -205,7 +205,7 @@ namespace NosLib
 		/// Initialize and create low level Mouse callback hook
 		/// </summary>
 		/// <returns>true if successful, false if not</returns>
-		bool InitializeMouseTracking()
+		inline bool InitializeMouseTracking()
 		{
 			return (GetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), &PreviousConsoleMode) &&
 					SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), ENABLE_EXTENDED_FLAGS | (PreviousConsoleMode & ~ENABLE_QUICK_EDIT_MODE))
@@ -216,7 +216,7 @@ namespace NosLib
 		/// Terminates LowLevel mouse callback hook without setting console back to highlightable
 		/// </summary>
 		/// <returns>true if successful, false if not</returns>
-		bool TemporaryTerminateMouseTracking()
+		inline bool TemporaryTerminateMouseTracking()
 		{
 			return UnhookWindowsHookEx(MouseHook);
 		}
@@ -225,7 +225,7 @@ namespace NosLib
 		/// Terminates LowLevel mouse callback hook
 		/// </summary>
 		/// <returns>true if successful, false if not</returns>
-		bool TerminateMouseTracking()
+		inline bool TerminateMouseTracking()
 		{
 			return (UnhookWindowsHookEx(MouseHook) && SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), PreviousConsoleMode));
 		}

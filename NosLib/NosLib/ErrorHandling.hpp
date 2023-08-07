@@ -9,7 +9,7 @@ namespace NosLib
 	namespace ErrorHandling
 	{
 	#pragma region GetLastErrorAsString
-		std::wstring GetLastErrorAsString()
+		inline std::wstring GetLastErrorAsString()
 		{
 			//Get the error message ID, if any.
 			DWORD errorMessageID = ::GetLastError();

@@ -31,7 +31,7 @@ namespace NosLib
 		/// <param name="strIn">- string input</param>
 		/// <returns>converted string</returns>
 		template<typename StringTo, typename StringFrom>
-		std::basic_string<StringTo> ConvertString(const std::basic_string<StringFrom>& strIn)
+		inline std::basic_string<StringTo> ConvertString(const std::basic_string<StringFrom>& strIn)
 		{
 			if constexpr (std::is_same_v<StringTo, StringFrom>) /* if same character type, then just return string */
 			{
@@ -58,7 +58,7 @@ namespace NosLib
 		/// <param name="charIn">- character input</param>
 		/// <returns>converted character</returns>
 		template<typename CharTo, typename CharFrom>
-		CharTo ConvertCharacter(const CharFrom& charIn)
+		inline CharTo ConvertCharacter(const CharFrom& charIn)
 		{
 			static_assert(NosLib::TypeTraits::is_character<CharTo>::value, "type getting converted into must be character type");
 			static_assert(NosLib::TypeTraits::is_character<CharFrom>::value, "type getting converted from must be character type");
@@ -76,7 +76,7 @@ namespace NosLib
 		/// <param name="allowSigns">(default = true) - if it should allow signs at the start of the string (-123 or +123)</param>
 		/// <returns>if string is valid number</returns>
 		template <typename CharT>
-		bool IsNumber(const std::basic_string<CharT>& str, const bool& allowSigns = true)
+		inline bool IsNumber(const std::basic_string<CharT>& str, const bool& allowSigns = true)
 		{
 			/* Iterator int, allows for changing start position */
 			int Iteration = 0;
@@ -109,7 +109,7 @@ namespace NosLib
 		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 		/// <returns>pointer to modified vector</returns>
 		template <typename CharT>
-		std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
+		inline std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
 		{
 			std::basic_string<CharT> tmp;
 			std::basic_stringstream<CharT> ss(input);
@@ -131,7 +131,7 @@ namespace NosLib
 		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 		/// <returns>pointer to modified DynamicArray</returns>
 		template <typename CharT>
-		NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
+		inline NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
 		{
 			std::basic_string<CharT> tmp;
 			std::basic_stringstream<CharT> ss(input);
@@ -155,7 +155,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>& input, const bool& rightPadding = false)
+		inline std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>& input, const bool& rightPadding = false)
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi; /* TODO: change from using consoleHandle or add overload to use ConsoleSizeStruct */
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
@@ -186,7 +186,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>&& input, const bool& rightPadding = false)
+		inline std::basic_string<CharT> CenterString(const HANDLE& consoleHandle, const std::basic_string<CharT>&& input, const bool& rightPadding = false)
 		{
 			return CenterString<CharT>(consoleHandle, input, rightPadding);
 		}
@@ -199,7 +199,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const std::basic_string<CharT>& input, const bool& rightPadding = false)
+		inline std::basic_string<CharT> CenterString(const std::basic_string<CharT>& input, const bool& rightPadding = false)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding);
 		}
@@ -212,7 +212,7 @@ namespace NosLib
 		/// <param name="all">(default = true) - if it should center just first line or all lines</param>
 		/// <returns>centered string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> CenterString(const std::basic_string<CharT>&& input, const bool& rightPadding = false)
+		inline std::basic_string<CharT> CenterString(const std::basic_string<CharT>&& input, const bool& rightPadding = false)
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding);
 		}
@@ -230,7 +230,7 @@ namespace NosLib
 		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
 		/// <returns>the word</returns>
 		template <typename CharT>
-		std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiter = L' ')
+		inline std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiter = L' ')
 		{
 			uint16_t wordRange = 0, wordStartPos = 0;
 			bool wordCounting = false;
@@ -273,7 +273,7 @@ namespace NosLib
 		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
 		/// <returns>the word</returns>
 		template <typename CharT>
-		std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, const CharT& delimiter = L' ')
+		inline std::basic_string<CharT> FindNextWord(const std::basic_string<CharT>& string, const int& startPosition, const CharT& delimiter = L' ')
 		{
 			std::basic_string<CharT> tmpString;
 			int tmpInt;
@@ -294,7 +294,7 @@ namespace NosLib
 		/// <param name="delimiters">(default = L' ') - what character to ignore</param>
 		/// <returns>the word</returns>
 		template <typename CharT>
-		std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiter = L' ')
+		inline std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, std::basic_string<CharT>* word, int* wordStartPosition, const CharT& delimiter = L' ')
 		{
 			FindNextWord<CharT>(string, startPosition, word, wordStartPosition, delimiter);
 			for (int i = 0; i < wordCount; i++)
@@ -314,7 +314,7 @@ namespace NosLib
 		/// <param name="delimiters">(default = ' ') - what character to ignore</param>
 		/// <returns>the word</returns>
 		template <typename CharT>
-		std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, const CharT& delimiter = L' ')
+		inline std::basic_string<CharT> FindNthWord(const std::basic_string<CharT>& string, const int& startPosition, const int& wordCount, const CharT& delimiter = L' ')
 		{
 			std::basic_string<CharT> tmpString;
 			int tmpInt;
@@ -332,7 +332,7 @@ namespace NosLib
 		/// <param name="substring">- substring to be searched for</param>
 		/// <returns>count of amount of times substring is in string</returns>
 		template <typename CharT>
-		int SubstringContainCount(const std::basic_string<CharT>& string, const std::basic_string<CharT>& substring)
+		inline int SubstringContainCount(const std::basic_string<CharT>& string, const std::basic_string<CharT>& substring)
 		{
 			int count = 0;
 			size_t pos = 0;
@@ -355,7 +355,7 @@ namespace NosLib
 		/// <param name="putAtEnd">(default = "(Shortened)") - string to put at the end IF the main string is longer than size</param>
 		/// <returns>string that is within "size"</returns>
 		template <typename CharT>
-		std::basic_string<CharT> Shorten(const std::basic_string<CharT>& string, const size_t& size, const std::basic_string<CharT>& putAtEnd = NosLib::String::ConvertString<CharT, wchar_t>(L"(Shortened)"))
+		inline std::basic_string<CharT> Shorten(const std::basic_string<CharT>& string, const size_t& size, const std::basic_string<CharT>& putAtEnd = NosLib::String::ConvertString<CharT, wchar_t>(L"(Shortened)"))
 		{
 			if (string.size() < size) /* if the string is less than the size, just return string straight away */
 			{
@@ -392,7 +392,7 @@ namespace NosLib
 		/// <param name="putAtEnd">(default = "(Shortened)") - string to put at the end IF the main string is longer than size</param>
 		/// <returns>string that is within console "size"</returns>
 		template <typename CharT>
-		std::basic_string<CharT> Shorten(const std::basic_string<CharT>& string, const std::basic_string<CharT>& putAtEnd = NosLib::String::ConvertString<CharT, wchar_t>(L"(Shortened)"))
+		inline std::basic_string<CharT> Shorten(const std::basic_string<CharT>& string, const std::basic_string<CharT>& putAtEnd = NosLib::String::ConvertString<CharT, wchar_t>(L"(Shortened)"))
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi; /* TODO: change from using consoleHandle or add overload to use ConsoleSizeStruct */
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -409,7 +409,7 @@ namespace NosLib
 		/// <param name="whitespace">(default = " \t") - whitespace characters</param>
 		/// <returns>trimmed string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> Trim(const std::basic_string<CharT>& string, const std::basic_string<CharT>& whitespace = NosLib::String::ConvertString < CharT, wchar_t>(L" \t"))
+		inline std::basic_string<CharT> Trim(const std::basic_string<CharT>& string, const std::basic_string<CharT>& whitespace = NosLib::String::ConvertString < CharT, wchar_t>(L" \t"))
 		{
 			size_t strBegin = string.find_first_not_of(whitespace);
 			if (strBegin == std::basic_string<CharT>::npos)
@@ -429,7 +429,7 @@ namespace NosLib
 		/// <param name="whitespace">(default = " \t") - whitespace character</param>
 		/// <returns>reduced string</returns>
 		template <typename CharT>
-		std::basic_string<CharT> Reduce(const std::basic_string<CharT>& string, const std::basic_string<CharT>& fill = NosLib::String::ConvertString<CharT, wchar_t>(L" "), const std::basic_string<CharT>& whitespace = NosLib::String::ConvertString < CharT, wchar_t>(L" \t"))
+		inline std::basic_string<CharT> Reduce(const std::basic_string<CharT>& string, const std::basic_string<CharT>& fill = NosLib::String::ConvertString<CharT, wchar_t>(L" "), const std::basic_string<CharT>& whitespace = NosLib::String::ConvertString < CharT, wchar_t>(L" \t"))
 		{
 			// trim first
 			std::basic_string<CharT> result = Trim<CharT>(string, whitespace);

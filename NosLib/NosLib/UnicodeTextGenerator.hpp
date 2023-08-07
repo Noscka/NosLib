@@ -24,7 +24,7 @@ namespace NosLib
 		/// <param name="input">- The text to convert into big text</param>
 		/// <param name="center">- if the output should be centered or not</param>
 		/// <returns>Big Unicode text</returns>
-		std::wstring BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::wstring& input, const bool center)
+		inline std::wstring BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::wstring& input, const bool center)
 		{
 			/*
 			Program: Unicode Text Generator (Modified by Norzka)
@@ -921,7 +921,7 @@ namespace NosLib
 		/// <param name="input">- The text to convert into big text</param>
 		/// <param name="center">- if the output should be centered or not</param>
 		/// <returns>Big Unicode text</returns>
-		std::wstring BasicUnicodeTextGenerate(const std::wstring& input, bool center)
+		inline std::wstring BasicUnicodeTextGenerate(const std::wstring& input, bool center)
 		{
 			return BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), input, center);
 		}
@@ -933,7 +933,7 @@ namespace NosLib
 		/// <param name="input">- The text to convert into big text</param>
 		/// <param name="center">- if the output should be centered or not</param>
 		/// <returns>Big ASCII text</returns>
-		std::string BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::string& input, const bool center)
+		inline std::string BasicUnicodeTextGenerate(const HANDLE& consoleHandle, const std::string& input, const bool center)
 		{
 			return NosLib::String::ToString(BasicUnicodeTextGenerate(consoleHandle, NosLib::String::ToWstring(input), center));
 		}
@@ -944,7 +944,7 @@ namespace NosLib
 		/// <param name="input">- The text to convert into big text</param>
 		/// <param name="center">- if the output should be centered or not</param>
 		/// <returns>Big ASCII text</returns>
-		std::string BasicUnicodeTextGenerate(const std::string& input, bool center)
+		inline std::string BasicUnicodeTextGenerate(const std::string& input, bool center)
 		{
 			return NosLib::String::ToString(BasicUnicodeTextGenerate(GetStdHandle(STD_OUTPUT_HANDLE), NosLib::String::ToWstring(input), center));
 		}

@@ -26,7 +26,7 @@ namespace NosLib
         namespace PointerRoots
         {
             template<typename T>
-            void RootRelease(T& v)
+            inline void RootRelease(T& v)
             {
                 if constexpr (std::is_pointer_v<std::remove_pointer_t<T>>)
                 {
@@ -64,7 +64,7 @@ namespace NosLib
                 }
             };
 
-            void Running()
+            inline void Running()
             {
                 wprintf(L"Press any button to start"); _getch();
 
@@ -92,14 +92,14 @@ namespace NosLib
 
         namespace Fun
         {
-            LPPOINT GetCaretPositionReturn()
+            inline LPPOINT GetCaretPositionReturn()
             {
                 LPPOINT point = new POINT();
                 GetCaretPos(point);
                 return point;
             }
 
-            std::wstring DrawSquare(int position, int columnCount)
+            inline std::wstring DrawSquare(int position, int columnCount)
             {
                 std::wstring ANSIEscapeCodeStart = NosLib::RGB::NosRGB(20, 180, 170).MakeANSICode<wchar_t>();
                 std::wstring LeftPadding = std::wstring(max(position - 1, 0), L' ');
@@ -110,7 +110,7 @@ namespace NosLib
                 return  ANSIEscapeCodeStart + LeftPadding + BoxCharacter + RightPadding + ANSIEscapeCodeEnd;
             }
 
-            void IterateSquare(int sleepSpeed = 15)
+            inline void IterateSquare(int sleepSpeed = 15)
             {
                 NosLib::Console::ShowCaret(false);
 

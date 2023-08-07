@@ -25,7 +25,7 @@ namespace NosLib
 			/// Sets program to output unicode16 text
 			/// </summary>
 			/// <returns>output of function used. -1 if error and anything else if succeful</returns>
-			int EnableUnicode()
+			inline int EnableUnicode()
 			{
 				return _setmode(_fileno(stdout), _O_U16TEXT); /* set program to unicode output */
 			}
@@ -36,7 +36,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="consoleHandle">- Custom Console Handle</param>
 			/// <returns>if operation was succesful</returns>
-			bool EnableANSI(const HANDLE& consoleHandle)
+			inline bool EnableANSI(const HANDLE& consoleHandle)
 			{
 				DWORD consoleMode;
 				bool getOperationResults = GetConsoleMode(consoleHandle, &consoleMode);
@@ -52,7 +52,7 @@ namespace NosLib
 			/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text
 			/// </summary>
 			/// <returns>if operation was succesful</returns>
-			bool EnableANSI()
+			inline bool EnableANSI()
 			{
 				return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
 			}
@@ -67,7 +67,7 @@ namespace NosLib
 			/// <param name="title">- what the window should be called</param>
 			/// <returns>if succesful</returns>
 			template <typename CharT>
-			bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
+			inline bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
 			{
 				bool setTitle;
 			#ifdef UNICODE
@@ -86,7 +86,7 @@ namespace NosLib
 			/// <param name="title">- what the window should be called</param>
 			/// <returns>if succesful</returns>
 			template <typename CharT>
-			bool BeatifyConsole(const std::basic_string<CharT>& title)
+			inline bool BeatifyConsole(const std::basic_string<CharT>& title)
 			{
 				return BeatifyConsole<CharT>(GetConsoleWindow(), title);
 			}
@@ -96,7 +96,7 @@ namespace NosLib
 			/// (Aliased) Creates hook which handles events
 			/// </summary>
 			/// <returns>true for succesful and false for unsuccesful</returns>
-			bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
+			inline bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
 		}
 
 	#pragma region GetCaretPosition
@@ -105,7 +105,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleHandle">- Custom Console Handle</param>
 		/// <returns>COORD position of console caret</returns>
-		COORD GetCaretPosition(const HANDLE& consoleHandle)
+		inline COORD GetCaretPosition(const HANDLE& consoleHandle)
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
 			if (GetConsoleScreenBufferInfo(consoleHandle, &csbi))
@@ -123,7 +123,7 @@ namespace NosLib
 		/// Get position of console caret
 		/// </summary>
 		/// <returns>COORD position of console caret</returns>
-		COORD GetCaretPosition()
+		inline COORD GetCaretPosition()
 		{
 			return GetCaretPosition(GetStdHandle(STD_OUTPUT_HANDLE));
 		}
@@ -137,7 +137,7 @@ namespace NosLib
 		/// <param name="position">- position from which to start clearing</param>
 		/// <param name="range">- range to which clear</param>
 		/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-		void ClearRange(const HANDLE& consoleHandle, const int& position, const int& range, const wchar_t& fillChar = L' ')
+		inline void ClearRange(const HANDLE& consoleHandle, const int& position, const int& range, const wchar_t& fillChar = L' ')
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
 			COORD tl = {0, (SHORT)(position)};
@@ -154,7 +154,7 @@ namespace NosLib
 		/// <param name="position">- position from which to start clearing</param>
 		/// <param name="range">- range to which clear</param>
 		/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-		void ClearRange(const int& position, const int& range, const wchar_t& fillChar = L' ')
+		inline void ClearRange(const int& position, const int& range, const wchar_t& fillChar = L' ')
 		{
 			ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
 		}
@@ -167,7 +167,7 @@ namespace NosLib
 		/// <param name="consoleHandle">- Custom Console Handle</param>
 		/// <param name="position">- position to clear</param>
 		/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-		void ClearLine(const HANDLE& consoleHandle, const int& position, const wchar_t& fillChar = L' ')
+		inline void ClearLine(const HANDLE& consoleHandle, const int& position, const wchar_t& fillChar = L' ')
 		{
 			ClearRange(consoleHandle, position, 0, fillChar);
 		}
@@ -177,7 +177,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="position">- position to clear</param>
 		/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-		void ClearLine(const int& position, const wchar_t& fillChar = L' ')
+		inline void ClearLine(const int& position, const wchar_t& fillChar = L' ')
 		{
 			ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
 		}
@@ -189,7 +189,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleHandle">- Custom Console Handle</param>
 		/// <param name="fillChar">(default = L' ') - character to clear with</param>
-		void ClearScreen(const HANDLE& consoleHandle, const wchar_t& fillChar = L' ')
+		inline void ClearScreen(const HANDLE& consoleHandle, const wchar_t& fillChar = L' ')
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
@@ -200,7 +200,7 @@ namespace NosLib
 		/// clear the whole console
 		/// </summary>
 		/// <param name="fillChar">(default = L' ') - character to clear with</param>
-		void ClearScreen(const wchar_t& fillChar = L' ')
+		inline void ClearScreen(const wchar_t& fillChar = L' ')
 		{
 			ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
 		}
@@ -212,7 +212,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleHandle">- Custom Console Handle</param>
 		/// <param name="showFlag">- if caret will be shown or hidden</param>
-		void ShowCaret(const HANDLE& consoleHandle, const bool& showFlag)
+		inline void ShowCaret(const HANDLE& consoleHandle, const bool& showFlag)
 		{
 			CONSOLE_CURSOR_INFO cursorInfo;
 
@@ -225,7 +225,7 @@ namespace NosLib
 		/// Show or hide Console Caret
 		/// </summary>
 		/// <param name="showFlag">- if caret will be shown or hidden</param>
-		void ShowCaret(const bool& showFlag)
+		inline void ShowCaret(const bool& showFlag)
 		{
 			ShowCaret(GetStdHandle(STD_OUTPUT_HANDLE), showFlag);
 		}
@@ -239,7 +239,7 @@ namespace NosLib
 		/// <param name="x">- pointer to x int</param>
 		/// <param name="y">- pointer to y int</param>
 		/// <returns>if succesful or not</returns>
-		bool GetWindowPosition(const HWND& hWnd, int* x, int* y)
+		inline bool GetWindowPosition(const HWND& hWnd, int* x, int* y)
 		{
 			RECT rect = {NULL};
 			if (GetWindowRect(hWnd, &rect))
@@ -257,7 +257,7 @@ namespace NosLib
 		/// <param name="x">- pointer to x int</param>
 		/// <param name="y">- pointer to y int</param>
 		/// <returns>if succesful or not</returns>
-		bool GetWindowPosition(int* x, int* y)
+		inline bool GetWindowPosition(int* x, int* y)
 		{
 			return GetWindowPosition(GetConsoleWindow(), x, y);
 		}
@@ -269,7 +269,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="hWnd">- console handle</param>
 		/// <returns>Dimensions, will return -1 for 1x, 1y, 2x, 2y if went wrong</returns>
-		NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions(const HWND& hWnd)
+		inline NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions(const HWND& hWnd)
 		{
 			NosLib::Dimension::DimensionD2<LONG> output(-1,-1,-1,-1);
 
@@ -286,7 +286,7 @@ namespace NosLib
 		/// Get Window Dimensions
 		/// </summary>
 		/// <returns>Dimensions, will return -1 for 1x, 1y, 2x, 2y if went wrong</returns>
-		NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions()
+		inline NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions()
 		{
 			return GetWindowDimensions(GetConsoleWindow());
 		}
@@ -306,7 +306,7 @@ namespace NosLib
 		/// Gets console size with no parameters (uses default console handle and CONSOLE_SCREEN_BUFFER_INFO)
 		/// </summary>
 		/// <returns>ConsoleSizeStruct</returns>
-		ConsoleSizeStruct GetConsoleSize()
+		inline ConsoleSizeStruct GetConsoleSize()
 		{
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleScreenBI);
@@ -318,7 +318,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleScreenBI">- the Console_screen_buffer_info to use</param>
 		/// <returns>ConsoleSizeStruct</returns>
-		ConsoleSizeStruct GetConsoleSize(const CONSOLE_SCREEN_BUFFER_INFO& consoleScreenBI)
+		inline ConsoleSizeStruct GetConsoleSize(const CONSOLE_SCREEN_BUFFER_INFO& consoleScreenBI)
 		{
 			return {consoleScreenBI.srWindow.Right - consoleScreenBI.srWindow.Left + 1, consoleScreenBI.srWindow.Bottom - consoleScreenBI.srWindow.Top + 1};
 		}
@@ -328,7 +328,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="ConsoleHandle">- the Console Handle to use</param>
 		/// <returns>ConsoleSizeStruct</returns>
-		ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle)
+		inline ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle)
 		{
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;
 			GetConsoleScreenBufferInfo(ConsoleHandle, &ConsoleScreenBI);
@@ -341,7 +341,7 @@ namespace NosLib
 		/// <param name="ConsoleHandle">- the Console Handle to use</param>
 		/// <param name="consoleScreenBI">- a pointer to Console_screen_buffer_info to use</param>
 		/// <returns>ConsoleSizeStruct</returns>
-		ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* consoleScreenBI)
+		inline ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* consoleScreenBI)
 		{
 			GetConsoleScreenBufferInfo(ConsoleHandle, consoleScreenBI);
 			return {consoleScreenBI->srWindow.Right - consoleScreenBI->srWindow.Left + 1, consoleScreenBI->srWindow.Bottom - consoleScreenBI->srWindow.Top + 1};
@@ -355,7 +355,7 @@ namespace NosLib
 		/// <param name="consoleHandle">- custom buffer</param>
 		/// <param name="newBufferSize">- custom size</param>
 		/// <returns>if succesful</returns>
-		bool SetConsoleBuffer(const HANDLE& consoleHandle, const COORD& newBufferSize)
+		inline bool SetConsoleBuffer(const HANDLE& consoleHandle, const COORD& newBufferSize)
 		{
 			return SetConsoleScreenBufferSize(consoleHandle, newBufferSize);
 		}
@@ -365,7 +365,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleHandle">- custom handle</param>
 		/// <returns>if succesful</returns>
-		bool SetConsoleBuffer(const HANDLE& consoleHandle)
+		inline bool SetConsoleBuffer(const HANDLE& consoleHandle)
 		{
 			// retrieve screen buffer info
 			CONSOLE_SCREEN_BUFFER_INFO scrBufferInfo;
@@ -378,7 +378,7 @@ namespace NosLib
 		/// Set a console buffer size to only the visiable amount
 		/// </summary>
 		/// <returns>if succesful</returns>
-		bool SetConsoleBuffer()
+		inline bool SetConsoleBuffer()
 		{
 			return SetConsoleBuffer(GetStdHandle(STD_OUTPUT_HANDLE));
 		}
@@ -388,7 +388,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleHandle">- custom buffer</param>
 		/// <returns>if succesful</returns>
-		bool SetConsoleBuffer(const COORD& newBufferSize)
+		inline bool SetConsoleBuffer(const COORD& newBufferSize)
 		{
 			return SetConsoleBuffer(GetStdHandle(STD_OUTPUT_HANDLE), newBufferSize);
 		}
@@ -399,7 +399,7 @@ namespace NosLib
 		/// function which will create a none blocking message loop. used more as a template
 		/// </summary>
 		/// <param name="timeoutMilliseconds">(default = 5) - amount of milliseconds to wait for message</param>
-		void NoneBlockingMessageLoop(DWORD timeoutMilliseconds = 5)
+		inline void NoneBlockingMessageLoop(DWORD timeoutMilliseconds = 5)
 		{
 			MSG msg;
 

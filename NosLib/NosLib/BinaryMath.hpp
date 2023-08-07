@@ -17,7 +17,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="bitCount">- the amout of bits</param>
 		/// <returns>the max value that can be stored</returns>
-		int MaxBitValue(const int& bitCount)
+		inline int MaxBitValue(const int& bitCount)
 		{
 			int maxValue = 0;
 			for (int i = 0; bitCount > i; i++)
@@ -32,7 +32,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="byteCount">- the amount of bytes</param>
 		/// <returns>the max value that can be stored</returns>
-		int MaxByteValue(const int& byteCount)
+		inline int MaxByteValue(const int& byteCount)
 		{
 			return MaxBitValue(byteCount * 8);
 		}
