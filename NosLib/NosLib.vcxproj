@@ -23,6 +23,7 @@
     <ClInclude Include="NosLib\Cast.hpp" />
     <ClInclude Include="NosLib\Chat.hpp" />
     <ClInclude Include="NosLib\Console.hpp" />
+    <ClInclude Include="NosLib\Debug.h" />
     <ClInclude Include="NosLib\Definitions.hpp" />
     <ClInclude Include="NosLib\DynamicArray.hpp" />
     <ClInclude Include="NosLib\DynamicArray\ArrayPositionTrack.hpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="NosLib\FileManagement.hpp" />
     <ClInclude Include="NosLib\Functional.hpp" />
     <ClInclude Include="NosLib\Clickable.hpp" />
+    <ClInclude Include="NosLib\Logging.hpp" />
     <ClInclude Include="NosLib\MouseTracking\MouseTracking.hpp" />
     <ClInclude Include="NosLib\Pointers.hpp" />
     <ClInclude Include="NosLib\Resource\resource.h" />
