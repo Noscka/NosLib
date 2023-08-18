@@ -15,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="MakeIncludeFile.ps1" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="NosLib-Tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -23,8 +26,5 @@
     <ClInclude Include="AllHeaders.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MakeIncludeFile.ps1" />
   </ItemGroup>
 </Project>

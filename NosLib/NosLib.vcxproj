@@ -23,7 +23,6 @@
     <ClInclude Include="NosLib\Cast.hpp" />
     <ClInclude Include="NosLib\Chat.hpp" />
     <ClInclude Include="NosLib\Console.hpp" />
-    <ClInclude Include="NosLib\Debug.h" />
     <ClInclude Include="NosLib\Definitions.hpp" />
     <ClInclude Include="NosLib\DynamicArray.hpp" />
     <ClInclude Include="NosLib\DynamicArray\ArrayPositionTrack.hpp" />
