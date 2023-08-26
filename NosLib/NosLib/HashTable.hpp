@@ -105,6 +105,9 @@ namespace NosLib
 		HashTableObjectContainer<HashTableType>** MainTable;
 		size_t TableStepSize;
 
+		size_t ItemCount = 0;		/* Total amount of items in the whole table */
+		size_t CollisionCount = 0;	/* keeps track of current collisions (how many items are deeper then 0 in second index) */
+
 		HashTableKey(HashTableTypeRoot::* GetKeyValueFunction)(); /* function used to get key value, so user can use any member in their class */
 	public:
 
@@ -149,11 +152,14 @@ namespace NosLib
 			if (MainTable[pos] != nullptr)
 			{
 				MainTable[pos]->AddNext(new HashTableObjectContainer<HashTableType>(insertObject));
+				CollisionCount++;
 			}
 			else
 			{
 				MainTable[pos] = new HashTableObjectContainer<HashTableType>(insertObject);
 			}
+
+			ItemCount++;
 		}
 
 		/// <summary>
@@ -232,8 +238,10 @@ namespace NosLib
 				else /* if index is more then 0, it means its deeper in the list, and so the object before the one we want to remove can "remove next" */
 				{
 					(*this)[pos][i - 1].RemoveNext();
+					CollisionCount--;
 				}
 
+				ItemCount--;
 				return true;
 			}
 
