@@ -1,7 +1,5 @@
 ﻿#include "NosLib/Console.hpp"
-#include "NosLib/String.hpp"
-#include "NosLib/Logging.hpp"
-#include "NosLib/ErrorHandling.hpp"
+#include "NosLib/HashTable.hpp"
 
 #include <windows.h>
 #include <conio.h>
@@ -10,12 +8,51 @@
 
 /* TODO: Figure out if it is worth it to change calling convention from default (__cdelc) to __fastcall */
 
+class SimpleTestClass
+{
+protected:
+	int Num1;
+	int Num2;
+	std::wstring Name;
+public:
+	SimpleTestClass(){}
+
+	SimpleTestClass(const int& num1, const int& num2, const std::wstring& name)
+	{
+		Num1 = num1;
+		Num2 = num2;
+		Name = name;
+	}
+
+	std::wstring GetKey()
+	{
+		return Name;
+	}
+};
+
 int main()
 {
 	NosLib::Console::InitializeModifiers::EnableUnicode();
 	NosLib::Console::InitializeModifiers::EnableANSI();
-	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Nothing");
+	NosLib::Console::InitializeModifiers::BeatifyConsole<wchar_t>(L"Hash Table");
 	NosLib::Console::InitializeModifiers::InitializeEventHandler();
+
+	NosLib::HashTable<std::wstring, SimpleTestClass> testHashTable(&SimpleTestClass::GetKey);
+
+	SimpleTestClass insert(1, 2, L"NiceName");
+
+	testHashTable.Insert(insert);
+
+	SimpleTestClass* object = testHashTable.Find(L"NiwceName");
+
+	if (object == nullptr)
+	{
+		wprintf(L"Not found\n");
+	}
+	else
+	{
+		wprintf(L"found object\n");
+	}
 
 	wprintf(L"Press any button to continue"); _getch();
 	return 0;

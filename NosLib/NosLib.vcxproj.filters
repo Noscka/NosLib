@@ -93,6 +93,9 @@
     <ClInclude Include="NosLib\Logging.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NosLib\HashTable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

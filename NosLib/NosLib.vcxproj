@@ -35,6 +35,7 @@
     <ClInclude Include="NosLib\FileManagement.hpp" />
     <ClInclude Include="NosLib\Functional.hpp" />
     <ClInclude Include="NosLib\Clickable.hpp" />
+    <ClInclude Include="NosLib\HashTable.hpp" />
     <ClInclude Include="NosLib\Logging.hpp" />
     <ClInclude Include="NosLib\MouseTracking\MouseTracking.hpp" />
     <ClInclude Include="NosLib\Pointers.hpp" />
