@@ -2,6 +2,7 @@
 #define _HASHTABLE_NOSLIB_HPP_
 
 #include "TypeTraits.hpp"
+#include "Pointers.hpp"
 
 #include <type_traits>
 #include <algorithm>
@@ -94,12 +95,17 @@ namespace NosLib
 	template<class HashTableKey, class HashTableType>
 	class HashTable
 	{
+	private:
+		using HashTableTypeRoot = NosLib::TypeTraits::remove_all_pointers_t<HashTableType>;
+		using HashTableTypeNormalized = std::add_pointer_t<HashTableTypeRoot>;
+
+
 	protected:
 		size_t TableSize;
 		HashTableObjectContainer<HashTableType>** MainTable;
 		size_t TableStepSize;
 
-		HashTableKey(HashTableType::* GetKeyValueFunction)(); /* function used to get key value, so user can use any member in their class */
+		HashTableKey(HashTableTypeRoot::* GetKeyValueFunction)(); /* function used to get key value, so user can use any member in their class */
 	public:
 
 		/// <summary>
@@ -108,7 +114,7 @@ namespace NosLib
 		/// <param name="GetKeyValueFunction">- Member function of class used to get the key to hash, so how you can find your object</param>
 		/// <param name="startSize">(default = 100) - Array Start Size</param>
 		/// <param name="stepSize">(default = 10) - How much the array should increase (CURRENTLY UNUSED)</param>
-		HashTable(HashTableKey(HashTableType::* getKeyValueFunc)(), const size_t& startSize = 100, const size_t& stepSize = 10)
+		HashTable(HashTableKey(HashTableTypeRoot::* getKeyValueFunc)(), const size_t& startSize = 100, const size_t& stepSize = 10)
 		{
 			GetKeyValueFunction = getKeyValueFunc;
 			TableSize = startSize;
@@ -134,10 +140,12 @@ namespace NosLib
 		/// Inserts object into hash table, has to be pointer
 		/// </summary>
 		/// <param name="insertObject">- pointer to object</param>
-		void Insert(HashTableType& insertObject)
+		void Insert(HashTableType insertObject)
 		{
+			HashTableTypeNormalized normalizedInsertObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>((&insertObject));
+
 			/* do mod on the hash value to convert into a usable position number */
-			size_t pos = (std::hash<HashTableKey>{}((insertObject.*GetKeyValueFunction)()) % TableSize);
+			size_t pos = (std::hash<HashTableKey>{}((normalizedInsertObject->*GetKeyValueFunction)()) % TableSize);
 			if (MainTable[pos] != nullptr)
 			{
 				MainTable[pos]->AddNext(new HashTableObjectContainer<HashTableType>(insertObject));
@@ -168,7 +176,10 @@ namespace NosLib
 			for (int i = 0; i < MainTable[pos]->Count(); i++)
 			{
 				HashTableType* currentObject = &((*MainTable[pos])[i].Object);
-				if ((currentObject->*GetKeyValueFunction)() == findKey)
+
+				HashTableTypeNormalized normalizedObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>(currentObject);
+
+				if ((normalizedObject->*GetKeyValueFunction)() == findKey)
 				{
 					return currentObject;
 				}
@@ -197,8 +208,10 @@ namespace NosLib
 			/* go through all entries in linked list */
 			for (int i = 0; i < MainTable[pos]->Count(); i++)
 			{
-				HashTableType* currentObject = (*(*this)[pos])[i].Object;
-				if ((currentObject.*GetKeyValueFunction)() != findKey) /* check if object key matches argument key */
+				HashTableType* currentObject = &((*MainTable[pos])[i].Object);
+				HashTableTypeNormalized normalizedObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>(currentObject);
+
+				if ((normalizedObject->*GetKeyValueFunction)() != findKey) /* check if object key matches argument key */
 				{
 					continue;
 				}
