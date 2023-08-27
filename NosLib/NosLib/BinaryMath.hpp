@@ -1,9 +1,11 @@
 #ifndef _BINARYMATH_NosLib_HPP_
 #define _BINARYMATH_NosLib_HPP_
 
-#include <math.h>
+#include <cmath>
+#include <algorithm>
 
 #include "Cast.hpp"
+#include "TypeTraits.hpp"
 
 namespace NosLib
 {
@@ -35,6 +37,23 @@ namespace NosLib
 		inline int MaxByteValue(const int& byteCount)
 		{
 			return MaxBitValue(byteCount * 8);
+		}
+
+		template<class numType>
+		inline void ArithematicToByte(const numType& intIn, char** byteOut)
+		{
+			static_assert(std::is_arithmetic_v<numType>, "Type has to be either an Integer or Floating point");
+
+			(*byteOut) = new char[sizeof(numType)];
+			std::copy(NosLib::Cast<const char*>(&intIn), NosLib::Cast<const char*>(&intIn) + sizeof(numType), (*byteOut));
+		}
+
+		template<class numType>
+		inline numType ByteToArithematic(char* byte)
+		{
+			numType out = 0;
+			std::copy(byte, byte + sizeof(numType), NosLib::Cast<char*>(&out));
+			return out;
 		}
 	}
 }
