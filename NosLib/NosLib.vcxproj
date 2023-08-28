@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NosLib\BinaryMath.hpp" />
+    <ClInclude Include="NosLib\Byte.hpp" />
     <ClInclude Include="NosLib\Cast.hpp" />
     <ClInclude Include="NosLib\Chat.hpp" />
     <ClInclude Include="NosLib\Console.hpp" />

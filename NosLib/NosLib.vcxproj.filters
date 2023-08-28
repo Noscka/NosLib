@@ -63,7 +63,7 @@
     <ClInclude Include="NosLib\TypeTraits.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NosLib\BinaryMath.hpp">
+    <ClInclude Include="NosLib\Byte.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NosLib\Console.hpp">
