@@ -101,28 +101,6 @@ namespace NosLib
 
 	#pragma region Split
 		/// <summary>
-		/// Split a string into a vectory array using a delimiter
-		/// </summary>
-		/// <typeparam name="CharT">- string type</typeparam>
-		/// <param name="result">- the vector that will get modified</param>
-		/// <param name="input">- the input that will get split</param>
-		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
-		/// <returns>pointer to modified vector</returns>
-		template <typename CharT>
-		inline std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
-		{
-			std::basic_string<CharT> tmp;
-			std::basic_stringstream<CharT> ss(input);
-
-			while (std::getline(ss, tmp, delimiter))
-			{
-				result->push_back(tmp);
-			}
-
-			return result;
-		}
-
-		/// <summary>
 		/// Split a string into a DynamicArray Entries using a delimiter
 		/// </summary>
 		/// <typeparam name="CharT">- string type</typeparam>
@@ -131,7 +109,7 @@ namespace NosLib
 		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 		/// <returns>pointer to modified DynamicArray</returns>
 		template <typename CharT>
-		inline NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = L' ')
+		inline NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = ' ')
 		{
 			std::basic_string<CharT> tmp;
 			std::basic_stringstream<CharT> ss(input);
@@ -144,6 +122,34 @@ namespace NosLib
 			return result;
 		}
 	#pragma endregion
+
+#pragma region Split
+		/// <summary>
+		/// Split a string into a DynamicArray Entries using a delimiter
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="result">- the DynamicArray that will get modified</param>
+		/// <param name="input">- the input that will get split</param>
+		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
+		/// <returns>pointer to modified DynamicArray</returns>
+		template <typename CharT>
+		inline std::basic_string<CharT> Combine(NosLib::DynamicArray<std::basic_string<CharT>>* inputArray, const CharT& delimiter = ' ')
+		{
+			std::basic_string<CharT> out;
+
+			for (int i = 0; i <= inputArray->GetLastArrayIndex(); i++)
+			{
+				out.append((*inputArray)[i]);
+				
+				if (i != inputArray->GetLastArrayIndex())
+				{
+					out += delimiter;
+				}
+			}
+
+			return out;
+		}
+#pragma endregion
 
 	#pragma region CenterString
 		/// <summary>
