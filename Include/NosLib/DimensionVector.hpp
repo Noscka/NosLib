@@ -18,10 +18,9 @@ namespace NosLib
 		/// A 2 dimensional vector
 		/// </summary>
 		template<typename ArithmeticType>
-		class VectorD2
+		struct VectorD2
 		{
 			static_assert(std::is_arithmetic_v<ArithmeticType>, "Vector datatype has to be an arithmetic type");
-		public:
 			ArithmeticType X;
 			ArithmeticType Y;
 
@@ -123,10 +122,9 @@ namespace NosLib
 		/// A 3 dimensional vector
 		/// </summary>
 		template<typename ArithmeticType>
-		class VectorD3
+		struct VectorD3
 		{
 			static_assert(std::is_arithmetic_v<ArithmeticType>, "Vector datatype has to be an arithmetic type");
-		public:
 			ArithmeticType X;
 			ArithmeticType Y;
 			ArithmeticType Z;
@@ -188,6 +186,79 @@ namespace NosLib
 			std::basic_string<CharT> str()
 			{
 				return NosLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {}, {})", this->X, this->Y, this->Z));
+			}
+		};
+
+		/// <summary>
+		/// A 4 dimensional vector
+		/// </summary>
+		template<typename ArithmeticType>
+		struct VectorD4
+		{
+			static_assert(std::is_arithmetic_v<ArithmeticType>, "Vector datatype has to be an arithmetic type");
+			ArithmeticType X;
+			ArithmeticType Y;
+			ArithmeticType Z;
+			ArithmeticType W;
+
+			/// <summary>
+			/// Default VectorD4 Constructor
+			/// </summary>
+			VectorD4() {}
+
+			/// <summary>
+			/// Creates a 3 dimensional vector object
+			/// </summary>
+			/// <param name="x">- x coord</param>
+			/// <param name="y">- y coord</param>
+			/// <param name="z">- z coord</param>
+			VectorD4(const ArithmeticType& x, const ArithmeticType& y, const ArithmeticType& z, const ArithmeticType& w)
+			{
+				X = x;
+				Y = y;
+				Z = z;
+				W = w;
+			}
+
+			/// <summary>
+			/// + operator
+			/// </summary>
+			/// <param name="addingObject">- the second object to add</param>
+			/// <returns>An object of the other objects added together</returns>
+			VectorD4<ArithmeticType> operator+(const VectorD4<ArithmeticType>& addingObject)
+			{
+				return VectorD4((this->X + addingObject.X), (this->Y + addingObject.Y), (this->Z + addingObject.Z), (this->W + addingObject.W));
+			}
+
+			/// <summary>
+			/// - operator
+			/// </summary>
+			/// <param name="subtractingObject">- the second object to subtract</param>
+			/// <returns>An object of the other objects subtracted together</returns>
+			VectorD4<ArithmeticType> operator-(const VectorD4<ArithmeticType>& subtractingObject)
+			{
+				return VectorD4((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z), (this->W - addingObject.W));
+			}
+
+			/// <summary>
+			/// == operator
+			/// </summary>
+			/// <param name="comparingObject">- second object to compare against</param>
+			/// <returns>if vectors represent the same position or not</returns>
+			bool operator==(const VectorD4<ArithmeticType>& comparingObject) const
+			{
+				return (this->X == comparingObject.X && this->Y == comparingObject.Y && this->Z == comparingObject.Z && this->W == addingObject.W);
+			}
+
+			/// <summary>
+			/// Converts Vector to string
+			/// </summary>
+			/// <typeparam name="CharT">- what character type to convert to</typeparam>
+			/// <returns>the string version of the vector</returns>
+			template <typename CharT>
+			std::basic_string<CharT> str()
+			{
+				return NosLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {}, {}, {})", this->X, this->Y, this->Z, this->W));
 			}
 		};
 	}
