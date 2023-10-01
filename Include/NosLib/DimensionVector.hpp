@@ -237,7 +237,7 @@ namespace NosLib
 			/// <returns>An object of the other objects subtracted together</returns>
 			VectorD4<ArithmeticType> operator-(const VectorD4<ArithmeticType>& subtractingObject)
 			{
-				return VectorD4((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z), (this->W - addingObject.W));
+				return VectorD4((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z), (this->W - subtractingObject.W));
 			}
 
 			/// <summary>
@@ -247,7 +247,7 @@ namespace NosLib
 			/// <returns>if vectors represent the same position or not</returns>
 			bool operator==(const VectorD4<ArithmeticType>& comparingObject) const
 			{
-				return (this->X == comparingObject.X && this->Y == comparingObject.Y && this->Z == comparingObject.Z && this->W == addingObject.W);
+				return (this->X == comparingObject.X && this->Y == comparingObject.Y && this->Z == comparingObject.Z && this->W == comparingObject.W);
 			}
 
 			/// <summary>
