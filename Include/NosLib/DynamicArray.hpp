@@ -82,7 +82,7 @@ namespace NosLib
 			ArrayStepSize = copySource.ArrayStepSize;
 			DeleteObjectsOnDestruction = copySource.DeleteObjectsOnDestruction;
 
-			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 			std::copy(copySource.MainArray, copySource.MainArray + ArraySize, MainArray);
 		}
 
@@ -94,7 +94,7 @@ namespace NosLib
 			ArrayStepSize = copySource.ArrayStepSize;
 			DeleteObjectsOnDestruction = copySource.DeleteObjectsOnDestruction;
 
-			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 			std::copy(copySource.MainArray, copySource.MainArray + ArraySize, MainArray);
 
 			copySource.MainArray = nullptr;
@@ -117,6 +117,7 @@ namespace NosLib
 					for (int i = 0; i < CurrentArrayIndex; i++)
 					{
 						delete MainArray[i];
+						MainArray[i] = nullptr;
 					}
 				}
 			}
@@ -536,7 +537,7 @@ namespace NosLib
 			ArrayStepSize = assigmentObject.ArrayStepSize;
 			DeleteObjectsOnDestruction = assigmentObject.DeleteObjectsOnDestruction;
 
-			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 			std::copy(assigmentObject.MainArray, assigmentObject.MainArray + ArraySize, MainArray);
 
 			//assigmentObject.MainArray = nullptr;
@@ -557,7 +558,7 @@ namespace NosLib
 			ArrayStepSize = assigmentObject.ArrayStepSize;
 			DeleteObjectsOnDestruction = assigmentObject.DeleteObjectsOnDestruction;
 
-			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			MainArray = new ArrayDataType[ArraySize]();
 			std::copy(assigmentObject.MainArray, assigmentObject.MainArray + ArraySize, MainArray);
 
 			assigmentObject.MainArray = nullptr;
