@@ -488,6 +488,24 @@ namespace NosLib
 			this->MultiAppend(insersationObject.begin(), insersationObject.end());
 			return *this;
 		}
+
+		/// <summary>
+		/// Assignment Operator, used to copy the array so the destructor doesn't mess with the new array
+		/// </summary>
+		/// <param name="assigmentObject">- object on the right</param>
+		/// <returns>self</returns>
+		DynamicArray<ArrayDataType>& operator=(const DynamicArray<ArrayDataType>& assigmentObject)
+		{
+			ArraySize = assigmentObject.ArraySize;
+			ArrayDefaultSize = assigmentObject.ArrayDefaultSize;
+			CurrentArrayIndex = assigmentObject.CurrentArrayIndex;
+			ArrayStepSize = assigmentObject.ArrayStepSize;
+			DeleteObjectsOnDestruction = assigmentObject.DeleteObjectsOnDestruction;
+
+			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			std::copy(assigmentObject.MainArray, assigmentObject.MainArray + ArraySize, MainArray);
+			return *this;
+		}
 	#pragma endregion
 	};
 }
