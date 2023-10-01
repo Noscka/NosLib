@@ -74,9 +74,41 @@ namespace NosLib
 			}
 		}
 
+		DynamicArray(DynamicArray& copySource)
+		{
+			ArraySize = copySource.ArraySize;
+			ArrayDefaultSize = copySource.ArrayDefaultSize;
+			CurrentArrayIndex = copySource.CurrentArrayIndex;
+			ArrayStepSize = copySource.ArrayStepSize;
+			DeleteObjectsOnDestruction = copySource.DeleteObjectsOnDestruction;
+
+			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			std::copy(copySource.MainArray, copySource.MainArray + ArraySize, MainArray);
+		}
+
+		DynamicArray(DynamicArray&& copySource) noexcept
+		{
+			ArraySize = copySource.ArraySize;
+			ArrayDefaultSize = copySource.ArrayDefaultSize;
+			CurrentArrayIndex = copySource.CurrentArrayIndex;
+			ArrayStepSize = copySource.ArrayStepSize;
+			DeleteObjectsOnDestruction = copySource.DeleteObjectsOnDestruction;
+
+			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			std::copy(copySource.MainArray, copySource.MainArray + ArraySize, MainArray);
+
+			copySource.MainArray = nullptr;
+		}
+
 		/// Destroy array contained in object
 		~DynamicArray()
 		{
+			/* if set to nullptr by self or operator=, just skip */
+			if (MainArray == nullptr)
+			{
+				return;
+			}
+
 			/* if a pointer and not a function, go through all entries and delete */
 			if constexpr (std::is_pointer<ArrayDataType>::value && !std::is_function< NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value)
 			{
@@ -92,6 +124,8 @@ namespace NosLib
 			{
 				delete[] MainArray;
 			}
+
+			MainArray = nullptr;
 		}
 	#pragma endregion
 
@@ -490,11 +524,11 @@ namespace NosLib
 		}
 
 		/// <summary>
-		/// Assignment Operator, used to copy the array so the destructor doesn't mess with the new array
+		/// Assignment Operator for I-Value, doesn't set array to nullptr for object on the right
 		/// </summary>
 		/// <param name="assigmentObject">- object on the right</param>
 		/// <returns>self</returns>
-		DynamicArray<ArrayDataType>& operator=(const DynamicArray<ArrayDataType>& assigmentObject)
+		DynamicArray<ArrayDataType>& operator=(DynamicArray<ArrayDataType>& assigmentObject)
 		{
 			ArraySize = assigmentObject.ArraySize;
 			ArrayDefaultSize = assigmentObject.ArrayDefaultSize;
@@ -504,6 +538,30 @@ namespace NosLib
 
 			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
 			std::copy(assigmentObject.MainArray, assigmentObject.MainArray + ArraySize, MainArray);
+
+			//assigmentObject.MainArray = nullptr;
+
+			return *this;
+		}
+
+		/// <summary>
+		/// Assignment Operator for R-Value, sets array to nullptr for the object on the right
+		/// </summary>
+		/// <param name="assigmentObject">- object on the right</param>
+		/// <returns>self</returns>
+		DynamicArray<ArrayDataType>& operator=(DynamicArray<ArrayDataType>&& assigmentObject) noexcept
+		{
+			ArraySize = assigmentObject.ArraySize;
+			ArrayDefaultSize = assigmentObject.ArrayDefaultSize;
+			CurrentArrayIndex = assigmentObject.CurrentArrayIndex;
+			ArrayStepSize = assigmentObject.ArrayStepSize;
+			DeleteObjectsOnDestruction = assigmentObject.DeleteObjectsOnDestruction;
+
+			ArrayDataType* MainArray = new ArrayDataType[ArraySize]();
+			std::copy(assigmentObject.MainArray, assigmentObject.MainArray + ArraySize, MainArray);
+
+			assigmentObject.MainArray = nullptr;
+
 			return *this;
 		}
 	#pragma endregion
