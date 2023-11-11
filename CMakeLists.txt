@@ -17,6 +17,10 @@ endif()
 message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
 
 option(BUILD_SHARED_LIBS "If should link dynamically or statically" OFF)
+add_definitions(-DUNICODE -D_UNICODE)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE "./Include/")
+
+add_executable("NosLibTesting" "./NosLibTesting/NosLibTesting.cpp")
+target_link_libraries("NosLibTesting" PUBLIC "NosLib")

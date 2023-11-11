@@ -7,7 +7,7 @@
 #include "DimensionVector.hpp"
 #include "EventHandling/EventHandling.hpp"
 
-#include <math.h>
+#include <cmath>
 #include <cassert>
 
 namespace NosLib

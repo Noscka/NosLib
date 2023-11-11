@@ -7,7 +7,7 @@ If (test-path $HEADER)
 
 "#ifndef __ALL_HEADERS__" >> $HEADER
 "#define __ALL_HEADERS__" >> $HEADER
-$files = Get-ChildItem "..\NosLib\NosLib\" -Filter *.hpp
+$files = Get-ChildItem "..\Include\NosLib\" -Filter *.hpp
 foreach ($f in $files)
 {
     "#include <NosLib\$f>" >> $HEADER
