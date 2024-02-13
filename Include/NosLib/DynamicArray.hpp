@@ -7,11 +7,10 @@
 #include "TypeTraits.hpp"
 
 #include <iostream>
-#include <minmax.h>
 
 namespace NosLib
 {
-	/* TODO: Add modes such as: 
+	/* TODO: Add modes such as:
 	 - increase by step size
 	 - increase by multiplying (double, triple, etc)
 	*/
@@ -35,7 +34,7 @@ namespace NosLib
 		typedef ArrayDataType* iterator;
 		typedef const ArrayDataType* const_iterator;
 	public:
-	#pragma region Constructors
+#pragma region Constructors
 		/// <summary>
 		/// Constructor with starting size and step size params for custom objects
 		/// </summary>
@@ -128,9 +127,9 @@ namespace NosLib
 
 			MainArray = nullptr;
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region MainArray Modification
+#pragma region MainArray Modification
 		/// <summary>
 		/// Append single Object
 		/// </summary>
@@ -167,7 +166,7 @@ namespace NosLib
 		/// <param name="range">- the range of items wanted</param>
 		inline constexpr void MultiAppend(ArrayDataType* beginning, const int& range)
 		{
-			for (int i = 0; i < range; i++){Append(beginning[i]);}
+			for (int i = 0; i < range; i++) { Append(beginning[i]); }
 		}
 
 		/// <summary>
@@ -348,9 +347,9 @@ namespace NosLib
 			ArraySize = ArrayDefaultSize;
 			MainArray = new ArrayDataType[ArrayDefaultSize]();
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region MainArray Operations
+#pragma region MainArray Operations
 		/// <summary>
 		/// checks if an object already exists in array. will use == operator to check
 		/// </summary>
@@ -368,9 +367,9 @@ namespace NosLib
 
 			return false;
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region Variable Returns
+#pragma region Variable Returns
 		/// <summary>
 		/// Return array contained in the object
 		/// </summary>
@@ -423,18 +422,17 @@ namespace NosLib
 		{
 			return ArrayStepSize;
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region For Loop Functions
-		// For loop range-based function
+#pragma region For Loop Functions
+	// For loop range-based function
 		inline constexpr iterator begin() { return &MainArray[0]; }
 		inline constexpr const_iterator begin() const { return &MainArray[0]; }
 		inline constexpr iterator end() { return &MainArray[CurrentArrayIndex]; }
 		inline constexpr const_iterator end() const { return &MainArray[CurrentArrayIndex]; }
-	#pragma endregion
+#pragma endregion
 
-	#pragma region Operators
-
+#pragma region Operators
 		/// <summary>
 		/// Allows usage of << operator with all oStreams
 		/// </summary>
@@ -565,7 +563,7 @@ namespace NosLib
 
 			return *this;
 		}
-	#pragma endregion
+#pragma endregion
 	};
 }
 #endif

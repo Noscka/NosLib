@@ -9,109 +9,109 @@
 
 namespace NosLib
 {
-    /// <summary>
-    /// namespace for file management
-    /// </summary>
-    namespace FileManagement
-    {
-        /// <summary>
-        /// Class which allows for storing file paths
-        /// </summary>
-        class FilePath
-        {
-        protected:
-            std::wstring AbsolutePath; /* Absolute path to exe (without exe filename) */
-            std::wstring RelativePath; /* Subpath from current path */
-            std::wstring Filename; /* Filename */
+	/// <summary>
+	/// namespace for file management
+	/// </summary>
+	namespace FileManagement
+	{
+		/// <summary>
+		/// Class which allows for storing file paths
+		/// </summary>
+		class FilePath
+		{
+		protected:
+			std::wstring AbsolutePath; /* Absolute path to exe (without exe filename) */
+			std::wstring RelativePath; /* Subpath from current path */
+			std::wstring Filename; /* Filename */
 
-        public:
-            /// <summary>
-            /// Create FilePath Object with black members
-            /// </summary>
-            inline constexpr FilePath() {}
+		public:
+			/// <summary>
+			/// Create FilePath Object with black members
+			/// </summary>
+			inline constexpr FilePath() {}
 
-            /// <summary>
-            /// Create FilePath Object
-            /// </summary>
-            /// <param name="relativePath">- path from current/absolute path</param>
-            /// <param name="filename">- filename</param>
-            inline constexpr FilePath(const std::wstring& relativePath, const std::wstring& filename)
-            {
-                RelativePath = relativePath;
-                Filename = filename;
-                AbsolutePath = std::filesystem::current_path().wstring();
-            }
+			/// <summary>
+			/// Create FilePath Object
+			/// </summary>
+			/// <param name="relativePath">- path from current/absolute path</param>
+			/// <param name="filename">- filename</param>
+			inline constexpr FilePath(const std::wstring& relativePath, const std::wstring& filename)
+			{
+				RelativePath = relativePath;
+				Filename = filename;
+				AbsolutePath = std::filesystem::current_path().wstring();
+			}
 
-            /// <summary>
-            /// Returns Absolute path without filename
-            /// </summary>
-            /// <returns>Absolute path without filename</returns>
-            inline constexpr std::wstring GetAbsolutePath() const
-            {
-                return AbsolutePath + RelativePath;
-            }
+			/// <summary>
+			/// Returns Absolute path without filename
+			/// </summary>
+			/// <returns>Absolute path without filename</returns>
+			inline constexpr std::wstring GetAbsolutePath() const
+			{
+				return AbsolutePath + RelativePath;
+			}
 
-            /// <summary>
-            /// Returns Absolute path to file
-            /// </summary>
-            /// <returns>Absolute path to file</returns>
-            inline constexpr std::wstring GetFilePath() const
-            {
-                return GetAbsolutePath() + Filename;
-            }
+			/// <summary>
+			/// Returns Absolute path to file
+			/// </summary>
+			/// <returns>Absolute path to file</returns>
+			inline constexpr std::wstring GetFilePath() const
+			{
+				return GetAbsolutePath() + Filename;
+			}
 
-            /// <summary>
-            /// Return just name of file
-            /// </summary>
-            /// <returns>filename</returns>
-            inline constexpr std::wstring GetFilename() const
-            {
-                return Filename;
-            }
+			/// <summary>
+			/// Return just name of file
+			/// </summary>
+			/// <returns>filename</returns>
+			inline constexpr std::wstring GetFilename() const
+			{
+				return Filename;
+			}
 
-            /// <summary>
-            /// Change the filename
-            /// </summary>
-            /// <param name="newFilename">- the new filename</param>
-            /// <returns>filename</returns>
-            inline constexpr std::wstring SetFilename(const std::wstring& newFilename)
-            {
-                Filename = newFilename;
-                return Filename;
-            }
-        };
+			/// <summary>
+			/// Change the filename
+			/// </summary>
+			/// <param name="newFilename">- the new filename</param>
+			/// <returns>filename</returns>
+			inline constexpr std::wstring SetFilename(const std::wstring& newFilename)
+			{
+				Filename = newFilename;
+				return Filename;
+			}
+		};
 
-    #pragma region GetFileExtension
-        /// <summary>
-        /// Get file extension from filename
-        /// </summary>
-        /// <typeparam name="CharT">- string type</typeparam>
-        /// <param name="filename">- filename to get extension from</param>
-        /// <returns>filename extension</returns>
-        template <typename CharT>
-        inline constexpr std::basic_string<CharT> GetFileExtension(const std::basic_string<CharT>& filename)
-        {
-            return filename.substr(filename.find_last_of(L".") + 1);
-        }
-    #pragma endregion
+#pragma region GetFileExtension
+		/// <summary>
+		/// Get file extension from filename
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="filename">- filename to get extension from</param>
+		/// <returns>filename extension</returns>
+		template <typename CharT>
+		inline constexpr std::basic_string<CharT> GetFileExtension(const std::basic_string<CharT>& filename)
+		{
+			return filename.substr(filename.find_last_of(L".") + 1);
+		}
+#pragma endregion
 
-    #pragma region GetFileSize
-        /// <summary>
-        /// Gets file size
-        /// </summary>
-        /// <typeparam name="CharT">- string type</typeparam>
-        /// <param name="filename">- path to file</param>
-        /// <returns>size as int</returns>
-        template <typename CharT>
-        inline constexpr int GetFileSize(const std::basic_string<CharT>& filePath)
-        {
-            struct stat stat_buf;
-            int rc = stat(NosLib::String::ConvertString<char, CharT>(filePath).c_str(), &stat_buf);
-            return rc == 0 ? stat_buf.st_size : -1;
-        }
-    #pragma endregion
+#pragma region GetFileSize
+		/// <summary>
+		/// Gets file size
+		/// </summary>
+		/// <typeparam name="CharT">- string type</typeparam>
+		/// <param name="filename">- path to file</param>
+		/// <returns>size as int</returns>
+		template <typename CharT>
+		inline constexpr int GetFileSize(const std::basic_string<CharT>& filePath)
+		{
+			struct stat stat_buf;
+			int rc = stat(NosLib::String::ConvertString<char, CharT>(filePath).c_str(), &stat_buf);
+			return rc == 0 ? stat_buf.st_size : -1;
+		}
+#pragma endregion
 
-        inline HRESULT CreateFileShortcut(const LPCWSTR& lpszTargetfile, const LPCWSTR& lpszShortcutLocation, const LPCWSTR& lpszIconFile = L"", const int& iIconIndex = 0, const LPCWSTR& lpszDescription = L"", const LPCWSTR& lpszArgument = L"")
+		inline HRESULT CreateFileShortcut(const LPCWSTR& lpszTargetfile, const LPCWSTR& lpszShortcutLocation, const LPCWSTR& lpszIconFile = L"", const int& iIconIndex = 0, const LPCWSTR& lpszDescription = L"", const LPCWSTR& lpszArgument = L"")
 		{
 			(void)CoInitialize(NULL);
 			HRESULT hres;
@@ -124,11 +124,11 @@ namespace NosLib
 			{
 				IPersistFile* ppf;
 
-                std::filesystem::path resolvedFilePath = std::filesystem::canonical(lpszTargetfile).wstring();
+				std::filesystem::path resolvedFilePath = std::filesystem::canonical(lpszTargetfile).wstring();
 
 				psl->SetPath(resolvedFilePath.c_str());
-                psl->SetWorkingDirectory(resolvedFilePath.remove_filename().c_str());
-                psl->SetIconLocation(std::filesystem::canonical(lpszIconFile).c_str(), iIconIndex);
+				psl->SetWorkingDirectory(resolvedFilePath.remove_filename().c_str());
+				psl->SetIconLocation(std::filesystem::canonical(lpszIconFile).c_str(), iIconIndex);
 				psl->SetArguments(lpszArgument);
 				psl->SetDescription(lpszDescription);
 
@@ -146,6 +146,6 @@ namespace NosLib
 			(void)CoUninitialize();
 			return hres;
 		}
-    }
+	}
 }
 #endif

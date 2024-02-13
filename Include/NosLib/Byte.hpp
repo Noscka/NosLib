@@ -1,11 +1,9 @@
 #ifndef _BINARYMATH_NosLib_HPP_
 #define _BINARYMATH_NosLib_HPP_
 
-#include <cmath>
-#include <algorithm>
-
 #include "Cast.hpp"
-#include "TypeTraits.hpp"
+
+#include <cmath>
 
 namespace NosLib
 {
@@ -79,7 +77,7 @@ namespace NosLib
 		/// <param name="count">(default = 1) - for arrays, amount of objects in array</param>
 		/// <returns>true if the same, false if different</returns>
 		template<class type1, class type2>
-		inline constexpr bool ByteCompare(const type1& in1, const type2& in2, const size_t& count =1)
+		inline constexpr bool ByteCompare(const type1& in1, const type2& in2, const size_t& count = 1)
 		{
 			char in1Byte[count * sizeof(type1)];
 			char in2Byte[count * sizeof(type2)];
@@ -88,7 +86,7 @@ namespace NosLib
 			std::copy(NosLib::Cast<const char*>(&in2), NosLib::Cast<const char*>(&in2) + (sizeof(type2) * count), in2Byte);
 
 
-			for (int i = 0; i < count* std::min(sizeof(type1), sizeof(type2)); i++)
+			for (int i = 0; i < count * std::min(sizeof(type1), sizeof(type2)); i++)
 			{
 				if (in1Byte[i] != in2Byte[i])
 				{

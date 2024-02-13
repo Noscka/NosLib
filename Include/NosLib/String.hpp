@@ -6,14 +6,10 @@
 #include "Cast.hpp"
 
 #include <Windows.h>
-#include <stringapiset.h>
 #include <string>
 #include <sstream>
-#include <vector>
 #include <minmax.h>
-#include <algorithm>
 #include <iterator>
-#include <set>
 
 namespace NosLib
 {
@@ -22,7 +18,7 @@ namespace NosLib
 	/// </summary>
 	namespace String
 	{
-	#pragma region String Conversion
+#pragma region String Conversion
 		/// <summary>
 		/// Converts any string type to any other string type. template <ToType, FromType>
 		/// </summary>
@@ -47,9 +43,9 @@ namespace NosLib
 
 		const auto ToString = ConvertString<char, wchar_t>;
 		const auto ToWstring = ConvertString<wchar_t, char>;
-	#pragma endregion
+#pragma endregion
 
-	#pragma region Character Conversion
+#pragma region Character Conversion
 		/// <summary>
 		/// Converts single characters using casting
 		/// </summary>
@@ -65,9 +61,9 @@ namespace NosLib
 
 			return NosLib::Cast<CharTo, CharFrom>(charIn);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region IsNumber
+#pragma region IsNumber
 		/// <summary>
 		/// Check if string is number (with or without signs)
 		/// </summary>
@@ -97,9 +93,9 @@ namespace NosLib
 
 			return true;
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region Split
+#pragma region Split
 		/// <summary>
 		/// Split a string into a DynamicArray Entries using a delimiter
 		/// </summary>
@@ -121,7 +117,7 @@ namespace NosLib
 
 			return result;
 		}
-	#pragma endregion
+#pragma endregion
 
 #pragma region Split
 		/// <summary>
@@ -140,7 +136,7 @@ namespace NosLib
 			for (int i = 0; i <= inputArray->GetLastArrayIndex(); i++)
 			{
 				out.append((*inputArray)[i]);
-				
+
 				if (i != inputArray->GetLastArrayIndex())
 				{
 					out += seperator;
@@ -151,7 +147,7 @@ namespace NosLib
 		}
 #pragma endregion
 
-	#pragma region CenterString
+#pragma region CenterString
 		/// <summary>
 		/// Center string with custom console Handle
 		/// </summary>
@@ -180,7 +176,7 @@ namespace NosLib
 			}
 
 			return output;
-			
+
 		}
 
 		/// <summary>
@@ -222,9 +218,9 @@ namespace NosLib
 		{
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region FindNextWord
+#pragma region FindNextWord
 		/// <summary>
 		/// finds next word from position
 		/// </summary>
@@ -285,9 +281,9 @@ namespace NosLib
 			int tmpInt;
 			return FindNextWord<CharT>(string, startPosition, &tmpString, &tmpInt, delimiter);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region FindNthWord
+#pragma region FindNthWord
 		/// <summary>
 		/// finds Nth word from position
 		/// </summary>
@@ -327,9 +323,9 @@ namespace NosLib
 			FindNthWord<CharT>(string, startPosition, wordCount, &tmpString, &tmpInt, delimiter);
 			return tmpString;
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region SubstringContainCount
+#pragma region SubstringContainCount
 		/// <summary>
 		/// Counts the amount of times a substring is contained inside another string
 		/// </summary>
@@ -342,16 +338,17 @@ namespace NosLib
 		{
 			int count = 0;
 			size_t pos = 0;
-			while ((pos = string.find(substring, pos)) != std::basic_string<CharT>::npos) {
+			while ((pos = string.find(substring, pos)) != std::basic_string<CharT>::npos)
+			{
 				count++;
 				pos += substring.length();
 			}
 
 			return count;
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region Shorten
+#pragma region Shorten
 		/// <summary>
 		/// Shortens string to set size
 		/// </summary>
@@ -405,7 +402,7 @@ namespace NosLib
 
 			return Shorten(string, (csbi.srWindow.Right - csbi.srWindow.Left + 1), putAtEnd);
 		}
-	#pragma endregion
+#pragma endregion
 
 		/// <summary>
 		/// removes whitespace characters either side of the string

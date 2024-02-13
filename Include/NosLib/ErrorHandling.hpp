@@ -8,7 +8,7 @@ namespace NosLib
 {
 	namespace ErrorHandling
 	{
-	#pragma region GetLastErrorAsString
+#pragma region GetLastErrorAsString
 		inline std::string GetLastErrorAsString()
 		{
 			//Get the error message ID, if any.
@@ -33,7 +33,7 @@ namespace NosLib
 
 			return message;
 		}
-	#pragma endregion
+#pragma endregion
 	}
 }
 

@@ -1,6 +1,8 @@
 #ifndef _CAST_NosLib_HPP_
 #define _CAST_NosLib_HPP_
 
+#include <type_traits>
+
 namespace NosLib
 {
 	/// <summary>

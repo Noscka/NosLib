@@ -4,8 +4,8 @@
 #include "String.hpp"
 
 #include <string>
-#include <format>
 #include <type_traits>
+#include <format>
 
 namespace NosLib
 {

@@ -16,7 +16,7 @@ namespace NosLib
 		template<bool ReturnValue>
 		struct TypeTraitReturn { static const bool value = ReturnValue; };
 
-	#pragma region remove_all_pointers
+#pragma region remove_all_pointers
 		/// <summary>
 		/// Goes to core type
 		/// </summary>
@@ -37,9 +37,9 @@ namespace NosLib
 		/// <typeparam name="T">- type to remove pointers from</typeparam>
 		template<typename T>
 		using remove_all_pointers_t = typename remove_all_pointers<T>::type;
-	#pragma endregion
+#pragma endregion
 
-	#pragma region is_character
+#pragma region is_character
 		/// <summary>
 		/// Checks if datatype is a character datatype
 		/// </summary>
@@ -63,7 +63,7 @@ namespace NosLib
 
 		template<typename T>
 		constexpr bool is_character_v = is_character<T>::value;
-	#pragma endregion
+#pragma endregion
 	}
 }
 #endif

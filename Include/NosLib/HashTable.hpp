@@ -5,9 +5,6 @@
 #include "Pointers.hpp"
 
 #include <type_traits>
-#include <algorithm>
-#include <functional>
-#include <cstdio>
 
 namespace NosLib
 {

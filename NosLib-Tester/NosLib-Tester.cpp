@@ -26,22 +26,22 @@ int main()
 
 	FlagTesting flag = Flag1 | Flag2 | Flag3;
 
-	if (flag & Flag1)
+	if (flag& Flag1)
 	{
 		wprintf(L"Contains Flag1\n");
 	}
 
-	if (flag & Flag2)
+	if (flag& Flag2)
 	{
 		wprintf(L"Contains Flag2\n");
 	}
 
-	if (flag & Flag3)
+	if (flag& Flag3)
 	{
 		wprintf(L"Contains Flag3\n");
 	}
 
-	if (flag & Flag4)
+	if (flag& Flag4)
 	{
 		wprintf(L"Contains Flag4\n");
 	}

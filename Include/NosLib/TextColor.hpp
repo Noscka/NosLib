@@ -3,12 +3,8 @@
 
 #include "Console.hpp"
 #include "RGB.hpp"
-#include "String.hpp"
 
-#include <codecvt>
-#include <stdint.h>
 #include <string>
-#include <format>
 
 namespace NosLib
 {
@@ -18,7 +14,7 @@ namespace NosLib
 	namespace TextColor
 	{
 		/// <summary>
-		/// Create necesacry ANSI escape code to give wanted color
+		/// Create necessary ANSI escape code to give wanted color
 		/// </summary>
 		/// <typeparam name="CharT">- string type</typeparam>
 		/// <param name="value">- the RGB values wanted</param>
@@ -31,7 +27,7 @@ namespace NosLib
 		}
 
 		/// <summary>
-		/// namespace which contains functions which aren't useful but are entraiting or fun
+		/// namespace which contains functions which aren't useful but are entraining or fun
 		/// </summary>
 		namespace Fun
 		{
@@ -41,7 +37,7 @@ namespace NosLib
 			/// <param name="columnCount">- the amount of columns</param>
 			/// <param name="rgbValue">(default = (20, 180, 170)) - the RGB value wanted</param>
 			/// <returns>a row with a color</returns>
-			inline std::wstring ColorRow(const int& columnCount,const NosLib::RGB::NosRGB& rgbValue = NosLib::RGB::NosRGB(20, 180, 170))
+			inline std::wstring ColorRow(const int& columnCount, const NosLib::RGB::NosRGB& rgbValue = NosLib::RGB::NosRGB(20, 180, 170))
 			{
 				return NosLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
 			}
@@ -66,7 +62,7 @@ namespace NosLib
 					currentColor.Iterate();
 
 					wprintf(ColorRow(csbi.srWindow.Right - csbi.srWindow.Left + 1, currentColor).c_str());
-					if(singleRow)
+					if (singleRow)
 						SetConsoleCursorPosition(consoleHandle, { 0, 0 });
 					Sleep(sleepSpeed);
 				}

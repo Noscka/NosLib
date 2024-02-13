@@ -29,12 +29,12 @@ namespace NosLib
 				return _setmode(_fileno(stdout), _O_U16TEXT); /* set program to unicode output */
 			}
 
-		#pragma region EnableANSI
-			/// <summary>
-			/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text with Custom Console Handle
-			/// </summary>
-			/// <param name="consoleHandle">- Custom Console Handle</param>
-			/// <returns>if operation was succesful</returns>
+#pragma region EnableANSI
+		/// <summary>
+		/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text with Custom Console Handle
+		/// </summary>
+		/// <param name="consoleHandle">- Custom Console Handle</param>
+		/// <returns>if operation was succesful</returns>
 			inline bool EnableANSI(const HANDLE& consoleHandle)
 			{
 				DWORD consoleMode;
@@ -55,25 +55,25 @@ namespace NosLib
 			{
 				return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
 			}
-		#pragma endregion
+#pragma endregion
 
-		#pragma region BeautifyConsole
-			/// <summary>
-			/// Makes the console loop more beatiful with a specified console window
-			/// </summary>
-			/// <typeparam name="CharT">- string char type</typeparam>
-			/// <param name="window">- specified window handle</param>
-			/// <param name="title">- what the window should be called</param>
-			/// <returns>if succesful</returns>
+#pragma region BeautifyConsole
+		/// <summary>
+		/// Makes the console loop more beatiful with a specified console window
+		/// </summary>
+		/// <typeparam name="CharT">- string char type</typeparam>
+		/// <param name="window">- specified window handle</param>
+		/// <param name="title">- what the window should be called</param>
+		/// <returns>if succesful</returns>
 			template <typename CharT>
 			inline constexpr bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
 			{
 				bool setTitle;
-			#ifdef UNICODE
+#ifdef UNICODE
 				setTitle = SetConsoleTitleW(NosLib::String::ConvertString<wchar_t, CharT>(title).c_str());
-			#else
+#else
 				setTitle = SetConsoleTitleA(NosLib::String::ConvertString<char, CharT>(title).c_str());
-			#endif // UNICODE
+#endif // UNICODE
 
 				return setTitle && ShowScrollBar(window, SB_BOTH, FALSE);
 			}
@@ -89,7 +89,7 @@ namespace NosLib
 			{
 				return BeatifyConsole<CharT>(GetConsoleWindow(), title);
 			}
-		#pragma endregion
+#pragma endregion
 
 #ifdef _EVENTHANDLING_NOSDOS_HPP_
 			/// <summary>
@@ -100,7 +100,7 @@ namespace NosLib
 #endif
 		}
 
-	#pragma region GetCaretPosition
+#pragma region GetCaretPosition
 		/// <summary>
 		/// Get position of console caret with Custom Console Handle
 		/// </summary>
@@ -420,8 +420,7 @@ namespace NosLib
 				}
 			}
 		}
-	#pragma endregion
+#pragma endregion
 	}
 }
-
 #endif
