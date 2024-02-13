@@ -1,1 +1,0 @@
- - Caret - The blinking cursor insde the console/terminal
