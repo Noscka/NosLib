@@ -42,7 +42,7 @@ namespace NosLib
 		/// <param name="StartSize">(default = 10) - Starting size of the array</param>
 		/// <param name="StepSize">(default = 10) - how much the array will increase each time it reaches the limit</param>
 		/// <param name="deleteObjectsOnDestruction">(default = true) - If the array should destroy all the objects (if possible) when getting destroyed</param>
-		DynamicArray(const int& startSize = 10, const int& stepSize = 10, const bool& deleteObjectsOnDestruction = true)
+		inline constexpr DynamicArray(const int& startSize = 10, const int& stepSize = 10, const bool& deleteObjectsOnDestruction = true)
 		{
 			ArrayDefaultSize = ArraySize = startSize;
 			ArrayStepSize = stepSize;
@@ -59,7 +59,7 @@ namespace NosLib
 		/// <param name="StepSize">(default = 10) - how much the array will increase each time it reaches the limit</param>
 		/// <param name="deleteObjectsOnDestruction">(default = true) - If the array should destroy all the objects (if possible) when getting destroyed</param>
 		template <std::size_t size>
-		DynamicArray(const ArrayDataType(&inputArray)[size], const int& stepSize = 10, const bool& deleteObjectsOnDestruction = true)
+		inline constexpr DynamicArray(const ArrayDataType(&inputArray)[size], const int& stepSize = 10, const bool& deleteObjectsOnDestruction = true)
 		{
 			ArrayDefaultSize = ArraySize = size;
 			ArrayStepSize = 10;
@@ -74,7 +74,7 @@ namespace NosLib
 			}
 		}
 
-		DynamicArray(DynamicArray& copySource)
+		inline constexpr DynamicArray(DynamicArray& copySource)
 		{
 			ArraySize = copySource.ArraySize;
 			ArrayDefaultSize = copySource.ArrayDefaultSize;
@@ -86,7 +86,7 @@ namespace NosLib
 			std::copy(copySource.MainArray, copySource.MainArray + ArraySize, MainArray);
 		}
 
-		DynamicArray(DynamicArray&& copySource) noexcept
+		inline constexpr DynamicArray(DynamicArray&& copySource) noexcept
 		{
 			ArraySize = copySource.ArraySize;
 			ArrayDefaultSize = copySource.ArrayDefaultSize;
@@ -135,7 +135,7 @@ namespace NosLib
 		/// Append single Object
 		/// </summary>
 		/// <param name="ObjectToAdd"> - Object to add</param>
-		void Append(const ArrayDataType& objectToAdd)
+		inline constexpr void Append(const ArrayDataType& objectToAdd)
 		{
 			if (CurrentArrayIndex >= ArraySize) // if Current Index pointer is more then the array size (trying to add to OutOfRange space)
 			{
@@ -165,7 +165,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="beginning">- the beginning address</param>
 		/// <param name="range">- the range of items wanted</param>
-		void MultiAppend(ArrayDataType* beginning, const int& range)
+		inline constexpr void MultiAppend(ArrayDataType* beginning, const int& range)
 		{
 			for (int i = 0; i < range; i++){Append(beginning[i]);}
 		}
@@ -175,7 +175,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="beginning">- the beginning address</param>
 		/// <param name="end">- the end address</param>
-		void MultiAppend(ArrayDataType* beginning, ArrayDataType* end) /* TODO: Allow for custom starting point with offset */
+		inline constexpr void MultiAppend(ArrayDataType* beginning, ArrayDataType* end) /* TODO: Allow for custom starting point with offset */
 		{
 			int distance = std::distance(beginning, end);
 			MultiAppend(beginning, distance);
@@ -186,7 +186,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="insertObject">- object to insert</param>
 		/// <param name="position">- position/index to insert into</param>
-		void Insert(const ArrayDataType& insertObject, const int& position)
+		inline constexpr void Insert(const ArrayDataType& insertObject, const int& position)
 		{
 			if (position >= CurrentArrayIndex || position < 0)// check if the position to remove is in array range
 			{
@@ -209,7 +209,7 @@ namespace NosLib
 			}
 
 			/* move all objects after the insert position forward */
-			for (int i = CurrentArrayIndex; i  > position; i--)
+			for (int i = CurrentArrayIndex; i > position; i--)
 			{
 				MainArray[i] = MainArray[i - 1];
 
@@ -233,7 +233,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="ReplaceObject"> - Object to place in the position</param>
 		/// <param name="position"> - position to put the Object in</param>
-		void Replace(const ArrayDataType& replaceObject, const int& position)
+		inline constexpr void Replace(const ArrayDataType& replaceObject, const int& position)
 		{
 			if (position >= (CurrentArrayIndex - 1) || position < 0)// check if the position to remove is in array range
 			{
@@ -254,7 +254,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="position">- Position to remove</param>
 		/// <param name="deleteObject">(default = true) - if function should also delete the object</param>
-		void Remove(const int& position, const bool& deleteObject = true)
+		inline constexpr void Remove(const int& position, const bool& deleteObject = true)
 		{
 			if (position >= CurrentArrayIndex || position < 0)// check if the position to remove is in array range
 			{
@@ -274,7 +274,7 @@ namespace NosLib
 				{
 					NosLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
 				}
-			}		
+			}
 
 			MainArray[CurrentArrayIndex] = nullptr; /* make last element be nullptr | TODO: test and create check for if the datatype is actually pointer or not */
 		}
@@ -285,7 +285,7 @@ namespace NosLib
 		/// <param name="object">- object to find and remove</param>
 		/// <param name="checkAll">(deleteObject = true) - if function should also delete the object</param>
 		/// <param name="checkAll">(default = false) - if the for loop should check for all instances</param>
-		void ObjectRemove(const ArrayDataType& object, const bool& deleteObject = true, const bool& checkAll = false)
+		inline constexpr void ObjectRemove(const ArrayDataType& object, const bool& deleteObject = true, const bool& checkAll = false)
 		{
 			for (int i = 0; i <= CurrentArrayIndex; i++)
 			{
@@ -298,7 +298,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="excludePosition">- position to exclude</param>
 		/// <returns>copy of the array without the object</returns>
-		DynamicArray<ArrayDataType> Exclude(const int& excludePosition)
+		inline constexpr DynamicArray<ArrayDataType> Exclude(const int& excludePosition) const
 		{
 			if (excludePosition >= CurrentArrayIndex || excludePosition < 0)// check if the position to remove is in array range
 			{
@@ -324,7 +324,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="excludeObject">- object to exclude</param>
 		/// <returns>copy of the array without specified object</returns>
-		DynamicArray<ArrayDataType> ObjectExclude(const ArrayDataType& excludeObject)
+		inline constexpr DynamicArray<ArrayDataType> ObjectExclude(const ArrayDataType& excludeObject) const
 		{
 			DynamicArray<ArrayDataType> outArray(ArraySize, ArrayStepSize, DeleteObjectsOnDestruction);
 
@@ -342,7 +342,7 @@ namespace NosLib
 		/// <summary>
 		/// Clear the dynamic array to the original size
 		/// </summary>
-		void Clear()
+		inline constexpr void Clear()
 		{
 			CurrentArrayIndex = 0;
 			ArraySize = ArrayDefaultSize;
@@ -356,7 +356,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="objectToFind">- the object to search for</param>
 		/// <returns>if object exists</returns>
-		bool Exists(ArrayDataType objectToFind)
+		inline constexpr bool Exists(ArrayDataType objectToFind) const
 		{
 			for (ArrayDataType entry : *this)
 			{
@@ -375,7 +375,7 @@ namespace NosLib
 		/// Return array contained in the object
 		/// </summary>
 		/// <returns>Object array</returns>
-		ArrayDataType* GetArray()
+		inline constexpr ArrayDataType* GetArray()
 		{
 			return MainArray;
 		}
@@ -384,7 +384,7 @@ namespace NosLib
 		/// Returns the max array size (won't be the current index)
 		/// </summary>
 		/// <returns>int of current array size</returns>
-		int GetArrayCurrentMaxSize()
+		inline constexpr int GetArrayCurrentMaxSize() const
 		{
 			return ArraySize;
 		}
@@ -393,7 +393,7 @@ namespace NosLib
 		/// Returns the starting size and the size it will return to when clearing
 		/// </summary>
 		/// <returns>int of starting size and the size it will return to when clearing</returns>
-		int GetArrayStartMaxSize()
+		inline constexpr int GetArrayStartMaxSize() const
 		{
 			return ArrayDefaultSize;
 		}
@@ -402,15 +402,15 @@ namespace NosLib
 		/// Returns the last array index
 		/// </summary>
 		/// <returns>will return -1 if no elements are added</returns>
-		int GetLastArrayIndex()
+		inline constexpr int GetLastArrayIndex() const
 		{
-			return CurrentArrayIndex-1;
+			return CurrentArrayIndex - 1;
 		}
 
 		/// <summary>
 		/// returns the amount of objects in array
 		/// </summary>
-		int GetItemCount()
+		inline constexpr int GetItemCount() const
 		{
 			return CurrentArrayIndex;
 		}
@@ -419,7 +419,7 @@ namespace NosLib
 		/// Returns the steps size
 		/// </summary>
 		/// <returns>step size</returns>
-		int GetArrayStepSize()
+		inline constexpr int GetArrayStepSize() const
 		{
 			return ArrayStepSize;
 		}
@@ -427,10 +427,10 @@ namespace NosLib
 
 	#pragma region For Loop Functions
 		// For loop range-based function
-		iterator begin() { return &MainArray[0]; }
-		const_iterator begin() const { return &MainArray[0]; }
-		iterator end() { return &MainArray[CurrentArrayIndex]; }
-		const_iterator end() const { return &MainArray[CurrentArrayIndex]; }
+		inline constexpr iterator begin() { return &MainArray[0]; }
+		inline constexpr const_iterator begin() const { return &MainArray[0]; }
+		inline constexpr iterator end() { return &MainArray[CurrentArrayIndex]; }
+		inline constexpr const_iterator end() const { return &MainArray[CurrentArrayIndex]; }
 	#pragma endregion
 
 	#pragma region Operators
@@ -444,7 +444,7 @@ namespace NosLib
 		/// <param name="MainArray">- the array object</param>
 		/// <returns>Original stream refrence</returns>
 		template <typename CharT, typename TraitsT>
-		friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& oStreamReference, const DynamicArray& MainArray)
+		inline constexpr friend std::basic_ostream<CharT, TraitsT>& operator<<(std::basic_ostream<CharT, TraitsT>& oStreamReference, const DynamicArray& MainArray)
 		{
 			if constexpr (NosLib::TypeTraits::is_character<ArrayDataType>::value)
 			{
@@ -462,7 +462,7 @@ namespace NosLib
 					}
 				}
 			}
-		
+
 			return oStreamReference;
 		}
 
@@ -471,7 +471,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="position">- position of the value wanted</param>
 		/// <returns>value in the position</returns>
-		ArrayDataType& operator[](const int& position)
+		inline constexpr ArrayDataType& operator[](const int& position)
 		{
 			return MainArray[position];
 		}
@@ -481,7 +481,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="insersationObject">- the object to insert</param>
 		/// <returns>combined objects</returns>
-		DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>& rightObject)
+		inline constexpr DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>& rightObject)
 		{
 			NosLib::DynamicArray<ArrayDataType> out(this->GetItemCount() + rightObject.GetItemCount(), this->ArrayStepSize, this->DeleteObjectsOnDestruction);
 			out.MultiAppend(this->begin(), this->end());
@@ -494,7 +494,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="insersationObject">- the object to insert</param>
 		/// <returns>combined objects</returns>
-		DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>&& rightObject)
+		inline constexpr DynamicArray<ArrayDataType> operator+(DynamicArray<ArrayDataType>&& rightObject)
 		{
 			NosLib::DynamicArray<ArrayDataType> out(this->GetItemCount() + rightObject.GetItemCount(), this->ArrayStepSize, this->DeleteObjectsOnDestruction);
 			out.MultiAppend(this->begin(), this->end());
@@ -507,7 +507,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="insersationObject">- the object to insert</param>
 		/// <returns>combined objects</returns>
-		DynamicArray<ArrayDataType>& operator<<(DynamicArray<ArrayDataType>& insersationObject)
+		inline constexpr DynamicArray<ArrayDataType>& operator<<(DynamicArray<ArrayDataType>& insersationObject)
 		{
 			this->MultiAppend(insersationObject.begin(), insersationObject.end());
 			return *this;
@@ -518,7 +518,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="insersationObject">- the object to insert</param>
 		/// <returns>combined objects</returns>
-		DynamicArray<ArrayDataType>& operator+=(DynamicArray<ArrayDataType>& insersationObject)
+		inline constexpr DynamicArray<ArrayDataType>& operator+=(DynamicArray<ArrayDataType>& insersationObject)
 		{
 			this->MultiAppend(insersationObject.begin(), insersationObject.end());
 			return *this;
@@ -529,7 +529,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="assigmentObject">- object on the right</param>
 		/// <returns>self</returns>
-		DynamicArray<ArrayDataType>& operator=(DynamicArray<ArrayDataType>& assigmentObject)
+		inline constexpr DynamicArray<ArrayDataType>& operator=(DynamicArray<ArrayDataType>& assigmentObject)
 		{
 			ArraySize = assigmentObject.ArraySize;
 			ArrayDefaultSize = assigmentObject.ArrayDefaultSize;
@@ -550,7 +550,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="assigmentObject">- object on the right</param>
 		/// <returns>self</returns>
-		DynamicArray<ArrayDataType>& operator=(DynamicArray<ArrayDataType>&& assigmentObject) noexcept
+		inline constexpr DynamicArray<ArrayDataType>& operator=(DynamicArray<ArrayDataType>&& assigmentObject) noexcept
 		{
 			ArraySize = assigmentObject.ArraySize;
 			ArrayDefaultSize = assigmentObject.ArrayDefaultSize;

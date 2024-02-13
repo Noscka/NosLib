@@ -27,14 +27,14 @@ namespace NosLib
 			/// <summary>
 			/// Default VectorD2 Constructor
 			/// </summary>
-			VectorD2(){}
+			inline constexpr VectorD2() {}
 
 			/// <summary>
 			/// Creates a 2 dimensional vector object with x,y
 			/// </summary>
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
-			VectorD2(const ArithmeticType& x, const ArithmeticType& y)
+			inline constexpr VectorD2(const ArithmeticType& x, const ArithmeticType& y)
 			{
 				X = x;
 				Y = y;
@@ -44,7 +44,7 @@ namespace NosLib
 			/// Creates a 2 dimensional vector object with COORD struct
 			/// </summary>
 			/// <param name="coordPoint">- the coord to use</param>
-			VectorD2(const COORD& coordPoint)
+			inline constexpr VectorD2(const COORD& coordPoint)
 			{
 				X = coordPoint.X;
 				Y = coordPoint.Y;
@@ -54,7 +54,7 @@ namespace NosLib
 			/// Creates a 2 dimensional vector object with POINT struct
 			/// </summary>
 			/// <param name="point">- the point to use</param>
-			VectorD2(const POINT& point)
+			inline constexpr VectorD2(const POINT& point)
 			{
 				X = point.x;
 				Y = point.y;
@@ -65,7 +65,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="addingObject">- the second object to add</param>
 			/// <returns>An object of the other objects added together</returns>
-			VectorD2<ArithmeticType> operator+(const VectorD2<ArithmeticType>& addingObject)
+			inline constexpr VectorD2<ArithmeticType> operator+(const VectorD2<ArithmeticType>& addingObject)
 			{
 				return VectorD2((this->X + addingObject.X), (this->Y + addingObject.Y));
 			}
@@ -75,7 +75,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="subtractingObject">- the second object to subtract</param>
 			/// <returns>An object of the other objects subtracted together</returns>
-			VectorD2<ArithmeticType> operator-(const VectorD2<ArithmeticType>& subtractingObject)
+			inline constexpr VectorD2<ArithmeticType> operator-(const VectorD2<ArithmeticType>& subtractingObject)
 			{
 				return VectorD2((this->X - subtractingObject.X), (this->Y - subtractingObject.Y));
 			}
@@ -85,7 +85,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="comparingObject">- second object to compare against</param>
 			/// <returns>if vectors represent the same position or not</returns>
-			bool operator==(const VectorD2<ArithmeticType>& comparingObject) const
+			inline constexpr bool operator==(const VectorD2<ArithmeticType>& comparingObject) const
 			{
 				return (this->X == comparingObject.X && this->Y == comparingObject.Y);
 			}
@@ -93,15 +93,15 @@ namespace NosLib
 			/// <summary>
 			/// Convert to COORD
 			/// </summary>
-			operator COORD()
+			inline constexpr operator COORD()
 			{
-				return COORD(X,Y);
+				return COORD(X, Y);
 			}
 
 			/// <summary>
 			/// Convert to POINT
 			/// </summary>
-			operator POINT()
+			inline constexpr operator POINT()
 			{
 				return POINT(X, Y);
 			}
@@ -112,7 +112,7 @@ namespace NosLib
 			/// <typeparam name="CharT">- what character type to convert to</typeparam>
 			/// <returns>the string version of the vector</returns>
 			template <typename CharT>
-			std::basic_string<CharT> str()
+			inline constexpr std::basic_string<CharT> str()
 			{
 				return NosLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {})", this->X, this->Y));
 			}
@@ -132,7 +132,7 @@ namespace NosLib
 			/// <summary>
 			/// Default VectorD3 Constructor
 			/// </summary>
-			VectorD3() {}
+			inline constexpr VectorD3() {}
 
 			/// <summary>
 			/// Creates a 3 dimensional vector object
@@ -140,7 +140,7 @@ namespace NosLib
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
 			/// <param name="z">- z coord</param>
-			VectorD3(const ArithmeticType& x, const ArithmeticType& y, const ArithmeticType& z)
+			inline constexpr VectorD3(const ArithmeticType& x, const ArithmeticType& y, const ArithmeticType& z)
 			{
 				X = x;
 				Y = y;
@@ -152,7 +152,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="addingObject">- the second object to add</param>
 			/// <returns>An object of the other objects added together</returns>
-			VectorD3<ArithmeticType> operator+(const VectorD3<ArithmeticType>& addingObject)
+			inline constexpr VectorD3<ArithmeticType> operator+(const VectorD3<ArithmeticType>& addingObject)
 			{
 				return VectorD3((this->X + addingObject.X), (this->Y + addingObject.Y), (this->Z + addingObject.Z));
 			}
@@ -162,7 +162,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="subtractingObject">- the second object to subtract</param>
 			/// <returns>An object of the other objects subtracted together</returns>
-			VectorD3<ArithmeticType> operator-(const VectorD3<ArithmeticType>& subtractingObject)
+			inline constexpr VectorD3<ArithmeticType> operator-(const VectorD3<ArithmeticType>& subtractingObject)
 			{
 				return VectorD3((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z));
 			}
@@ -172,7 +172,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="comparingObject">- second object to compare against</param>
 			/// <returns>if vectors represent the same position or not</returns>
-			bool operator==(const VectorD3<ArithmeticType>& comparingObject) const
+			inline constexpr bool operator==(const VectorD3<ArithmeticType>& comparingObject) const
 			{
 				return (this->X == comparingObject.X && this->Y == comparingObject.Y && this->Z == comparingObject.Z);
 			}
@@ -183,7 +183,7 @@ namespace NosLib
 			/// <typeparam name="CharT">- what character type to convert to</typeparam>
 			/// <returns>the string version of the vector</returns>
 			template <typename CharT>
-			std::basic_string<CharT> str()
+			inline constexpr std::basic_string<CharT> str()
 			{
 				return NosLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {}, {})", this->X, this->Y, this->Z));
 			}
@@ -204,7 +204,7 @@ namespace NosLib
 			/// <summary>
 			/// Default VectorD4 Constructor
 			/// </summary>
-			VectorD4() {}
+			inline constexpr VectorD4() {}
 
 			/// <summary>
 			/// Creates a 3 dimensional vector object
@@ -212,7 +212,7 @@ namespace NosLib
 			/// <param name="x">- x coord</param>
 			/// <param name="y">- y coord</param>
 			/// <param name="z">- z coord</param>
-			VectorD4(const ArithmeticType& x, const ArithmeticType& y, const ArithmeticType& z, const ArithmeticType& w)
+			inline constexpr VectorD4(const ArithmeticType& x, const ArithmeticType& y, const ArithmeticType& z, const ArithmeticType& w)
 			{
 				X = x;
 				Y = y;
@@ -225,7 +225,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="addingObject">- the second object to add</param>
 			/// <returns>An object of the other objects added together</returns>
-			VectorD4<ArithmeticType> operator+(const VectorD4<ArithmeticType>& addingObject)
+			inline constexpr VectorD4<ArithmeticType> operator+(const VectorD4<ArithmeticType>& addingObject)
 			{
 				return VectorD4((this->X + addingObject.X), (this->Y + addingObject.Y), (this->Z + addingObject.Z), (this->W + addingObject.W));
 			}
@@ -235,7 +235,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="subtractingObject">- the second object to subtract</param>
 			/// <returns>An object of the other objects subtracted together</returns>
-			VectorD4<ArithmeticType> operator-(const VectorD4<ArithmeticType>& subtractingObject)
+			inline constexpr VectorD4<ArithmeticType> operator-(const VectorD4<ArithmeticType>& subtractingObject)
 			{
 				return VectorD4((this->X - subtractingObject.X), (this->Y - subtractingObject.Y), (this->Z - subtractingObject.Z), (this->W - subtractingObject.W));
 			}
@@ -245,7 +245,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="comparingObject">- second object to compare against</param>
 			/// <returns>if vectors represent the same position or not</returns>
-			bool operator==(const VectorD4<ArithmeticType>& comparingObject) const
+			inline constexpr bool operator==(const VectorD4<ArithmeticType>& comparingObject) const
 			{
 				return (this->X == comparingObject.X && this->Y == comparingObject.Y && this->Z == comparingObject.Z && this->W == comparingObject.W);
 			}
@@ -256,7 +256,7 @@ namespace NosLib
 			/// <typeparam name="CharT">- what character type to convert to</typeparam>
 			/// <returns>the string version of the vector</returns>
 			template <typename CharT>
-			std::basic_string<CharT> str()
+			inline constexpr std::basic_string<CharT> str()
 			{
 				return NosLib::String::ConvertString<CharT, wchar_t>(std::format(L"({}, {}, {}, {})", this->X, this->Y, this->Z, this->W));
 			}
@@ -277,7 +277,7 @@ namespace NosLib
 			NosLib::Vector::VectorD2<ArithmeticType> PointTwo;	/* Bottom Right Coord vector */
 			NosLib::Vector::VectorD2<ArithmeticType> Offset;	/* Vector which holds offset values */
 
-			DimensionD2() {}
+			inline constexpr DimensionD2() {}
 
 			/// <summary>
 			/// Create object with int coords
@@ -288,7 +288,7 @@ namespace NosLib
 			/// <param name="pointTwoY">- Right Y</param>
 			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
 			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
-			DimensionD2(const ArithmeticType& pointOneX, const ArithmeticType& pointOneY, const ArithmeticType& pointTwoX, const ArithmeticType& pointTwoY, const ArithmeticType& offsetX = 0, const ArithmeticType& offsetY = 0)
+			inline constexpr DimensionD2(const ArithmeticType& pointOneX, const ArithmeticType& pointOneY, const ArithmeticType& pointTwoX, const ArithmeticType& pointTwoY, const ArithmeticType& offsetX = 0, const ArithmeticType& offsetY = 0)
 			{
 				UpdateDimension(pointOneX, pointOneY, pointTwoX, pointTwoY, offsetX, offsetY);
 			}
@@ -299,7 +299,7 @@ namespace NosLib
 			/// <param name="pointOne">- Top Left</param>
 			/// <param name="pointTwo">- Bottom Right</param>
 			/// <param name="Offset">(default = (0,0))- vector which containts amount that will get added/taken away from in calculations</param>
-			DimensionD2(const NosLib::Vector::VectorD2<ArithmeticType>& pointOne, const NosLib::Vector::VectorD2<ArithmeticType>& pointTwo, const NosLib::Vector::VectorD2<ArithmeticType>& offset = NosLib::Vector::VectorD2<ArithmeticType>(0, 0))
+			inline constexpr DimensionD2(const NosLib::Vector::VectorD2<ArithmeticType>& pointOne, const NosLib::Vector::VectorD2<ArithmeticType>& pointTwo, const NosLib::Vector::VectorD2<ArithmeticType>& offset = NosLib::Vector::VectorD2<ArithmeticType>(0, 0))
 			{
 				UpdateDimension(pointOne, pointTwo, offset);
 			}
@@ -313,7 +313,7 @@ namespace NosLib
 			/// <param name="pointTwoY">- Right Y</param>
 			/// <param name="offsetX">(default = 0) - amount that gets added/taken away from X</param>
 			/// <param name="offsetY">(default = 0) - amount that gets added/taken away from Y</param>
-			void UpdateDimension(const ArithmeticType& pointOneX, const ArithmeticType& pointOneY, const ArithmeticType& pointTwoX, const ArithmeticType& pointTwoY, const ArithmeticType& offsetX = 0, const ArithmeticType& offsetY = 0)
+			inline constexpr void UpdateDimension(const ArithmeticType& pointOneX, const ArithmeticType& pointOneY, const ArithmeticType& pointTwoX, const ArithmeticType& pointTwoY, const ArithmeticType& offsetX = 0, const ArithmeticType& offsetY = 0)
 			{
 				PointOne = NosLib::Vector::VectorD2<ArithmeticType>(pointOneX, pointOneY);
 				PointTwo = NosLib::Vector::VectorD2<ArithmeticType>(pointTwoX, pointTwoY);
@@ -326,7 +326,7 @@ namespace NosLib
 			/// <param name="pointOne">- Top Left</param>
 			/// <param name="pointTwo">- Bottom Right</param>
 			/// <param name="Offset">(default = (0,0))- vector which containts amount that will get added/taken away from in calculations</param>
-			void UpdateDimension(const NosLib::Vector::VectorD2<ArithmeticType>& pointOne, const NosLib::Vector::VectorD2<ArithmeticType>& pointTwo, const NosLib::Vector::VectorD2<ArithmeticType>& offset = NosLib::Vector::VectorD2<ArithmeticType>(0, 0))
+			inline constexpr void UpdateDimension(const NosLib::Vector::VectorD2<ArithmeticType>& pointOne, const NosLib::Vector::VectorD2<ArithmeticType>& pointTwo, const NosLib::Vector::VectorD2<ArithmeticType>& offset = NosLib::Vector::VectorD2<ArithmeticType>(0, 0))
 			{
 				PointOne = pointOne;
 				PointTwo = pointTwo;
@@ -338,10 +338,10 @@ namespace NosLib
 			/// </summary>
 			/// <param name="position">- position to check for</param>
 			/// <returns>true if position is inside, false if outside</returns>
-			bool CheckIfPositionInside(const NosLib::Vector::VectorD2<ArithmeticType>& position)
+			inline constexpr bool CheckIfPositionInside(const NosLib::Vector::VectorD2<ArithmeticType>& position)
 			{
 				return (position.X >= PointOne.X && position.Y >= PointOne.Y) &&
-						(position.X <= PointTwo.X && position.Y <= PointTwo.Y);
+					(position.X <= PointTwo.X && position.Y <= PointTwo.Y);
 			}
 
 			/// <summary>
@@ -349,7 +349,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="offset">(default = true) - if calculation should take offset into considuration</param>
 			/// <returns>VectorD2 with X and Y being sizes</returns>
-			NosLib::Vector::VectorD2<ArithmeticType> CalculateSize(const bool& offset = true)
+			inline constexpr NosLib::Vector::VectorD2<ArithmeticType> CalculateSize(const bool& offset = true)
 			{
 				if (offset)
 				{
@@ -366,7 +366,7 @@ namespace NosLib
 			/// </summary>
 			/// <param name="offset">- the offset which will get used in the calculation</param>
 			/// <returns>VectorD2 with X and Y being sizes that are offset</returns>
-			NosLib::Vector::VectorD2<ArithmeticType> CalculateSize(const NosLib::Vector::VectorD2<ArithmeticType>& offset)
+			inline constexpr NosLib::Vector::VectorD2<ArithmeticType> CalculateSize(const NosLib::Vector::VectorD2<ArithmeticType>& offset)
 			{
 				return (PointTwo - PointOne) + offset;
 			}

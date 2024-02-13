@@ -17,7 +17,7 @@ namespace NosLib
         /// <param name="value">- the variable to get searched</param>
         /// <returns>root pointer</returns>
         template<typename T>
-        inline std::add_pointer_t<NosLib::TypeTraits::remove_all_pointers_t<T>> OneOffRootPointer(const T& value)
+        inline constexpr std::add_pointer_t<NosLib::TypeTraits::remove_all_pointers_t<T>> OneOffRootPointer(const T& value)
         {
             if constexpr (std::is_pointer<std::remove_pointer_t<T>>::value)
             {
@@ -36,7 +36,7 @@ namespace NosLib
         /// <param name="value">- the variable to get searched</param>
         /// <returns>root value</returns>
         template<typename T>
-        inline NosLib::TypeTraits::remove_all_pointers_t<T> PointerRootValue(const T& value)
+        inline constexpr NosLib::TypeTraits::remove_all_pointers_t<T> PointerRootValue(const T& value)
         {
             if constexpr (std::is_pointer<T>::value)
             {

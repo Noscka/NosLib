@@ -19,7 +19,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="bitCount">- the amout of bits</param>
 		/// <returns>the max value that can be stored</returns>
-		inline int MaxBitValue(const int& bitCount)
+		inline constexpr int MaxBitValue(const int& bitCount)
 		{
 			int maxValue = 0;
 			for (int i = 0; bitCount > i; i++)
@@ -34,7 +34,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="byteCount">- the amount of bytes</param>
 		/// <returns>the max value that can be stored</returns>
-		inline int MaxByteValue(const int& byteCount)
+		inline constexpr int MaxByteValue(const int& byteCount)
 		{
 			return MaxBitValue(byteCount * 8);
 		}
@@ -47,7 +47,7 @@ namespace NosLib
 		/// <param name="intIn">- number in</param>
 		/// <param name="byteOut">- char array out</param>
 		template<class numType>
-		inline void ArithematicToByte(const numType& intIn, char** byteOut)
+		inline constexpr void ArithematicToByte(const numType& intIn, char** byteOut)
 		{
 			static_assert(std::is_arithmetic_v<numType>, "Type has to be either an Integer or Floating point");
 
@@ -62,7 +62,7 @@ namespace NosLib
 		/// <param name="byte">- bytes to convert to type</param>
 		/// <returns>converted value of type</returns>
 		template<class numType>
-		inline numType ByteToArithematic(char* byte)
+		inline constexpr numType ByteToArithematic(char* byte)
 		{
 			numType out = 0;
 			std::copy(byte, byte + sizeof(numType), NosLib::Cast<char*>(&out));
@@ -79,7 +79,7 @@ namespace NosLib
 		/// <param name="count">(default = 1) - for arrays, amount of objects in array</param>
 		/// <returns>true if the same, false if different</returns>
 		template<class type1, class type2>
-		inline bool ByteCompare(const type1& in1, const type2& in2, const size_t& count =1)
+		inline constexpr bool ByteCompare(const type1& in1, const type2& in2, const size_t& count =1)
 		{
 			char in1Byte[count * sizeof(type1)];
 			char in2Byte[count * sizeof(type2)];

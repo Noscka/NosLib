@@ -26,16 +26,16 @@ namespace NosLib
 		Severity LogSeverity;
 		std::chrono::system_clock::time_point LogTimestamp;
 
-		Logging() {}
+		inline constexpr Logging() {}
 
-		Logging(const std::wstring& logMessage, const Severity& logSeverity)
+		inline Logging(const std::wstring& logMessage, const Severity& logSeverity)
 		{
 			LogMessage = logMessage + (logMessage.back() != L'\n' ? L"\n" : L"");
 			LogSeverity = logSeverity;
 			LogTimestamp = std::chrono::system_clock::now();
 		}
 
-		static std::wstring SeverityToWstring(const Severity& logSeverity)
+		static inline constexpr std::wstring SeverityToWstring(const Severity& logSeverity)
 		{
 			switch (logSeverity)
 			{
@@ -57,7 +57,7 @@ namespace NosLib
 
 	public:
 		template<typename CharType>
-		static inline Logging* CreateLog(const std::basic_string<CharType>& logMessage, const Severity& logSeverity, const bool& printLog = false)
+		static inline constexpr Logging* CreateLog(const std::basic_string<CharType>& logMessage, const Severity& logSeverity, const bool& printLog = false)
 		{
 			Logging* logObject = new Logging(NosLib::String::ConvertString<wchar_t, CharType>(logMessage), logSeverity);
 			Logs.Append(logObject);
@@ -75,7 +75,7 @@ namespace NosLib
 			return logObject;
 		}
 
-		std::wstring GetLog()
+		inline std::wstring GetLog() const
 		{
 			// %d/%m/%Y for date too
 			return std::format(L"({}) {:%X} {}", SeverityToWstring(LogSeverity), std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp), LogMessage);

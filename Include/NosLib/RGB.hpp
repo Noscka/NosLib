@@ -24,9 +24,9 @@ namespace NosLib
 
 			uint8_t IterateValue; /* how much iterate function should iterate by (85 for lego mode) */
 
-			NosRGB() {}
+			inline constexpr NosRGB() {}
 
-			NosRGB(uint8_t r, uint8_t g, uint8_t b, uint8_t iterateValue = 1)
+			inline constexpr NosRGB(uint8_t r, uint8_t g, uint8_t b, uint8_t iterateValue = 1)
 			{
 				R = r;
 				G = g;
@@ -38,7 +38,7 @@ namespace NosLib
 			/// Iterates the RGB values (for best effects, set either Red, Green or Blue to max which is 255)
 			/// </summary>
 			/// <returns>a reference to the object</returns>
-			NosRGB& Iterate()
+			inline constexpr NosRGB& Iterate()
 			{
 				if (R > 0 && B == 0)
 				{
@@ -67,13 +67,13 @@ namespace NosLib
 			/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
 			/// <returns>the string containing the ANSI escape code</returns>
 			template <typename CharT>
-			std::basic_string<CharT> MakeANSICode(const bool& foreGroundBackGround = true) const
+			inline constexpr std::basic_string<CharT> MakeANSICode(const bool& foreGroundBackGround = true) const
 			{
 				return std::vformat(NosLib::String::ConvertString<CharT, wchar_t>(foreGroundBackGround ? L"\033[38;2;{};{};{}m" : L"\033[48;2;{};{};{}m"), std::make_format_args<std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharT>>, CharT>>(this->R, this->G, this->B));
 			}
 
 			template <typename CharT>
-			static std::basic_string<CharT> ANSIResetCode()
+			static inline constexpr std::basic_string<CharT> ANSIResetCode()
 			{
 				return NosLib::String::ConvertString < CharT, wchar_t>(L"\033[0m\n");
 			}
@@ -81,7 +81,7 @@ namespace NosLib
 			/// <summary>
 			/// Convert to COLORREF
 			/// </summary>
-			operator COLORREF()
+			inline constexpr operator COLORREF() const
 			{
 				return RGB(R, G, B);
 			}

@@ -25,7 +25,7 @@ namespace NosLib
 		/// <param name="foreGroundBackGround">(default = true) - if the ANSI should output foreground (true) or background (false)</param>
 		/// <returns>the string containing the ANSI escape code</returns>
 		template <typename CharT>
-		inline std::basic_string<CharT> MakeANSICode(const NosLib::RGB::NosRGB& value, const bool& foreGroundBackGround = true)
+		inline constexpr std::basic_string<CharT> MakeANSICode(const NosLib::RGB::NosRGB& value, const bool& foreGroundBackGround = true)
 		{
 			return value.MakeANSICode<CharT>(foreGroundBackGround);
 		}

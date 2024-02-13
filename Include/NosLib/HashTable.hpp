@@ -29,7 +29,7 @@ namespace NosLib
 		/// Add another object to linked list
 		/// </summary>
 		/// <param name="next"></param>
-		void AddNext(HashTableObjectContainer<HashTableType>* next)
+		inline constexpr void AddNext(HashTableObjectContainer<HashTableType>* next)
 		{
 			if (Next != nullptr) /* if next isn't empty for this object, pass it on */
 			{
@@ -45,7 +45,7 @@ namespace NosLib
 		/// Counts amount of objects in list, returns object count and not last index
 		/// </summary>
 		/// <returns>number of objects in linked array</returns>
-		int Count()
+		inline constexpr int Count() const
 		{
 			HashTableObjectContainer<HashTableType>* currentIndex = this;
 
@@ -64,7 +64,7 @@ namespace NosLib
 		/// <summary>
 		/// Removes next object from linked linked list, and takes the object after that as its own
 		/// </summary>
-		void RemoveNext()
+		inline constexpr void RemoveNext()
 		{
 			/* take the Next object's next object as own. doesn't matter if it is nullptr or not */
 			HashTableObjectContainer<HashTableType>* replacement = Next->Next;
@@ -78,7 +78,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="position">- position of the value wanted</param>
 		/// <returns>value in the position</returns>
-		HashTableObjectContainer<HashTableType>& operator[](const int& position)
+		inline constexpr HashTableObjectContainer<HashTableType>& operator[](const int& position)
 		{
 			HashTableObjectContainer<HashTableType>* indexObject = this;
 
@@ -117,7 +117,7 @@ namespace NosLib
 		/// <param name="GetKeyValueFunction">- Member function of class used to get the key to hash, so how you can find your object</param>
 		/// <param name="startSize">(default = 100) - Array Start Size</param>
 		/// <param name="stepSize">(default = 10) - How much the array should increase (CURRENTLY UNUSED)</param>
-		HashTable(HashTableKey(HashTableTypeRoot::* getKeyValueFunc)(), const size_t& startSize = 100, const size_t& stepSize = 10)
+		inline constexpr HashTable(HashTableKey(HashTableTypeRoot::* getKeyValueFunc)(), const size_t& startSize = 100, const size_t& stepSize = 10)
 		{
 			GetKeyValueFunction = getKeyValueFunc;
 			TableSize = startSize;
@@ -143,7 +143,7 @@ namespace NosLib
 		/// Inserts object into hash table, has to be pointer
 		/// </summary>
 		/// <param name="insertObject">- pointer to object</param>
-		void Insert(HashTableType insertObject)
+		inline constexpr void Insert(HashTableType insertObject)
 		{
 			HashTableTypeNormalized normalizedInsertObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>((&insertObject));
 
@@ -166,7 +166,7 @@ namespace NosLib
 		/// Finds object in hash table using key
 		/// </summary>
 		/// <param name="findKey">- key used to put the hash object into array</param>
-		HashTableType* Find(const HashTableKey& findKey)
+		inline constexpr HashTableType* Find(const HashTableKey& findKey) const
 		{
 			/* do mod on the hash value to convert into a usable position number */
 			size_t pos = (std::hash<HashTableKey>{}(findKey) % TableSize);
@@ -199,7 +199,7 @@ namespace NosLib
 		/// Removes object from hash table using key
 		/// </summary>
 		/// <param name="findKey">- key used to put the hash object into array</param>
-		bool Remove(const HashTableKey& findKey)
+		inline constexpr bool Remove(const HashTableKey& findKey)
 		{
 			/* do mod on the hash value to convert into a usable position number */
 			size_t pos = (std::hash<HashTableKey>{}(findKey) % TableSize);
@@ -252,7 +252,7 @@ namespace NosLib
 		/// <summary>
 		/// Returns Overall size of hash table, so how many linked lists it can contain
 		/// </summary>
-		int GetHashTableSize()
+		inline constexpr int GetHashTableSize() const
 		{
 			return TableSize;
 		}
@@ -262,7 +262,7 @@ namespace NosLib
 		/// </summary>
 		/// <param name="position">- position of the value wanted</param>
 		/// <returns>value in the position</returns>
-		HashTableObjectContainer<HashTableType>*& operator[](const int& position)
+		inline constexpr HashTableObjectContainer<HashTableType>*& operator[](const int& position)
 		{
 			return MainTable[position];
 		}

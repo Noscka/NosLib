@@ -66,14 +66,14 @@ namespace NosLib
 			/// <param name="title">- what the window should be called</param>
 			/// <returns>if succesful</returns>
 			template <typename CharT>
-			inline bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
+			inline constexpr bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
 			{
 				bool setTitle;
 			#ifdef UNICODE
 				setTitle = SetConsoleTitleW(NosLib::String::ConvertString<wchar_t, CharT>(title).c_str());
 			#else
 				setTitle = SetConsoleTitleA(NosLib::String::ConvertString<char, CharT>(title).c_str());
-			#endif // !UNICODE
+			#endif // UNICODE
 
 				return setTitle && ShowScrollBar(window, SB_BOTH, FALSE);
 			}
@@ -85,7 +85,7 @@ namespace NosLib
 			/// <param name="title">- what the window should be called</param>
 			/// <returns>if succesful</returns>
 			template <typename CharT>
-			inline bool BeatifyConsole(const std::basic_string<CharT>& title)
+			inline constexpr bool BeatifyConsole(const std::basic_string<CharT>& title)
 			{
 				return BeatifyConsole<CharT>(GetConsoleWindow(), title);
 			}
@@ -96,7 +96,7 @@ namespace NosLib
 			/// (Aliased) Creates hook which handles events
 			/// </summary>
 			/// <returns>true for succesful and false for unsuccesful</returns>
-			inline bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
+			inline constexpr bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
 #endif
 		}
 
@@ -116,7 +116,7 @@ namespace NosLib
 			else
 			{
 				// The function failed. Call GetLastError() for details.
-				return {0, 0};
+				return { 0, 0 };
 			}
 		}
 
@@ -128,9 +128,9 @@ namespace NosLib
 		{
 			return GetCaretPosition(GetStdHandle(STD_OUTPUT_HANDLE));
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region ClearRange
+#pragma region ClearRange
 		/// <summary>
 		/// Clear range in console from position with custom Console Handle
 		/// </summary>
@@ -141,7 +141,7 @@ namespace NosLib
 		inline void ClearRange(const HANDLE& consoleHandle, const int& position, const int& range, const wchar_t& fillChar = L' ')
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
-			COORD tl = {0, (SHORT)(position)};
+			COORD tl = { 0, (SHORT)(position) };
 			GetConsoleScreenBufferInfo(consoleHandle, &csbi);
 			DWORD written, cells = csbi.dwSize.X * (1 + range);
 			FillConsoleOutputCharacter(consoleHandle, fillChar, cells, tl, &written);
@@ -159,9 +159,9 @@ namespace NosLib
 		{
 			ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region ClearLine
+#pragma region ClearLine
 		/// <summary>
 		/// Clear a single line on position with custom Console Handle
 		/// </summary>
@@ -182,9 +182,9 @@ namespace NosLib
 		{
 			ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region ClearScreen
+#pragma region ClearScreen
 		/// <summary>
 		/// Clear whole console with custom Console Handle
 		/// </summary>
@@ -205,9 +205,9 @@ namespace NosLib
 		{
 			ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region ShowCaret
+#pragma region ShowCaret
 		/// <summary>
 		/// Show or hide Console Caret with custom Console Handle
 		/// </summary>
@@ -230,9 +230,9 @@ namespace NosLib
 		{
 			ShowCaret(GetStdHandle(STD_OUTPUT_HANDLE), showFlag);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region GetWindowPosition
+#pragma region GetWindowPosition
 		/// <summary>
 		/// Get Window Position with custom console handle
 		/// </summary>
@@ -242,7 +242,7 @@ namespace NosLib
 		/// <returns>if succesful or not</returns>
 		inline bool GetWindowPosition(const HWND& hWnd, int* x, int* y)
 		{
-			RECT rect = {NULL};
+			RECT rect = { NULL };
 			if (GetWindowRect(hWnd, &rect))
 			{
 				*x = rect.left;
@@ -262,9 +262,9 @@ namespace NosLib
 		{
 			return GetWindowPosition(GetConsoleWindow(), x, y);
 		}
-	#pragma endregion
+#pragma endregion
 
-	#pragma region GetWindowDimensions
+#pragma region GetWindowDimensions
 		/// <summary>
 		/// Get Window Dimensions with custom console handle
 		/// </summary>
@@ -272,9 +272,9 @@ namespace NosLib
 		/// <returns>Dimensions, will return -1 for 1x, 1y, 2x, 2y if went wrong</returns>
 		inline NosLib::Dimension::DimensionD2<LONG> GetWindowDimensions(const HWND& hWnd)
 		{
-			NosLib::Dimension::DimensionD2<LONG> output(-1,-1,-1,-1);
+			NosLib::Dimension::DimensionD2<LONG> output(-1, -1, -1, -1);
 
-			RECT rect = {NULL};
+			RECT rect = { NULL };
 			if (GetWindowRect(hWnd, &rect))
 			{
 				output.UpdateDimension(rect.left, rect.top, rect.right, rect.bottom);
@@ -291,7 +291,7 @@ namespace NosLib
 		{
 			return GetWindowDimensions(GetConsoleWindow());
 		}
-	#pragma endregion
+#pragma endregion
 
 		/// <summary>
 		/// a struct to represent ConsoleSize with Columns and Rows members
@@ -302,7 +302,7 @@ namespace NosLib
 			int Rows;
 		};
 
-	#pragma region GetConsoleSize
+#pragma region GetConsoleSize
 		/// <summary>
 		/// Gets console size with no parameters (uses default console handle and CONSOLE_SCREEN_BUFFER_INFO)
 		/// </summary>
@@ -311,7 +311,7 @@ namespace NosLib
 		{
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleScreenBI);
-			return {ConsoleScreenBI.srWindow.Right - ConsoleScreenBI.srWindow.Left + 1, ConsoleScreenBI.srWindow.Bottom - ConsoleScreenBI.srWindow.Top + 1};
+			return { ConsoleScreenBI.srWindow.Right - ConsoleScreenBI.srWindow.Left + 1, ConsoleScreenBI.srWindow.Bottom - ConsoleScreenBI.srWindow.Top + 1 };
 		}
 
 		/// <summary>
@@ -319,9 +319,9 @@ namespace NosLib
 		/// </summary>
 		/// <param name="consoleScreenBI">- the Console_screen_buffer_info to use</param>
 		/// <returns>ConsoleSizeStruct</returns>
-		inline ConsoleSizeStruct GetConsoleSize(const CONSOLE_SCREEN_BUFFER_INFO& consoleScreenBI)
+		inline constexpr ConsoleSizeStruct GetConsoleSize(const CONSOLE_SCREEN_BUFFER_INFO& consoleScreenBI)
 		{
-			return {consoleScreenBI.srWindow.Right - consoleScreenBI.srWindow.Left + 1, consoleScreenBI.srWindow.Bottom - consoleScreenBI.srWindow.Top + 1};
+			return { consoleScreenBI.srWindow.Right - consoleScreenBI.srWindow.Left + 1, consoleScreenBI.srWindow.Bottom - consoleScreenBI.srWindow.Top + 1 };
 		}
 
 		/// <summary>
@@ -333,7 +333,7 @@ namespace NosLib
 		{
 			CONSOLE_SCREEN_BUFFER_INFO ConsoleScreenBI;
 			GetConsoleScreenBufferInfo(ConsoleHandle, &ConsoleScreenBI);
-			return {ConsoleScreenBI.srWindow.Right - ConsoleScreenBI.srWindow.Left + 1, ConsoleScreenBI.srWindow.Bottom - ConsoleScreenBI.srWindow.Top + 1};
+			return { ConsoleScreenBI.srWindow.Right - ConsoleScreenBI.srWindow.Left + 1, ConsoleScreenBI.srWindow.Bottom - ConsoleScreenBI.srWindow.Top + 1 };
 		}
 
 		/// <summary>
@@ -345,9 +345,9 @@ namespace NosLib
 		inline ConsoleSizeStruct GetConsoleSize(const HANDLE& ConsoleHandle, CONSOLE_SCREEN_BUFFER_INFO* consoleScreenBI)
 		{
 			GetConsoleScreenBufferInfo(ConsoleHandle, consoleScreenBI);
-			return {consoleScreenBI->srWindow.Right - consoleScreenBI->srWindow.Left + 1, consoleScreenBI->srWindow.Bottom - consoleScreenBI->srWindow.Top + 1};
+			return { consoleScreenBI->srWindow.Right - consoleScreenBI->srWindow.Left + 1, consoleScreenBI->srWindow.Bottom - consoleScreenBI->srWindow.Top + 1 };
 		}
-	#pragma endregion
+#pragma endregion
 
 #pragma region SetConsoleBuffer
 		/// <summary>
@@ -395,7 +395,7 @@ namespace NosLib
 		}
 #pragma endregion
 
-	#pragma region NoneBlockingMessageLoop
+#pragma region NoneBlockingMessageLoop
 		/// <summary>
 		/// function which will create a none blocking message loop. used more as a template
 		/// </summary>

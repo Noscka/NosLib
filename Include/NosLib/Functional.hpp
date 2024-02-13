@@ -17,7 +17,7 @@ namespace NosLib
             /// <summary>
             /// Function only defined to allow for outside classes to run the child function
             /// </summary>
-            virtual void RunFunction(){ /* Does nothing this class */ }
+            virtual inline constexpr void RunFunction() = 0;
         };
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace NosLib
             /// </summary>
             /// <param name="funcPointer">- a pointer to the wanted function</param>
             /// <param name="...args">- the arguments</param>
-            FunctionStore(FuncType* funcPointer, VariadicArgs&& ... args)
+            inline constexpr FunctionStore(FuncType* funcPointer, VariadicArgs&& ... args)
             {
                 FuncPointer = funcPointer;
                 Args = std::tuple<VariadicArgs...>(std::forward<VariadicArgs>(args)...);
@@ -51,7 +51,7 @@ namespace NosLib
 			/// <param name="funcPointer">- a pointer to the wanted function</param>
 			/// <param name="...args">- the arguments</param>
             template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>>/* only enabled if there are more then 0 variadic arguments */
-			FunctionStore(FuncType* funcPointer)
+			inline constexpr FunctionStore(FuncType* funcPointer)
 			{
 				FuncPointer = funcPointer;
                 PresetArguments = false;
@@ -60,7 +60,7 @@ namespace NosLib
             /// <summary>
             /// Runs the functions and passes through its arguments
             /// </summary>
-            void RunFunction()
+            inline constexpr void RunFunction() const
             {
                 if (!PresetArguments) /* if trying to use this function without preset variables, throw exception | TODO: convert to compile error */
                 {
@@ -76,7 +76,7 @@ namespace NosLib
             /// </summary>
             /// <param name="...args">- the custom arguments</param>
             template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>> /* only enabled if there are more then 0 variadic arguments */
-            void RunFunction(VariadicArgs&& ... args)
+            inline constexpr void RunFunction(VariadicArgs&& ... args) const
             {
                 (*FuncPointer)(std::forward<VariadicArgs>(args)...);
             }
@@ -85,7 +85,7 @@ namespace NosLib
             /// if class has preset arguments for the function
             /// </summary>
             /// <returns>if class has preset arguments for the function</returns>
-            bool HasPresetArguements()
+            inline constexpr bool HasPresetArguements() const
             {
                 return PresetArguments;
             }
