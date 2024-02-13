@@ -3,12 +3,14 @@
 
 #include "TextColor.hpp"
 #include "Console.hpp"
-
 #include "Functional.hpp"
+
 #include <Windows.h>
 #include <string>
 #include <codecvt>
 #include <coroutine>
+
+#include <conio.h>
 
 namespace NosLib
 {

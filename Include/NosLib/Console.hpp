@@ -3,7 +3,6 @@
 
 #include "String.hpp"
 #include "DimensionVector.hpp"
-#include "EventHandling/EventHandling.hpp"
 
 #include <Windows.h>
 #include <io.h>
@@ -92,11 +91,13 @@ namespace NosLib
 			}
 		#pragma endregion
 
+#ifdef _EVENTHANDLING_NOSDOS_HPP_
 			/// <summary>
 			/// (Aliased) Creates hook which handles events
 			/// </summary>
 			/// <returns>true for succesful and false for unsuccesful</returns>
 			inline bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
+#endif
 		}
 
 	#pragma region GetCaretPosition
