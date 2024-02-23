@@ -5,43 +5,45 @@
 
 #include <string>
 
-struct HostPath
+namespace NosLib
 {
-	std::string Host;
-	std::string Path;
-
-	HostPath() {}
-
-	HostPath(const std::string& host, const std::string& path)
+	struct HostPath
 	{
-		Host = host;
-		Path = path;
-	}
+		std::string Host;
+		std::string Path;
 
-	HostPath(const std::string& link)
-	{
-		int slashCount = 0;
+		HostPath() {}
 
-		for (int i = 0; i < link.length(); i++)
+		HostPath(const std::string& host, const std::string& path)
 		{
-			if (slashCount == 3)
-			{
-				Host = link.substr(0, i - 1);
-				Path = link.substr(i - 1);
-				break;
-			}
+			Host = host;
+			Path = path;
+		}
 
-			if (link[i] == L'/')
+		HostPath(const std::string& link)
+		{
+			int slashCount = 0;
+
+			for (int i = 0; i < link.length(); i++)
 			{
-				slashCount++;
+				if (slashCount == 3)
+				{
+					Host = link.substr(0, i - 1);
+					Path = link.substr(i - 1);
+					break;
+				}
+
+				if (link[i] == L'/')
+				{
+					slashCount++;
+				}
 			}
 		}
-	}
 
-	bool operator==(HostPath right)
-	{
-		return (this->Host == right.Host) && (this->Path == right.Path);
-	}
-};
-
+		bool operator==(HostPath right)
+		{
+			return (this->Host == right.Host) && (this->Path == right.Path);
+		}
+	};
+}
 #endif
