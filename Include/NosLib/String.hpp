@@ -1,5 +1,5 @@
-#ifndef _STRING_NosLib_HPP_
-#define _STRING_NosLib_HPP_
+#ifndef _STRING_NOSLIB_HPP_
+#define _STRING_NOSLIB_HPP_
 
 #include "DynamicArray.hpp"
 #include "TypeTraits.hpp"

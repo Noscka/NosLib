@@ -1,5 +1,5 @@
-#ifndef _CONSOLE_NosLib_HPP_
-#define _CONSOLE_NosLib_HPP_
+#ifndef _CONSOLE_NOSLIB_HPP_
+#define _CONSOLE_NOSLIB_HPP_
 
 #include "String.hpp"
 #include "DimensionVector.hpp"
@@ -138,7 +138,7 @@ namespace NosLib
 		/// <param name="position">- position from which to start clearing</param>
 		/// <param name="range">- range to which clear</param>
 		/// <param name="fillChar">(default = L' ') - the character to clear with</param>
-		inline void ClearRange(const HANDLE& consoleHandle, const int& position, const int& range, const wchar_t& fillChar = L' ')
+		inline void ClearRange(const HANDLE& consoleHandle, const int& position, const int& range, const char& fillChar = ' ')
 		{
 			CONSOLE_SCREEN_BUFFER_INFO csbi;
 			COORD tl = { 0, (SHORT)(position) };

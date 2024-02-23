@@ -1,5 +1,5 @@
-#ifndef _TYPETRAITS_NosLib_HPP_
-#define _TYPETRAITS_NosLib_HPP_
+#ifndef _TYPETRAITS_NOSLIB_HPP_
+#define _TYPETRAITS_NOSLIB_HPP_
 
 #include <type_traits>
 

@@ -1,5 +1,5 @@
-#ifndef _CAST_NosLib_HPP_
-#define _CAST_NosLib_HPP_
+#ifndef _CAST_NOSLIB_HPP_
+#define _CAST_NOSLIB_HPP_
 
 #include <type_traits>
 

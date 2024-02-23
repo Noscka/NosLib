@@ -1,5 +1,5 @@
-﻿#ifndef _TEXTCOLOR_NosLib_HPP_
-#define _TEXTCOLOR_NosLib_HPP_
+﻿#ifndef _TEXTCOLOR_NOSLIB_HPP_
+#define _TEXTCOLOR_NOSLIB_HPP_
 
 #include "Console.hpp"
 #include "RGB.hpp"

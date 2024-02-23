@@ -1,5 +1,5 @@
-#ifndef _ERRORHANDLING_NosLib_HPP_
-#define _ERRORHANDLING_NosLib_HPP_
+#ifndef _ERRORHANDLING_NOSLIB_HPP_
+#define _ERRORHANDLING_NOSLIB_HPP_
 
 #include <Windows.h>
 #include <string>

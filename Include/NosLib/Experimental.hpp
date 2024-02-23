@@ -1,5 +1,5 @@
-#ifndef _EXPERIMENTAL_NosLib_HPP_
-#define _EXPERIMENTAL_NosLib_HPP_
+#ifndef _EXPERIMENTAL_NOSLIB_HPP_
+#define _EXPERIMENTAL_NOSLIB_HPP_
 
 #include "Console.hpp"
 #include "RGB.hpp"

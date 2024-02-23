@@ -1,5 +1,5 @@
-#ifndef _DYNAMICARRAY_NosLib_HPP_
-#define _DYNAMICARRAY_NosLib_HPP_
+#ifndef _DYNAMICARRAY_NOSLIB_HPP_
+#define _DYNAMICARRAY_NOSLIB_HPP_
 
 #include "TypeTraits.hpp"
 #include "Pointers.hpp"

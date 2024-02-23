@@ -1,5 +1,5 @@
-#ifndef _FUNCTIONAL_NosLib_HPP_
-#define _FUNCTIONAL_NosLib_HPP_
+#ifndef _FUNCTIONAL_NOSLIB_HPP_
+#define _FUNCTIONAL_NOSLIB_HPP_
 
 #include <tuple>
 #include <exception>

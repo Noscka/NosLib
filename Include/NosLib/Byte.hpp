@@ -1,5 +1,5 @@
-#ifndef _BINARYMATH_NosLib_HPP_
-#define _BINARYMATH_NosLib_HPP_
+#ifndef _BINARYMATH_NOSLIB_HPP_
+#define _BINARYMATH_NOSLIB_HPP_
 
 #include "Cast.hpp"
 

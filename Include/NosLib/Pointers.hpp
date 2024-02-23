@@ -1,5 +1,5 @@
-#ifndef _POINTERS_NosLib_HPP_
-#define _POINTERS_NosLib_HPP_
+#ifndef _POINTERS_NOSLIB_HPP_
+#define _POINTERS_NOSLIB_HPP_
 
 #include "TypeTraits.hpp"
 

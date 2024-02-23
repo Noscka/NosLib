@@ -1,5 +1,5 @@
-#ifndef _FILEMANAGEMENT_NosLib_HPP_
-#define _FILEMANAGEMENT_NosLib_HPP_
+#ifndef _FILEMANAGEMENT_NOSLIB_HPP_
+#define _FILEMANAGEMENT_NOSLIB_HPP_
 
 #include "String.hpp"
 

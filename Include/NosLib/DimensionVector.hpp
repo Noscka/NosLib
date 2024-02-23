@@ -1,5 +1,5 @@
-#ifndef _DIMENTIONVECTOR_NosLib_HPP_
-#define _DIMENTIONVECTOR_NosLib_HPP_
+#ifndef _DIMENTIONVECTOR_NOSLIB_HPP_
+#define _DIMENTIONVECTOR_NOSLIB_HPP_
 
 #include "String.hpp"
 

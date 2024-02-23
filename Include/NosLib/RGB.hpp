@@ -1,5 +1,5 @@
-#ifndef _RGB_NosLib_HPP_
-#define _RGB_NosLib_HPP_
+#ifndef _RGB_NOSLIB_HPP_
+#define _RGB_NOSLIB_HPP_
 
 #include <string>
 #include <cstdint>
