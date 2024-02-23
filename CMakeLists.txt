@@ -7,7 +7,19 @@ project ("NosLib" VERSION 1.0.0 LANGUAGES CXX)
 
 message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
 
+add_compile_definitions(CPPHTTPLIB_OPENSSL_SUPPORT)
+
+option(HTTPLIB_REQUIRE_OPENSSL "Require SSL" ON)
+option(HTTPLIB_USE_BROTLI_IF_AVAILABLE "" OFF)
+option(HTTPLIB_USE_ZLIB_IF_AVAILABLE "" OFF)
+
+find_package(OpenSSL REQUIRED)
+include_directories(${OPENSSL_INCLUDE_DIR})
+
+add_subdirectory(External)
+
 add_library(${PROJECT_NAME} INTERFACE)
+target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
 target_include_directories(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 if(PROJECT_IS_TOP_LEVEL)
