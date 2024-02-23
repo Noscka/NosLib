@@ -14,13 +14,13 @@ namespace NosLib
 
 		HostPath() {}
 
-		HostPath(const std::string& host, const std::string& path)
+		inline HostPath(const std::string& host, const std::string& path)
 		{
 			Host = host;
 			Path = path;
 		}
 
-		HostPath(const std::string& link)
+		inline HostPath(const std::string& link)
 		{
 			int slashCount = 0;
 
@@ -40,7 +40,7 @@ namespace NosLib
 			}
 		}
 
-		bool operator==(HostPath right)
+		inline bool operator==(HostPath right)
 		{
 			return (this->Host == right.Host) && (this->Path == right.Path);
 		}

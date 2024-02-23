@@ -8,7 +8,7 @@
 
 namespace NosLib
 {
-	void LoggingFunction(const httplib::Request& req, const httplib::Response& res)
+	inline void LoggingFunction(const httplib::Request& req, const httplib::Response& res)
 	{
 		printf("====================================================================================================================\nRequest\n");
 		printf(std::format(":METHOD: {}\n", req.method).c_str());
@@ -37,7 +37,7 @@ namespace NosLib
 		printf("====================================================================================================================\n\n\n");
 	}
 
-	httplib::Client MakeClient(const std::string& host, const std::string& userAgent)
+	inline httplib::Client MakeClient(const std::string& host, const std::string& userAgent)
 	{
 		httplib::Client ret(host);
 
