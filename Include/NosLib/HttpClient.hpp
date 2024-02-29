@@ -39,7 +39,7 @@ namespace NosLib
 		printf("====================================================================================================================\n\n\n");
 	}
 
-	inline httplib::Client MakeClient(const std::string& host, const std::string& userAgent = "")
+	inline httplib::Client MakeClient(const std::string& host, const bool& enableServerCertVerification = true, const std::string& userAgent = "")
 	{
 		if (!userAgent.empty())
 		{
@@ -48,7 +48,7 @@ namespace NosLib
 
 		httplib::Client ret(host);
 
-		//ret.enable_server_certificate_verification(false);
+		ret.enable_server_certificate_verification(enableServerCertVerification);
 
 		ret.set_follow_location(false);
 		ret.set_keep_alive(false);
