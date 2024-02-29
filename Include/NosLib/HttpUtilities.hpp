@@ -42,11 +42,11 @@ namespace NosLib
 			return true;
 		}
 
-		inline bool DownloadFile(const std::string& url, const std::string& filepath)
+		inline bool DownloadFile(const std::string& url, const std::string& filepath, const bool& enableServerCertVerification = true)
 		{
 			NosLib::HostPath urlHostPath(url);
 
-			httplib::Client client = NosLib::MakeClient(urlHostPath.Host);
+			httplib::Client client = NosLib::MakeClient(urlHostPath.Host, enableServerCertVerification);
 
 			return DownloadFile(&client, urlHostPath.Path, filepath);
 		}
