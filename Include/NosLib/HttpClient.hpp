@@ -30,8 +30,7 @@ namespace NosLib
 		printf(std::format(":BODY:   {}\n", res.body).c_str());
 		printf(std::format(":LOCATION:   {}\n", res.location).c_str());
 
-		printf("======HEADERS======\n
-
+		printf("======HEADERS======\n");
 
 		for (auto itr = res.headers.begin(); itr != res.headers.end(); itr++)
 		{
