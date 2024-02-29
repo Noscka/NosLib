@@ -14,7 +14,7 @@ namespace NosLib
 	{
 		inline bool DownloadFile(httplib::Client* client, const std::string& urlPath, const std::string& filepath)
 		{
-			std::ofstream fileDownloadStream(filepath);
+			std::ofstream fileDownloadStream(filepath, std::ios::binary);
 
 			httplib::Result res = client->Get(urlPath, [&](const char* data, size_t data_length)
 			{
