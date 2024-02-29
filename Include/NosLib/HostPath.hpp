@@ -40,6 +40,11 @@ namespace NosLib
 			}
 		}
 
+		inline std::string Full() const
+		{
+			return Host + Path;
+		}
+
 		inline bool operator==(HostPath right)
 		{
 			return (this->Host == right.Host) && (this->Path == right.Path);
