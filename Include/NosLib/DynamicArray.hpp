@@ -103,7 +103,7 @@ namespace NosLib
 		~DynamicArray()
 		{
 			/* if set to nullptr by self or operator=, just skip */
-			if (MainArray == nullptr)
+			if (MainArray == nullptr || !DeleteObjectsOnDestruction)
 			{
 				return;
 			}
@@ -111,19 +111,14 @@ namespace NosLib
 			/* if a pointer and not a function, go through all entries and delete */
 			if constexpr (std::is_pointer<ArrayDataType>::value && !std::is_function< NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType> >::value)
 			{
-				if (DeleteObjectsOnDestruction)
+				for (int i = 0; i < CurrentArrayIndex; i++)
 				{
-					for (int i = 0; i < CurrentArrayIndex; i++)
-					{
-						delete MainArray[i];
-						MainArray[i] = nullptr;
-					}
+					delete MainArray[i];
+					MainArray[i] = nullptr;
 				}
 			}
-			if (DeleteObjectsOnDestruction)
-			{
-				delete[] MainArray;
-			}
+
+			delete[] MainArray;
 
 			MainArray = nullptr;
 		}
@@ -288,7 +283,14 @@ namespace NosLib
 		{
 			for (int i = 0; i <= CurrentArrayIndex; i++)
 			{
-				if (object == MainArray[i]) { Remove(i, deleteObject); if (!checkAll) { return; } }
+				if (object == MainArray[i])
+				{
+					Remove(i, deleteObject);
+					if (!checkAll)
+					{
+						return;
+					}
+				}
 			}
 		}
 
