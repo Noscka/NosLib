@@ -518,7 +518,29 @@ namespace NosLib
 		/// </summary>
 		/// <param name="insersationObject">- the object to insert</param>
 		/// <returns>combined objects</returns>
+		inline constexpr DynamicArray<ArrayDataType>& operator<<(DynamicArray<ArrayDataType>&& insersationObject)
+		{
+			this->MultiAppend(insersationObject.begin(), insersationObject.end());
+			return *this;
+		}
+
+		/// <summary>
+		/// Inserts object into self
+		/// </summary>
+		/// <param name="insersationObject">- the object to insert</param>
+		/// <returns>combined objects</returns>
 		inline constexpr DynamicArray<ArrayDataType>& operator+=(DynamicArray<ArrayDataType>& insersationObject)
+		{
+			this->MultiAppend(insersationObject.begin(), insersationObject.end());
+			return *this;
+		}
+
+		/// <summary>
+		/// Inserts object into self
+		/// </summary>
+		/// <param name="insersationObject">- the object to insert</param>
+		/// <returns>combined objects</returns>
+		inline constexpr DynamicArray<ArrayDataType>& operator+=(DynamicArray<ArrayDataType>&& insersationObject)
 		{
 			this->MultiAppend(insersationObject.begin(), insersationObject.end());
 			return *this;
