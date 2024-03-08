@@ -7,6 +7,7 @@
 #include "HostPath.hpp"
 
 #include <fstream>
+#include <mutex>
 
 namespace NosLib
 {
@@ -17,10 +18,10 @@ namespace NosLib
 			std::ofstream fileDownloadStream(filepath, std::ios::binary);
 
 			httplib::Result res = client->Get(urlPath, [&](const char* data, size_t data_length)
-			{
-				fileDownloadStream.write(data, data_length);
-				return true;
-			});
+				{
+					fileDownloadStream.write(data, data_length);
+					return true;
+				});
 
 			if (!res)
 			{
