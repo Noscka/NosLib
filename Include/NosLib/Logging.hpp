@@ -58,16 +58,13 @@ namespace NosLib
 
 	public:
 		template<typename CharType>
-		static inline constexpr Logging* CreateLog(const std::basic_string<CharType>& logMessage, const Severity& logSeverity, const bool& printLog = false)
+		static inline constexpr Logging* CreateLog(const std::basic_string<CharType>& logMessage, const Severity& logSeverity)
 		{
 			Logging* logObject = new Logging(NosLib::String::ConvertString<wchar_t, CharType>(logMessage), logSeverity);
 			Logs.Append(logObject);
 
 			std::wstring containedLogMessage = logObject->GetLog();
-			if (printLog)
-			{
-				(void)wprintf(containedLogMessage.c_str());
-			}
+			fprintf(stderr, NosLib::String::ConvertString<char, wchar_t>(containedLogMessage).c_str());
 
 			std::wofstream outLog(L"log.txt", std::ios::binary | std::ios::app);
 			outLog.write(containedLogMessage.c_str(), containedLogMessage.size());
