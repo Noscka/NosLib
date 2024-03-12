@@ -84,8 +84,8 @@ namespace NosLib
 			Logging* logObject = new Logging(NosLib::String::ConvertString<wchar_t, CharType>(logMessage), logSeverity);
 			Logs.Append(logObject);
 
-			/* if verbose level is higher then severity, then don't print or add to file */
-			if ((uint16_t)logSeverity >= (uint16_t)VerboseLevel)
+			/* if severity is lower then Verbose, then don't print or add to file */
+			if ((uint16_t)logSeverity < (uint16_t)VerboseLevel)
 			{
 				return logObject;
 			}
