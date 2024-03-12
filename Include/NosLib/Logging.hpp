@@ -13,15 +13,28 @@ namespace NosLib
 	class Logging
 	{
 	public:
-		enum class Severity
+		enum class Severity : uint16_t
 		{
+			Debug,		/* useful for debug */
 			Info,		/* just information */
 			Warning,	/* something that could cause problems later but isn't right now */
 			Error,		/* a non fatal error, something went wrong but the program can continue */
 			Fatal		/* a fatal error, the program has to close because of it */
 		};
+
+		/* Will display chosen level and above */
+		enum class Verbose : uint16_t 
+		{
+			Debug,
+			Info,
+			Warning,
+			Error,
+			Fatal,
+			None
+		};
 	protected:
 		static inline NosLib::DynamicArray<Logging*> Logs;
+		static inline Verbose VerboseLevel = Verbose::Warning;
 
 		std::wstring LogMessage;
 		Severity LogSeverity;
@@ -40,6 +53,9 @@ namespace NosLib
 		{
 			switch (logSeverity)
 			{
+			case NosLib::Logging::Severity::Debug:
+				return L"Debug";
+				break;
 			case NosLib::Logging::Severity::Info:
 				return L"Info";
 				break;
@@ -57,11 +73,22 @@ namespace NosLib
 		}
 
 	public:
+		static inline constexpr void SetVerboseLevel(const Verbose& verboseLevel)
+		{
+			VerboseLevel = verboseLevel;
+		}
+
 		template<typename CharType>
 		static inline constexpr Logging* CreateLog(const std::basic_string<CharType>& logMessage, const Severity& logSeverity)
 		{
 			Logging* logObject = new Logging(NosLib::String::ConvertString<wchar_t, CharType>(logMessage), logSeverity);
 			Logs.Append(logObject);
+
+			/* if verbose level is higher then severity, then don't print or add to file */
+			if ((uint16_t)logSeverity >= (uint16_t)VerboseLevel)
+			{
+				return logObject;
+			}
 
 			std::wstring containedLogMessage = logObject->GetLog();
 			fprintf(stderr, NosLib::String::ConvertString<char, wchar_t>(containedLogMessage).c_str());

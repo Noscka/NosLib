@@ -347,6 +347,7 @@ namespace NosLib
 		{
 			CurrentArrayIndex = 0;
 			ArraySize = ArrayDefaultSize;
+			delete[] MainArray;
 			MainArray = new ArrayDataType[ArrayDefaultSize]();
 		}
 #pragma endregion
