@@ -9,18 +9,18 @@ namespace NosLib
 {
 	struct HostPath
 	{
-		std::string Host;
-		std::string Path;
+		std::wstring Host;
+		std::wstring Path;
 
 		HostPath() {}
 
-		inline HostPath(const std::string& host, const std::string& path)
+		inline HostPath(const std::wstring& host, const std::wstring& path)
 		{
 			Host = host;
 			Path = path;
 		}
 
-		inline HostPath(const std::string& link)
+		inline HostPath(const std::wstring& link)
 		{
 			int slashCount = 0;
 
@@ -40,7 +40,15 @@ namespace NosLib
 			}
 		}
 
-		inline std::string Full() const
+		inline HostPath(const std::string& host, const std::string& path)
+			: HostPath(NosLib::String::ToWstring(host), NosLib::String::ToWstring(path))
+		{}
+
+		inline HostPath(const std::string& link)
+			: HostPath(NosLib::String::ToWstring(link))
+		{}
+
+		inline std::wstring Full() const
 		{
 			return Host + Path;
 		}
