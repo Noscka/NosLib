@@ -4,6 +4,7 @@
 #include "DynamicArray.hpp"
 #include "String.hpp"
 
+#include <fstream>
 #include <chrono>
 #include <string>
 #include <format>
@@ -76,6 +77,11 @@ namespace NosLib
 		static inline constexpr void SetVerboseLevel(const Verbose& verboseLevel)
 		{
 			VerboseLevel = verboseLevel;
+		}
+
+		static inline constexpr Verbose GetVerboseLevel()
+		{
+			return VerboseLevel;
 		}
 
 		template<typename CharType>

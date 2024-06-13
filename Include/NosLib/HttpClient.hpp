@@ -1,6 +1,8 @@
 #ifndef _HTTPCLIENT_NOSLIB_HPP_
 #define _HTTPCLIENT_NOSLIB_HPP_
 
+#include "Logging.hpp"
+
 #include <httplib.h>
 
 #include <format>
@@ -12,31 +14,40 @@ namespace NosLib
 
 	inline void LoggingFunction(const httplib::Request& req, const httplib::Response& res)
 	{
-		printf("====================================================================================================================\nRequest\n");
-		printf(std::format(":METHOD: {}\n", req.method).c_str());
-		printf(std::format(":PATH:   {}\n", req.path).c_str());
-		printf(std::format(":BODY:   {}\n", req.body).c_str());
+		/* if is more then Debug */
+		if (NosLib::Logging::GetVerboseLevel() > Logging::Verbose::Debug)
+		{
+			return;
+		}
 
-		printf("======HEADERS======\n");
+		std::string logOutput;
+		logOutput+=("====================================================================================================================\nRequest\n");
+		logOutput+=(std::format(":METHOD: {}\n", req.method).c_str());
+		logOutput+=(std::format(":PATH:   {}\n", req.path).c_str());
+		logOutput+=(std::format(":BODY:   {}\n", req.body).c_str());
+
+		logOutput+=("======HEADERS======\n");
 
 		for (auto itr = req.headers.begin(); itr != req.headers.end(); itr++)
 		{
-			printf(std::format("{} : {}\n", itr->first, itr->second).c_str());
+			logOutput+=(std::format("{} : {}\n", itr->first, itr->second).c_str());
 		}
-		printf("====================================================================================================================\nResponse\n");
+		logOutput+=("====================================================================================================================\nResponse\n");
 
-		printf(std::format(":STATUS: {}\n", res.status).c_str());
-		printf(std::format(":REASON: {}\n", res.reason).c_str());
-		printf(std::format(":BODY:   {}\n", res.body).c_str());
-		printf(std::format(":LOCATION:   {}\n", res.location).c_str());
+		logOutput+=(std::format(":STATUS: {}\n", res.status).c_str());
+		logOutput+=(std::format(":REASON: {}\n", res.reason).c_str());
+		logOutput+=(std::format(":BODY:   {}\n", res.body).c_str());
+		logOutput+=(std::format(":LOCATION:   {}\n", res.location).c_str());
 
-		printf("======HEADERS======\n");
+		logOutput+=("======HEADERS======\n");
 
 		for (auto itr = res.headers.begin(); itr != res.headers.end(); itr++)
 		{
-			printf(std::format("{} : {}\n", itr->first, itr->second).c_str());
+			logOutput+=(std::format("{} : {}\n", itr->first, itr->second).c_str());
 		}
-		printf("====================================================================================================================\n\n\n");
+		logOutput+=("====================================================================================================================\n\n\n");
+
+		NosLib::Logging::CreateLog<char>(logOutput, NosLib::Logging::Severity::Debug);
 	}
 
 	inline httplib::Client MakeClient(const std::string& host, const bool& enableServerCertVerification = true, const std::string& userAgent = "")
@@ -54,9 +65,7 @@ namespace NosLib
 		ret.set_keep_alive(false);
 		ret.set_default_headers({ {"User-Agent", std::format("{} (cpp-httplib)", UserAgent).c_str()} });
 
-#ifdef HeaderDebug
 		ret.set_logger(&LoggingFunction);
-#endif
 
 		return ret;
 	}
