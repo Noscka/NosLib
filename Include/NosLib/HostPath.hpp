@@ -1,9 +1,9 @@
 #ifndef _HOSTPATH_NOSLIB_HPP_
 #define _HOSTPATH_NOSLIB_HPP_
 
-#include <httplib.h>
+#include <NosLib/String.hpp>
 
-#include <string>
+#include <httplib.h>
 
 namespace NosLib
 {

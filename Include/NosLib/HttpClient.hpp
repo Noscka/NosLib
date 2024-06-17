@@ -2,6 +2,7 @@
 #define _HTTPCLIENT_NOSLIB_HPP_
 
 #include "Logging.hpp"
+#include "String.hpp"
 
 #include <httplib.h>
 
@@ -50,13 +51,8 @@ namespace NosLib
 		NosLib::Logging::CreateLog<char>(logOutput, NosLib::Logging::Severity::Debug);
 	}
 
-	inline httplib::Client MakeClient(const std::string& host, const bool& enableServerCertVerification = true, const std::string& userAgent = "")
+	inline httplib::Client MakeClient(const std::string& host, const bool& enableServerCertVerification = true)
 	{
-		if (!userAgent.empty())
-		{
-			UserAgent = userAgent;
-		}
-
 		httplib::Client ret(host);
 
 		ret.enable_server_certificate_verification(enableServerCertVerification);
@@ -68,6 +64,16 @@ namespace NosLib
 		ret.set_logger(&LoggingFunction);
 
 		return ret;
+	}
+
+	inline void SetUserAgent(const std::string& userAgent)
+	{
+		UserAgent = userAgent;
+	}
+
+	inline void SetUserAgent(const std::wstring& userAgent)
+	{
+		UserAgent = NosLib::String::ToString(userAgent);
 	}
 }
 #endif

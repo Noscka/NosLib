@@ -42,7 +42,7 @@ namespace NosLib
 		/// Counts amount of objects in list, returns object count and not last index
 		/// </summary>
 		/// <returns>number of objects in linked array</returns>
-		inline constexpr int Count() const
+		inline constexpr int Count()
 		{
 			HashTableObjectContainer<HashTableType>* currentIndex = this;
 
