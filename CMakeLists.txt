@@ -8,6 +8,7 @@ project ("NosLib" VERSION 1.0.0 LANGUAGES CXX)
 message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
 
 add_compile_definitions(CPPHTTPLIB_OPENSSL_SUPPORT)
+add_compile_definitions(WIN32_LEAN_AND_MEAN)
 
 option(HTTPLIB_REQUIRE_OPENSSL "Require SSL" ON)
 option(HTTPLIB_USE_BROTLI_IF_AVAILABLE "" OFF)

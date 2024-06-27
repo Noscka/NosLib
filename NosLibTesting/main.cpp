@@ -4,6 +4,8 @@
 
 #include <conio.h>
 
+#include <NosLib/HttpClient.hpp>
+
 std::mutex printingMutex;
 
 void PrintSomething(const int& number)
@@ -15,6 +17,15 @@ void PrintSomething(const int& number)
 
 int main()
 {
+	NosLib::HostPath github("https://github.com/Noscka/Norzkas-Custom-Gamma-Installer/archive/refs/heads/master.zip");
+
+	std::unique_ptr<NosLib::HttpClient> testClient = NosLib::HttpClient::MakeClient(NosLib::String::ToString(github.Host));
+	testClient->set_keep_alive(true);
+	testClient->set_follow_location(true);
+	//testClient->DownloadFile(NosLib::String::ToString(github.Path), "here.zip");
+
+	return 0;
+
 	auto* threadPool = NosLib::ThreadPool::CreateThreadPool();
 
 	NosLib::FunctionStore printFunction(&PrintSomething, 1);
@@ -30,4 +41,4 @@ int main()
 
 	printf("Press any button to continue"); _getch();
 	return 0;
-}
+}\
