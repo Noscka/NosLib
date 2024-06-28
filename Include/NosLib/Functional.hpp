@@ -79,7 +79,16 @@ namespace NosLib
 		FuncType FuncPointer;              /* Pointer to the function */
 		std::tuple<VariadicArgs...> Args;   /* a tuple used to store the argument values */
 		bool PresetArguments;               /* if the arguments are preset (in the tuple) */
+		bool TempObject = false;
 	public:
+		inline constexpr MemberFunctionStore(FuncType funcPointer, VariadicArgs&& ... args)
+		{
+			ObjectPointer = nullptr;
+			FuncPointer = funcPointer;
+			Args = std::tuple<VariadicArgs...>(std::forward<VariadicArgs>(args)...);
+			PresetArguments = true;
+		}
+
 		inline constexpr MemberFunctionStore(ObjectType* objectPointer, FuncType funcPointer, VariadicArgs&& ... args)
 		{
 			ObjectPointer = objectPointer;
@@ -88,13 +97,21 @@ namespace NosLib
 			PresetArguments = true;
 		}
 
-		//template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>>/* only enabled if there are more then 0 variadic arguments */
-		//inline constexpr MemberFunctionStore(ObjectType* objectPointer, FuncType* funcPointer)
-		//{
-		//	ObjectPointer = objectPointer;
-		//	FuncPointer = funcPointer;
-		//	PresetArguments = false;
-		//}
+		template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>>/* only enabled if there are more then 0 variadic arguments */
+		inline constexpr MemberFunctionStore(FuncType* funcPointer)
+		{
+			ObjectPointer = nullptr;
+			FuncPointer = funcPointer;
+			PresetArguments = false;
+		}
+
+		template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>>/* only enabled if there are more then 0 variadic arguments */
+		inline constexpr MemberFunctionStore(ObjectType* objectPointer, FuncType* funcPointer)
+		{
+			ObjectPointer = objectPointer;
+			FuncPointer = funcPointer;
+			PresetArguments = false;
+		}
 
 		inline void RunFunction() const override
 		{
@@ -104,12 +121,27 @@ namespace NosLib
 				return;
 			}
 
+			if (ObjectPointer == nullptr)
+			{
+				ObjectType tempObject;
+				(tempObject.*FuncPointer)(std::get<VariadicArgs>(Args)...);
+				return;
+			}
+			
 			(ObjectPointer->*FuncPointer)(std::get<VariadicArgs>(Args)...);
+
 		}
 
 		template<typename = std::enable_if_t<(sizeof...(VariadicArgs) > 0)>> /* only enabled if there are more then 0 variadic arguments */
 		inline constexpr void RunFunction(VariadicArgs&& ... args) const
 		{
+			if (ObjectPointer == nullptr)
+			{
+				ObjectType tempObject;
+				(tempObject.*FuncPointer)(std::forward<VariadicArgs>(args)...);
+				return;
+			}
+
 			(ObjectPointer->*FuncPointer)(std::forward<VariadicArgs>(args)...);
 		}
 

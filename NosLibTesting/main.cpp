@@ -1,24 +1,23 @@
 #include <NosLib/ThreadPool.hpp>
 
 #include <iostream>
+#include <atomic>
 #include <conio.h>
 
 class TestClass
 {
 private:
-	int QuickStore = -1;
+	static inline std::atomic<int> GlobalIndex = 0;
+	int CurrentIndex;
 public:
-	TestClass() = default;
-	TestClass(const int& quickStore)
+	TestClass()
 	{
-		QuickStore = quickStore;
+		CurrentIndex = GlobalIndex++;
 	}
 
 	void PrintFunction(const int& anotherNumber)
 	{
-		printf("%d | %d\n", QuickStore, anotherNumber);
-		QuickStore = anotherNumber+1;
-		printf("%d | %d\n", QuickStore, anotherNumber);
+		printf("index: %d | %d\n", CurrentIndex, anotherNumber);
 	}
 };
 
@@ -26,12 +25,10 @@ int main()
 {
 	NosLib::ThreadPool threadPool;
 
-	TestClass someClass1;
-
-	NosLib::MemberFunctionStore testFunc1(&someClass1, &TestClass::PrintFunction, 2);
+	NosLib::MemberFunctionStore<TestClass, void(TestClass::*)(const int&), int> testFunc1(nullptr, &TestClass::PrintFunction, 2);
 
 	printf("Thread pool Created\n");
-	threadPool.StartThreadPool(testFunc1, true);
+	threadPool.StartThreadPool(testFunc1, true, 2.0f);
 
 	printf("Thread Pool Started\n");
 
