@@ -1,4 +1,4 @@
-#include <NosLib/Functional.hpp>
+#include <NosLib/ThreadPool.hpp>
 
 #include <iostream>
 #include <conio.h>
@@ -17,27 +17,26 @@ public:
 	void PrintFunction(const int& anotherNumber)
 	{
 		printf("%d | %d\n", QuickStore, anotherNumber);
+		QuickStore = anotherNumber+1;
+		printf("%d | %d\n", QuickStore, anotherNumber);
 	}
 };
 
-template<class FuncType>
-void CallClassFunction(TestClass* objPtr, FuncType funcPtr, const int& param)
-{
-	(objPtr->*funcPtr)(param);
-}
-
 int main()
 {
+	NosLib::ThreadPool threadPool;
+
 	TestClass someClass1;
-	TestClass someClass2(10);
 
-	NosLib::MemberFunctionStore testFunc1(&someClass1, &TestClass::PrintFunction, -1);
-	NosLib::MemberFunctionStore testFunc2(&someClass2, &TestClass::PrintFunction, 1);
+	NosLib::MemberFunctionStore testFunc1(&someClass1, &TestClass::PrintFunction, 2);
 
-	printf("Created\n");
+	printf("Thread pool Created\n");
+	threadPool.StartThreadPool(testFunc1, true);
 
-	testFunc1.RunFunction();
-	testFunc2.RunFunction();
+	printf("Thread Pool Started\n");
+
+	threadPool.JoinThreadPool();
+	printf("Thread Pool finished and joined\n");
 
 	printf("Press any button to continue"); _getch();
 	return 0;

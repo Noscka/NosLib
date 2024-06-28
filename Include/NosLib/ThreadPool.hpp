@@ -21,9 +21,8 @@ namespace NosLib
 		std::mutex threadJoinMutex;
 		std::condition_variable threadJoinCV;
 
-		bool StopSignal = false;
-
 		constexpr static unsigned int DefaultCoreCount = 8;
+		float ThreadMultiplier = 1;
 		unsigned int CustomThreadCount = 0;
 
 		inline void ManageThreads()
@@ -58,20 +57,12 @@ namespace NosLib
 			/* in theory, thread deletes itself here */
 		}
 
+
 	public:
-		inline static ThreadPool* CreateThreadPool()
+		inline void StartThreadPool(NosLib::FunctionStoreBase* threadFunction, const bool& detachThread = false, const float& threadMultiplier = 1, const unsigned int& customThreadCount = 0)
 		{
-			auto* threadPool = new ThreadPool;
-			
-			return threadPool;
-		}
-
-		template<class FuncType, typename ... VariadicArgs>
-		inline void StartThreadPool(const NosLib::FunctionStore<FuncType, VariadicArgs...>& threadFunction, const bool& detachThread = false, const unsigned int& customThreadCount = 0)
-		{
-			using ThreadFunctionType = NosLib::FunctionStore<FuncType, VariadicArgs...>;
-
-			ThreadFunction = new ThreadFunctionType(threadFunction);
+			ThreadFunction = threadFunction;
+			ThreadMultiplier = threadMultiplier;
 			CustomThreadCount = customThreadCount;
 
 			if (detachThread)
@@ -83,6 +74,22 @@ namespace NosLib
 			{
 				ThreadPoolManagement();
 			}
+		}
+
+		template<class FuncType, typename ... VariadicArgs>
+		inline void StartThreadPool(const NosLib::FunctionStore<FuncType, VariadicArgs...>& threadFunction, const bool& detachThread = false, const float& threadMultiplier = 1, const unsigned int& customThreadCount = 0)
+		{
+			using ThreadFunctionType = NosLib::FunctionStore<FuncType, VariadicArgs...>;
+
+			StartThreadPool(new ThreadFunctionType(threadFunction), detachThread, threadMultiplier, customThreadCount);
+		}
+
+		template<class ObjectType, class FuncType, typename ... VariadicArgs>
+		inline void StartThreadPool(const NosLib::MemberFunctionStore<ObjectType, FuncType, VariadicArgs...>& threadFunction, const bool& detachThread = false, const float& threadMultiplier = 1, const unsigned int& customThreadCount = 0)
+		{
+			using ThreadFunctionType = NosLib::MemberFunctionStore<ObjectType, FuncType, VariadicArgs...>;
+
+			StartThreadPool(new ThreadFunctionType(threadFunction), detachThread, threadMultiplier, customThreadCount);
 		}
 
 		/* Will wait for the thread pool to be finished */
@@ -107,7 +114,10 @@ namespace NosLib
 				coreCount = DefaultCoreCount;
 			}
 
-			coreCount *= 2;
+			if (ThreadMultiplier > 0)
+			{
+				coreCount *= ThreadMultiplier;
+			}
 
 			return coreCount;
 		}
