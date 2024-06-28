@@ -1,44 +1,44 @@
-#include <NosLib/ThreadPool.hpp>
+#include <NosLib/Functional.hpp>
 
 #include <iostream>
-
 #include <conio.h>
 
-#include <NosLib/HttpClient.hpp>
-
-std::mutex printingMutex;
-
-void PrintSomething(const int& number)
+class TestClass
 {
-	//std::lock_guard<std::mutex> lock(printingMutex);
-	printf("printed Something %d\n", number);
-	std::this_thread::sleep_for(std::chrono::seconds(10));
+private:
+	int QuickStore = -1;
+public:
+	TestClass() = default;
+	TestClass(const int& quickStore)
+	{
+		QuickStore = quickStore;
+	}
+
+	void PrintFunction(const int& anotherNumber)
+	{
+		printf("%d | %d\n", QuickStore, anotherNumber);
+	}
+};
+
+template<class FuncType>
+void CallClassFunction(TestClass* objPtr, FuncType funcPtr, const int& param)
+{
+	(objPtr->*funcPtr)(param);
 }
 
 int main()
 {
-	NosLib::HostPath github("https://github.com/Noscka/Norzkas-Custom-Gamma-Installer/archive/refs/heads/master.zip");
+	TestClass someClass1;
+	TestClass someClass2(10);
 
-	std::unique_ptr<NosLib::HttpClient> testClient = NosLib::HttpClient::MakeClient(NosLib::String::ToString(github.Host));
-	testClient->set_keep_alive(true);
-	testClient->set_follow_location(true);
-	//testClient->DownloadFile(NosLib::String::ToString(github.Path), "here.zip");
+	NosLib::MemberFunctionStore testFunc1(&someClass1, &TestClass::PrintFunction, -1);
+	NosLib::MemberFunctionStore testFunc2(&someClass2, &TestClass::PrintFunction, 1);
 
-	return 0;
+	printf("Created\n");
 
-	auto* threadPool = NosLib::ThreadPool::CreateThreadPool();
-
-	NosLib::FunctionStore printFunction(&PrintSomething, 1);
-	printf("Thread pool Created\n");
-	threadPool->StartThreadPool(printFunction, true);
-
-	printf("Thread Pool Started\n");
-
-	threadPool->JoinThreadPool();
-	printf("Thread Pool finished and joined\n");
-
-	delete threadPool;
+	testFunc1.RunFunction();
+	testFunc2.RunFunction();
 
 	printf("Press any button to continue"); _getch();
 	return 0;
-}\
+}
