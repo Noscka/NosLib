@@ -1,6 +1,8 @@
 #ifndef _RGB_NOSLIB_HPP_
 #define _RGB_NOSLIB_HPP_
 
+#include "String.hpp"
+
 #include <string>
 #include <cstdint>
 #include <format>

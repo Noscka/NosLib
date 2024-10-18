@@ -40,6 +40,7 @@ namespace NosLib
 				Y = y;
 			}
 
+			#ifdef _WIN32
 			/// <summary>
 			/// Creates a 2 dimensional vector object with COORD struct
 			/// </summary>
@@ -59,6 +60,7 @@ namespace NosLib
 				X = point.x;
 				Y = point.y;
 			}
+			#endif
 
 			/// <summary>
 			/// + operator
@@ -90,6 +92,7 @@ namespace NosLib
 				return (this->X == comparingObject.X && this->Y == comparingObject.Y);
 			}
 
+			#ifdef _WIN32
 			/// <summary>
 			/// Convert to COORD
 			/// </summary>
@@ -105,6 +108,7 @@ namespace NosLib
 			{
 				return POINT(X, Y);
 			}
+			#endif // _WIN32
 
 			/// <summary>
 			/// Converts Vector to string

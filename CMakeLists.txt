@@ -22,6 +22,7 @@ add_subdirectory(External)
 add_library(${PROJECT_NAME} INTERFACE)
 target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
 target_include_directories(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_include_directories(${PROJECT_NAME} INTERFACE "./Include/")
 
 if(PROJECT_IS_TOP_LEVEL)
 	add_executable("NosLibTesting" "NosLibTesting/main.cpp")

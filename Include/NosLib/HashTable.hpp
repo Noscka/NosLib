@@ -5,6 +5,9 @@
 #include "Pointers.hpp"
 
 #include <type_traits>
+#include <cstdint>
+#include <cstddef>
+#include <string>
 
 namespace NosLib
 {

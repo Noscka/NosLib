@@ -10,6 +10,7 @@
 
 namespace NosLib
 {
+	#ifdef _WIN32
 	/// <summary>
 	/// namespace for items which are related to Console
 	/// </summary>
@@ -422,5 +423,6 @@ namespace NosLib
 		}
 #pragma endregion
 	}
+	#endif
 }
 #endif

@@ -1,12 +1,16 @@
 #ifndef _ERRORHANDLING_NOSLIB_HPP_
 #define _ERRORHANDLING_NOSLIB_HPP_
 
+#ifdef _WIN32
 #include <Windows.h>
+#endif // _WIN32
+
 #include <string>
 
 namespace NosLib
 {
-	namespace ErrorHandling
+	#ifdef _WIN32
+namespace ErrorHandling
 	{
 #pragma region GetLastErrorAsString
 		inline std::string GetLastErrorAsString()
@@ -35,6 +39,7 @@ namespace NosLib
 		}
 #pragma endregion
 	}
+#endif // _WIN32
 }
 
 #endif
