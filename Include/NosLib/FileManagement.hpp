@@ -5,7 +5,10 @@
 
 #include <string>
 #include <filesystem>
+
+#ifdef _WIN32
 #include <ShlObj_core.h>
+#endif // _WIN32
 
 namespace NosLib
 {
@@ -35,12 +38,11 @@ namespace NosLib
 			/// </summary>
 			/// <param name="relativePath">- path from current/absolute path</param>
 			/// <param name="filename">- filename</param>
-			inline constexpr FilePath(const std::wstring& relativePath, const std::wstring& filename)
-			{
-				RelativePath = relativePath;
-				Filename = filename;
-				AbsolutePath = std::filesystem::current_path().wstring();
-			}
+			inline FilePath(const std::wstring& relativePath, const std::wstring& filename) :
+				RelativePath(relativePath),
+				Filename(filename),
+				AbsolutePath(std::filesystem::current_path().wstring())
+			{}
 
 			/// <summary>
 			/// Returns Absolute path without filename
@@ -81,7 +83,7 @@ namespace NosLib
 			}
 		};
 
-#pragma region GetFileExtension
+		#pragma region GetFileExtension
 		/// <summary>
 		/// Get file extension from filename
 		/// </summary>
@@ -93,9 +95,9 @@ namespace NosLib
 		{
 			return filename.substr(filename.find_last_of(L".") + 1);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region GetFileSize
+		#pragma region GetFileSize
 		/// <summary>
 		/// Gets file size
 		/// </summary>
@@ -109,8 +111,9 @@ namespace NosLib
 			int rc = stat(NosLib::String::ConvertString<char, CharT>(filePath).c_str(), &stat_buf);
 			return rc == 0 ? stat_buf.st_size : -1;
 		}
-#pragma endregion
+		#pragma endregion
 
+		#ifdef _WIN32
 		inline HRESULT CreateFileShortcut(const LPCWSTR& lpszTargetfile, const LPCWSTR& lpszShortcutLocation, const LPCWSTR& lpszIconFile = L"", const int& iIconIndex = 0, const LPCWSTR& lpszDescription = L"", const LPCWSTR& lpszArgument = L"")
 		{
 			(void)CoInitialize(NULL);
@@ -146,6 +149,7 @@ namespace NosLib
 			(void)CoUninitialize();
 			return hres;
 		}
+		#endif // _WIN32
 	}
 }
 #endif

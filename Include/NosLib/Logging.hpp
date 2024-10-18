@@ -79,7 +79,7 @@ namespace NosLib
 			VerboseLevel = verboseLevel;
 		}
 
-		static inline constexpr Verbose GetVerboseLevel()
+		static inline Verbose GetVerboseLevel()
 		{
 			return VerboseLevel;
 		}
@@ -99,7 +99,7 @@ namespace NosLib
 			std::wstring containedLogMessage = logObject->GetLog();
 			fprintf(stderr, NosLib::String::ConvertString<char, wchar_t>(containedLogMessage).c_str());
 
-			std::wofstream outLog(L"log.txt", std::ios::binary | std::ios::app);
+			std::wofstream outLog("log.txt", std::ios::binary | std::ios::app);
 			outLog.write(containedLogMessage.c_str(), containedLogMessage.size());
 			outLog.close();
 

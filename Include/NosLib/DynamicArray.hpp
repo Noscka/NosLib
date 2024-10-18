@@ -430,9 +430,9 @@ namespace NosLib
 #pragma region For Loop Functions
 	// For loop range-based function
 		inline constexpr iterator begin() { return &MainArray[0]; }
-		inline constexpr const_iterator begin() const { return &MainArray[0]; }
+		inline constexpr const_iterator cbegin() const { return &MainArray[0]; }
 		inline constexpr iterator end() { return &MainArray[CurrentArrayIndex]; }
-		inline constexpr const_iterator end() const { return &MainArray[CurrentArrayIndex]; }
+		inline constexpr const_iterator cend() const { return &MainArray[CurrentArrayIndex]; }
 #pragma endregion
 
 #pragma region Operators

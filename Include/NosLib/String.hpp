@@ -5,11 +5,14 @@
 #include "TypeTraits.hpp"
 #include "Cast.hpp"
 
+#ifdef _WIN32
 #include <Windows.h>
+#endif // _WIN32
+
 #include <string>
 #include <sstream>
-#include <minmax.h>
 #include <iterator>
+#include <cstdint>
 
 namespace NosLib
 {
@@ -147,6 +150,7 @@ namespace NosLib
 		}
 #pragma endregion
 
+		#ifdef _WIN32
 #pragma region CenterString
 		/// <summary>
 		/// Center string with custom console Handle
@@ -219,6 +223,7 @@ namespace NosLib
 			return CenterString<CharT>(GetStdHandle(STD_OUTPUT_HANDLE), input, rightPadding);
 		}
 #pragma endregion
+		#endif
 
 #pragma region FindNextWord
 		/// <summary>
@@ -348,6 +353,7 @@ namespace NosLib
 		}
 #pragma endregion
 
+#ifdef _WIN32
 #pragma region Shorten
 		/// <summary>
 		/// Shortens string to set size
@@ -403,6 +409,7 @@ namespace NosLib
 			return Shorten(string, (csbi.srWindow.Right - csbi.srWindow.Left + 1), putAtEnd);
 		}
 #pragma endregion
+#endif // _WIN32
 
 		/// <summary>
 		/// removes whitespace characters either side of the string
