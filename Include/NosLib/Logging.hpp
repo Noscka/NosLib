@@ -4,6 +4,7 @@
 #include "DynamicArray.hpp"
 #include "String.hpp"
 
+#include <memory>
 #include <fstream>
 #include <chrono>
 #include <string>
@@ -14,7 +15,9 @@ namespace NosLib
 	class Logging
 	{
 	public:
-		enum class Severity : uint16_t
+		using Ptr = std::unique_ptr<Logging>;
+
+		enum class Severity : uint8_t
 		{
 			Debug,		/* useful for debug */
 			Info,		/* just information */
@@ -24,7 +27,7 @@ namespace NosLib
 		};
 
 		/* Will display chosen level and above */
-		enum class Verbose : uint16_t 
+		enum class Verbose : uint8_t
 		{
 			Debug,
 			Info,
@@ -34,64 +37,33 @@ namespace NosLib
 			None
 		};
 	protected:
-		static inline NosLib::DynamicArray<Logging*> Logs;
+		//static inline NosLib::DynamicArray<Logging*> Logs; /* I don't see why keep logs in memory */
 		static inline Verbose VerboseLevel = Verbose::Warning;
 
 		std::wstring LogMessage;
 		Severity LogSeverity;
 		std::chrono::system_clock::time_point LogTimestamp;
 
-		inline constexpr Logging() {}
+		constexpr Logging() {}
+		Logging(const std::wstring& logMessage, const Severity& logSeverity);
 
-		inline Logging(const std::wstring& logMessage, const Severity& logSeverity)
-		{
-			LogMessage = logMessage + (logMessage.back() != L'\n' ? L"\n" : L"");
-			LogSeverity = logSeverity;
-			LogTimestamp = std::chrono::system_clock::now();
-		}
-
-		static inline constexpr std::wstring SeverityToWstring(const Severity& logSeverity)
-		{
-			switch (logSeverity)
-			{
-			case NosLib::Logging::Severity::Debug:
-				return L"Debug";
-				break;
-			case NosLib::Logging::Severity::Info:
-				return L"Info";
-				break;
-			case NosLib::Logging::Severity::Warning:
-				return L"Warning";
-				break;
-			case NosLib::Logging::Severity::Error:
-				return L"Error";
-				break;
-			case NosLib::Logging::Severity::Fatal:
-				return L"Fatal";
-				break;
-			}
-			return L"UNKNOWN";
-		}
+		static std::wstring SeverityToWstring(const Severity& logSeverity);
 
 	public:
-		static inline constexpr void SetVerboseLevel(const Verbose& verboseLevel)
-		{
-			VerboseLevel = verboseLevel;
-		}
+		static void SetVerboseLevel(const Verbose& verboseLevel);
+		static Verbose GetVerboseLevel();
 
-		static inline Verbose GetVerboseLevel()
+		template<typename CharType, typename... frmArgs>
+		static constexpr inline Ptr CreateLog(const Severity& logSeverity, const std::basic_string<CharType>& logMessage, frmArgs... formatArgs)
 		{
-			return VerboseLevel;
-		}
+			using SpecifiedFormatContext = std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharType>>, CharType>;
 
-		template<typename CharType>
-		static inline constexpr Logging* CreateLog(const std::basic_string<CharType>& logMessage, const Severity& logSeverity)
-		{
-			Logging* logObject = new Logging(NosLib::String::ConvertString<wchar_t, CharType>(logMessage), logSeverity);
-			Logs.Append(logObject);
+			std::basic_string<CharType> formattedLog = std::vformat(logMessage, std::make_format_args<SpecifiedFormatContext>(formatArgs...));
+			Ptr logObject(new Logging(NosLib::String::ConvertString<wchar_t, CharType>(formattedLog), logSeverity));
+			//Logs.Append(logObject);
 
 			/* if severity is lower then Verbose, then don't print or add to file */
-			if ((uint16_t)logSeverity < (uint16_t)VerboseLevel)
+			if (static_cast<uint8_t>(logSeverity) >= static_cast<uint8_t>(VerboseLevel))
 			{
 				return logObject;
 			}
@@ -106,11 +78,13 @@ namespace NosLib
 			return logObject;
 		}
 
-		inline std::wstring GetLog() const
+		template<typename CharType, typename... frmArgs>
+		static constexpr inline Ptr CreateLog(const Severity& logSeverity, const CharType* logMessage, frmArgs... formatArgs)
 		{
-			// %d/%m/%Y for date too
-			return std::format(L"({}) {:%X} {}", SeverityToWstring(LogSeverity), std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp), LogMessage);
+			return CreateLog(logSeverity, std::basic_string<CharType>(logMessage), std::forward<frmArgs>(formatArgs)...);
 		}
+
+		std::wstring GetLog() const;
 	};
 }
 
