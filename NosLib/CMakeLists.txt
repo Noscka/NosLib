@@ -1,4 +1,4 @@
-﻿project ("NosLib" VERSION 1.0.0 LANGUAGES CXX)
+﻿project ("NosLib" VERSION ${GIT_VERSION} LANGUAGES CXX)
 
 file(GLOB_RECURSE LibrarySourceFiles CONFIGURE_DEPENDS "Source/*")
 
