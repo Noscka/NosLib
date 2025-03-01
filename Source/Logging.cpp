@@ -9,7 +9,7 @@ NosLog::Logging(const std::wstring& logMessage, const NosLog::Severity& logSever
 	LogTimestamp = std::chrono::system_clock::now();
 }
 
-constexpr std::wstring NosLog::SeverityToWstring(const NosLog::Severity& logSeverity)
+std::wstring NosLog::SeverityToWstring(const NosLog::Severity& logSeverity)
 {
 	switch (logSeverity)
 	{
@@ -32,7 +32,7 @@ constexpr std::wstring NosLog::SeverityToWstring(const NosLog::Severity& logSeve
 	return L"UNKNOWN";
 }
 
-constexpr void NosLog::SetVerboseLevel(const Verbose& verboseLevel)
+void NosLog::SetVerboseLevel(const Verbose& verboseLevel)
 {
 	VerboseLevel = verboseLevel;
 }

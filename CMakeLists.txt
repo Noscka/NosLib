@@ -2,15 +2,11 @@
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 project ("NosLib" VERSION 1.0.0 LANGUAGES CXX)
 
 message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
-
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  # Set the install prefix relative to your source directory
-  set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install" CACHE PATH "Installation Directory" FORCE)
-endif()
 
 include(GNUInstallDirs)
 
@@ -30,10 +26,17 @@ add_subdirectory(External)
 file(GLOB_RECURSE LibrarySourceFiles CONFIGURE_DEPENDS "Source/*")
 
 add_library(${PROJECT_NAME} ${LibrarySourceFiles})
-target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
-#target_include_directories(${PROJECT_NAME} PUBLIC OpenSSL::SSL OpenSSL::Crypto)
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    MAP_IMPORTED_CONFIG_DEBUG "Debug"
+    MAP_IMPORTED_CONFIG_RELEASE "Release"
+    MAP_IMPORTED_CONFIG_RELWITHDEBINFO "Release"
+    MAP_IMPORTED_CONFIG_MINSIZEREL "Release"
+)
 
 if(WIN32 AND BUILD_SHARED_LIBS)
   set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -48,13 +51,14 @@ endif()
 # 1. Install the library target
 install(TARGETS ${PROJECT_NAME}
     EXPORT NosLibTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}    # For static libraries (e.g., .lib files)
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}    # For shared libraries (e.g., .dll/.so files)
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}    # For Windows DLLs (the executable part)
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<CONFIG>    # For static libraries (e.g., .lib files)
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<CONFIG>    # For shared libraries (e.g., .dll/.so files)
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/$<CONFIG>    # For Windows DLLs (the executable part)
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 # 2. Install public headers
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY Include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # 3. Export the targets to a file so that consumers can import them with find_package()
 install(EXPORT NosLibTargets

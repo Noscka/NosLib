@@ -7,7 +7,7 @@ int main()
 {
 	using NosLog = NosLib::Logging;
 
-	NosLog* log = NosLog::CreateLog<char>("ABC", NosLib::Logging::Severity::Info);
+	NosLog::Ptr log = NosLog::CreateLog<char>(NosLib::Logging::Severity::Info, "ABC {}", "Some String");
 	
 	printf("%s\n", NosLib::String::ToString(log->GetLog()).c_str());
 
