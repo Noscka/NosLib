@@ -1,35 +1,42 @@
 #include <NosLib/Logging.hpp>
 
+#include <format>
+
 using NosLog = NosLib::Logging;
 
-NosLog::Logging(const std::wstring& logMessage, const NosLog::Severity& logSeverity)
+NosLog::Logging(const NosString& logMessage, const NosLog::Severity& logSeverity)
 {
-	LogMessage = logMessage + (logMessage.back() != L'\n' ? L"\n" : L"");
+	LogMessage = logMessage;
+	if (LogMessage.back() != static_cast<NosChar>(L'\n'))
+	{
+		LogMessage +=  (const NosChar*)(L"\n");
+	}
+
 	LogSeverity = logSeverity;
 	LogTimestamp = std::chrono::system_clock::now();
 }
 
-std::wstring NosLog::SeverityToWstring(const NosLog::Severity& logSeverity)
+NosLib::NosString NosLog::SeverityToString(const NosLog::Severity& logSeverity)
 {
 	switch (logSeverity)
 	{
 	case NosLog::Severity::Debug:
-		return L"Debug";
-		break;
+		return "Debug";
+
 	case NosLog::Severity::Info:
-		return L"Info";
-		break;
+		return "Info";
+
 	case NosLog::Severity::Warning:
-		return L"Warning";
-		break;
+		return "Warning";
+
 	case NosLog::Severity::Error:
-		return L"Error";
-		break;
+		return "Error";
+
 	case NosLog::Severity::Fatal:
-		return L"Fatal";
-		break;
+		return "Fatal";
 	}
-	return L"UNKNOWN";
+
+	return "UNKNOWN";
 }
 
 void NosLog::SetVerboseLevel(const Verbose& verboseLevel)
@@ -42,8 +49,11 @@ NosLog::Verbose NosLog::GetVerboseLevel()
 	return VerboseLevel;
 }
 
-std::wstring NosLog::GetLog() const
+NosLib::NosString NosLog::GetLog() const
 {
+	constexpr NosString_View formatBody("({}) {:%X} {}");
+	NosString outLog = std::format(formatBody, SeverityToString(LogSeverity), std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp), LogMessage);
+
 	// %d/%m/%Y for date too
-	return std::format(L"({}) {:%X} {}", SeverityToWstring(LogSeverity), std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp), LogMessage);
+	return outLog;
 }

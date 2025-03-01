@@ -1,6 +1,7 @@
 #ifndef _STRING_NOSLIB_HPP_
 #define _STRING_NOSLIB_HPP_
 
+#include "Internal/String.hpp"
 #include "DynamicArray.hpp"
 #include "TypeTraits.hpp"
 #include "Cast.hpp"
@@ -36,12 +37,10 @@ namespace NosLib
 			{
 				return strIn;
 			}
-			else /* else, do standard conversion*/
-			{
-				std::basic_string<StringTo> strOut;
-				std::copy(strIn.begin(), strIn.end(), std::back_insert_iterator(strOut));
-				return strOut;
-			}
+			
+			std::basic_string<StringTo> strOut;
+			std::copy(strIn.begin(), strIn.end(), std::back_insert_iterator(strOut));
+			return strOut;
 		}
 
 		const auto ToString = ConvertString<char, wchar_t>;

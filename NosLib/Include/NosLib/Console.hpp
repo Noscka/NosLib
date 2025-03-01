@@ -30,12 +30,12 @@ namespace NosLib
 				return _setmode(_fileno(stdout), _O_U16TEXT); /* set program to unicode output */
 			}
 
-#pragma region EnableANSI
-		/// <summary>
-		/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text with Custom Console Handle
-		/// </summary>
-		/// <param name="consoleHandle">- Custom Console Handle</param>
-		/// <returns>if operation was succesful</returns>
+			#pragma region EnableANSI
+			/// <summary>
+			/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text with Custom Console Handle
+			/// </summary>
+			/// <param name="consoleHandle">- Custom Console Handle</param>
+			/// <returns>if operation was succesful</returns>
 			inline bool EnableANSI(const HANDLE& consoleHandle)
 			{
 				DWORD consoleMode;
@@ -56,25 +56,25 @@ namespace NosLib
 			{
 				return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
 			}
-#pragma endregion
+			#pragma endregion
 
-#pragma region BeautifyConsole
-		/// <summary>
-		/// Makes the console loop more beatiful with a specified console window
-		/// </summary>
-		/// <typeparam name="CharT">- string char type</typeparam>
-		/// <param name="window">- specified window handle</param>
-		/// <param name="title">- what the window should be called</param>
-		/// <returns>if succesful</returns>
+			#pragma region BeautifyConsole
+			/// <summary>
+			/// Makes the console loop more beautiful with a specified console window
+			/// </summary>
+			/// <typeparam name="CharT">- string char type</typeparam>
+			/// <param name="window">- specified window handle</param>
+			/// <param name="title">- what the window should be called</param>
+			/// <returns>if succesful</returns>
 			template <typename CharT>
 			inline constexpr bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
 			{
 				bool setTitle;
-#ifdef UNICODE
+				#ifdef UNICODE
 				setTitle = SetConsoleTitleW(NosLib::String::ConvertString<wchar_t, CharT>(title).c_str());
-#else
+				#else
 				setTitle = SetConsoleTitleA(NosLib::String::ConvertString<char, CharT>(title).c_str());
-#endif // UNICODE
+				#endif // UNICODE
 
 				return setTitle && ShowScrollBar(window, SB_BOTH, FALSE);
 			}
@@ -90,18 +90,18 @@ namespace NosLib
 			{
 				return BeatifyConsole<CharT>(GetConsoleWindow(), title);
 			}
-#pragma endregion
+			#pragma endregion
 
-#ifdef _EVENTHANDLING_NOSDOS_HPP_
+			#ifdef _EVENTHANDLING_NOSDOS_HPP_
 			/// <summary>
 			/// (Aliased) Creates hook which handles events
 			/// </summary>
 			/// <returns>true for succesful and false for unsuccesful</returns>
 			inline constexpr bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
-#endif
+			#endif
 		}
 
-#pragma region GetCaretPosition
+		#pragma region GetCaretPosition
 		/// <summary>
 		/// Get position of console caret with Custom Console Handle
 		/// </summary>
@@ -129,9 +129,9 @@ namespace NosLib
 		{
 			return GetCaretPosition(GetStdHandle(STD_OUTPUT_HANDLE));
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region ClearRange
+		#pragma region ClearRange
 		/// <summary>
 		/// Clear range in console from position with custom Console Handle
 		/// </summary>
@@ -160,9 +160,9 @@ namespace NosLib
 		{
 			ClearRange(GetStdHandle(STD_OUTPUT_HANDLE), position, range, fillChar);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region ClearLine
+		#pragma region ClearLine
 		/// <summary>
 		/// Clear a single line on position with custom Console Handle
 		/// </summary>
@@ -183,9 +183,9 @@ namespace NosLib
 		{
 			ClearLine(GetStdHandle(STD_OUTPUT_HANDLE), position, fillChar);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region ClearScreen
+		#pragma region ClearScreen
 		/// <summary>
 		/// Clear whole console with custom Console Handle
 		/// </summary>
@@ -206,9 +206,9 @@ namespace NosLib
 		{
 			ClearScreen(GetStdHandle(STD_OUTPUT_HANDLE), fillChar);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region ShowCaret
+		#pragma region ShowCaret
 		/// <summary>
 		/// Show or hide Console Caret with custom Console Handle
 		/// </summary>
@@ -231,9 +231,9 @@ namespace NosLib
 		{
 			ShowCaret(GetStdHandle(STD_OUTPUT_HANDLE), showFlag);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region GetWindowPosition
+		#pragma region GetWindowPosition
 		/// <summary>
 		/// Get Window Position with custom console handle
 		/// </summary>
@@ -263,9 +263,9 @@ namespace NosLib
 		{
 			return GetWindowPosition(GetConsoleWindow(), x, y);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region GetWindowDimensions
+		#pragma region GetWindowDimensions
 		/// <summary>
 		/// Get Window Dimensions with custom console handle
 		/// </summary>
@@ -292,7 +292,7 @@ namespace NosLib
 		{
 			return GetWindowDimensions(GetConsoleWindow());
 		}
-#pragma endregion
+		#pragma endregion
 
 		/// <summary>
 		/// a struct to represent ConsoleSize with Columns and Rows members
@@ -303,7 +303,7 @@ namespace NosLib
 			int Rows;
 		};
 
-#pragma region GetConsoleSize
+		#pragma region GetConsoleSize
 		/// <summary>
 		/// Gets console size with no parameters (uses default console handle and CONSOLE_SCREEN_BUFFER_INFO)
 		/// </summary>
@@ -348,9 +348,9 @@ namespace NosLib
 			GetConsoleScreenBufferInfo(ConsoleHandle, consoleScreenBI);
 			return { consoleScreenBI->srWindow.Right - consoleScreenBI->srWindow.Left + 1, consoleScreenBI->srWindow.Bottom - consoleScreenBI->srWindow.Top + 1 };
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region SetConsoleBuffer
+		#pragma region SetConsoleBuffer
 		/// <summary>
 		/// Set a console buffer size with a custom handle and size
 		/// </summary>
@@ -394,9 +394,9 @@ namespace NosLib
 		{
 			return SetConsoleBuffer(GetStdHandle(STD_OUTPUT_HANDLE), newBufferSize);
 		}
-#pragma endregion
+		#pragma endregion
 
-#pragma region NoneBlockingMessageLoop
+		#pragma region NoneBlockingMessageLoop
 		/// <summary>
 		/// function which will create a none blocking message loop. used more as a template
 		/// </summary>
@@ -421,7 +421,7 @@ namespace NosLib
 				}
 			}
 		}
-#pragma endregion
+		#pragma endregion
 	}
 	#endif
 }

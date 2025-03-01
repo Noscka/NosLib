@@ -1,6 +1,7 @@
 #ifndef _LOGGING_NOSLIB_HPP_
 #define _LOGGING_NOSLIB_HPP_
 
+#include "Internal/String.hpp"
 #include "DynamicArray.hpp"
 #include "String.hpp"
 
@@ -8,7 +9,6 @@
 #include <fstream>
 #include <chrono>
 #include <string>
-#include <format>
 
 namespace NosLib
 {
@@ -40,14 +40,14 @@ namespace NosLib
 		//static inline NosLib::DynamicArray<Logging*> Logs; /* I don't see why keep logs in memory */
 		static inline Verbose VerboseLevel = Verbose::Warning;
 
-		std::wstring LogMessage;
+		NosString LogMessage;
 		Severity LogSeverity;
 		std::chrono::system_clock::time_point LogTimestamp;
 
 		constexpr Logging() {}
-		Logging(const std::wstring& logMessage, const Severity& logSeverity);
+		Logging(const NosString& logMessage, const Severity& logSeverity);
 
-		static std::wstring SeverityToWstring(const Severity& logSeverity);
+		static NosString SeverityToString(const Severity& logSeverity);
 
 	public:
 		static void SetVerboseLevel(const Verbose& verboseLevel);
@@ -57,9 +57,11 @@ namespace NosLib
 		static constexpr inline Ptr CreateLog(const Severity& logSeverity, const std::basic_string<CharType>& logMessage, frmArgs... formatArgs)
 		{
 			using SpecifiedFormatContext = std::basic_format_context<std::back_insert_iterator<std::_Fmt_buffer<CharType>>, CharType>;
+			using InString = std::basic_string<CharType>;
+			using NosofStream = std::basic_ofstream<NosChar, std::char_traits<NosChar>>;
 
-			std::basic_string<CharType> formattedLog = std::vformat(logMessage, std::make_format_args<SpecifiedFormatContext>(formatArgs...));
-			Ptr logObject(new Logging(NosLib::String::ConvertString<wchar_t, CharType>(formattedLog), logSeverity));
+			InString formattedLog = std::vformat(logMessage, std::make_format_args<SpecifiedFormatContext>(formatArgs...));
+			Ptr logObject(new Logging(formattedLog, logSeverity));
 			//Logs.Append(logObject);
 
 			/* if severity is lower then Verbose, then don't print or add to file */
@@ -68,10 +70,10 @@ namespace NosLib
 				return logObject;
 			}
 
-			std::wstring containedLogMessage = logObject->GetLog();
-			fprintf(stderr, NosLib::String::ConvertString<char, wchar_t>(containedLogMessage).c_str());
+			NosString containedLogMessage = logObject->GetLog();
+			fprintf(stderr, NosLib::String::ConvertString<char, NosChar>(containedLogMessage).c_str());
 
-			std::wofstream outLog("log.txt", std::ios::binary | std::ios::app);
+			NosofStream outLog("log.txt", std::ios::binary | std::ios::app);
 			outLog.write(containedLogMessage.c_str(), containedLogMessage.size());
 			outLog.close();
 
@@ -84,7 +86,7 @@ namespace NosLib
 			return CreateLog(logSeverity, std::basic_string<CharType>(logMessage), std::forward<frmArgs>(formatArgs)...);
 		}
 
-		std::wstring GetLog() const;
+		NosString GetLog() const;
 	};
 }
 
