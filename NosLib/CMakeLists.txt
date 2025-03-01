@@ -8,6 +8,8 @@ target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE NOSLIB_EXPORTS)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MAP_IMPORTED_CONFIG_DEBUG "Debug"
     MAP_IMPORTED_CONFIG_RELEASE "Release"

@@ -4,6 +4,8 @@
 
 using NosLog = NosLib::Logging;
 
+NosLog::Verbose NosLog::VerboseLevel = NosLog::Verbose::Warning;
+
 NosLog::Logging(const NosString& logMessage, const NosLog::Severity& logSeverity)
 {
 	LogMessage = logMessage;
