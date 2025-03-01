@@ -39,7 +39,6 @@ namespace NosLib
 			None
 		};
 	protected:
-		//static inline NosLib::DynamicArray<Logging*> Logs; /* I don't see why keep logs in memory */
 		static Verbose VerboseLevel;
 
 		NosString LogMessage;
@@ -47,25 +46,28 @@ namespace NosLib
 		std::chrono::system_clock::time_point LogTimestamp;
 
 		constexpr Logging() {}
-		Logging(const NosString& logMessage, const Severity& logSeverity);
+		Logging(const NosString&, const Severity&);
 
-		static NosString SeverityToString(const Severity& logSeverity);
+		static NosString SeverityToString(const Severity&);
+		static NosString& GenerateLogFormat();
+		void WriteToFile(const std::string&) const;
 
 	public:
-		static void SetVerboseLevel(const Verbose& verboseLevel);
+		static void SetVerboseLevel(const Verbose&);
 		static Verbose GetVerboseLevel();
+
+		NosString GetLog() const;
 
 		template<typename CharType, typename... fmtArgs>
 		static inline Ptr CreateLog(const Severity& logSeverity, const std::basic_string<CharType>& logMessage, fmtArgs... formatArgs)
 		{
 			using InString = std::basic_string<CharType>;
-			using NosofStream = std::basic_ofstream<NosChar, std::char_traits<NosChar>>;
 
 			InString formattedLog = std::vformat(logMessage, std::make_format_args(formatArgs...));
 			NosString formattedNosLog = String::ConvertString<NosChar, CharType>(formattedLog);
 			Ptr logObject(new Logging(formattedNosLog, logSeverity));
-			//Logs.Append(logObject);
 
+			logObject->WriteToFile("full-log.txt");
 			/* if severity is lower then Verbose, then don't print or add to file */
 			if (static_cast<uint8_t>(logSeverity) < static_cast<uint8_t>(VerboseLevel))
 			{
@@ -75,9 +77,7 @@ namespace NosLib
 			NosString containedLogMessage = logObject->GetLog();
 			printf(NosLib::String::ConvertString<char, NosChar>(containedLogMessage).c_str());
 
-			NosofStream outLog("log.txt", std::ios::binary | std::ios::app);
-			outLog.write(containedLogMessage.c_str(), containedLogMessage.size());
-			outLog.close();
+			logObject->WriteToFile("log.txt");
 
 			return logObject;
 		}
@@ -87,8 +87,6 @@ namespace NosLib
 		{
 			return CreateLog(logSeverity, std::basic_string<CharType>(logMessage), std::forward<fmtArgs>(formatArgs)...);
 		}
-
-		NosString GetLog() const;
 	};
 }
 
