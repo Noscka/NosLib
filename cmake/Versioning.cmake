@@ -9,8 +9,6 @@ function(Get_Git_Version)
         set(GIT_VERSION "v0.0.0")
     endif()
 
-    message(STATUS "CMAKE_CXX_STANDARD = ${GIT_VERSION}")
-
     string(REPLACE "\n" "" GIT_VERSION ${GIT_VERSION})
     string(REPLACE " " "" GIT_VERSION ${GIT_VERSION})
 

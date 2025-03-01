@@ -54,7 +54,7 @@ NosLog::Verbose NosLog::GetVerboseLevel()
 NosLib::NosString NosLog::GetLog() const
 {
 	constexpr NosString_View formatBody("({}) {:%X} {}");
-	NosString outLog = std::format(formatBody, SeverityToString(LogSeverity), std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp), LogMessage);
+	NosLib::NosString outLog = std::format(formatBody, SeverityToString(LogSeverity), std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp), LogMessage);
 
 	// %d/%m/%Y for date too
 	return outLog;

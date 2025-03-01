@@ -20,10 +20,8 @@ option(HTTPLIB_REQUIRE_OPENSSL "Require SSL" ON)
 option(HTTPLIB_USE_BROTLI_IF_AVAILABLE "" OFF)
 option(HTTPLIB_USE_ZLIB_IF_AVAILABLE "" OFF)
 
-add_compile_definitions(CPPHTTPLIB_OPENSSL_SUPPORT)
-add_compile_definitions(WIN32_LEAN_AND_MEAN)
-
 add_subdirectory(External)
+target_compile_definitions(httplib INTERFACE CPPHTTPLIB_OPENSSL_SUPPORT)
 add_subdirectory(NosLib)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)

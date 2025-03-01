@@ -9,6 +9,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE NOSLIB_EXPORTS)
+if(WIN32)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32_LEAN_AND_MEAN)
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MAP_IMPORTED_CONFIG_DEBUG "Debug"
