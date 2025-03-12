@@ -16,10 +16,10 @@ message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
 include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-option(HTTPLIB_REQUIRE_OPENSSL "Require SSL" ON)
-option(HTTPLIB_USE_BROTLI_IF_AVAILABLE "" OFF)
-option(HTTPLIB_USE_ZLIB_IF_AVAILABLE "" OFF)
+option(NOSLIB_REQUIRE_OPENSSL "Require OpenSSL" ON)
+option(NOSLIB_REQUIRE_BOOST "Require Boost" ON)
 
+set(HTTPLIB_REQUIRE_OPENSSL ${NOSLIB_REQUIRE_OPENSSL} CACHE BOOL "Require OpenSSL (overridden)" FORCE)
 add_subdirectory(External)
 target_compile_definitions(httplib INTERFACE CPPHTTPLIB_OPENSSL_SUPPORT)
 add_subdirectory(NosLib)

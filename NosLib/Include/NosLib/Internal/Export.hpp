@@ -1,7 +1,7 @@
 #pragma once
 
-#ifdef _WIN32
-	#ifdef NOSLIB_EXPORTS
+#if defined(_WIN32) && defined(NOSLIB_SHARED)
+	#ifdef NOSLIB_EXPORT
 		#define NOSLIB_API __declspec(dllexport)
 	#else
 		#define NOSLIB_API __declspec(dllimport)

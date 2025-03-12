@@ -2,7 +2,7 @@
 #define _DYNAMICARRAY_NOSLIB_HPP_
 
 #include "TypeTraits.hpp"
-#include "Pointers.hpp"
+#include "Pointer.hpp"
 #include "DynamicArray/ArrayPositionTrack.hpp"
 #include "TypeTraits.hpp"
 
@@ -147,7 +147,7 @@ namespace NosLib
 
 			if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 			{
-				NosLib::Pointers::OneOffRootPointer<ArrayDataType>(objectToAdd)->ModifyArrayPosition(CurrentArrayIndex);
+				NosLib::Pointer::OneOffRootPointer<ArrayDataType>(objectToAdd)->ModifyArrayPosition(CurrentArrayIndex);
 			}
 
 			MainArray[CurrentArrayIndex] = objectToAdd;
@@ -209,13 +209,13 @@ namespace NosLib
 
 				if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 				{
-					NosLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
+					NosLib::Pointer::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
 				}
 			}
 
 			if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 			{
-				NosLib::Pointers::OneOffRootPointer<ArrayDataType>(insertObject)->ModifyArrayPosition(position);
+				NosLib::Pointer::OneOffRootPointer<ArrayDataType>(insertObject)->ModifyArrayPosition(position);
 			}
 
 			MainArray[position] = insertObject;
@@ -237,7 +237,7 @@ namespace NosLib
 
 			if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 			{
-				NosLib::Pointers::OneOffRootPointer<ArrayDataType>(replaceObject)->ModifyArrayPosition(position);
+				NosLib::Pointer::OneOffRootPointer<ArrayDataType>(replaceObject)->ModifyArrayPosition(position);
 			}
 
 			MainArray[position] = replaceObject;
@@ -266,7 +266,7 @@ namespace NosLib
 
 				if constexpr (std::is_base_of_v<NosLib::ArrayPositionTrack::PositionTrack, NosLib::TypeTraits::remove_all_pointers_t<ArrayDataType>>) /* if a child of PositionTracking, give it a position */
 				{
-					NosLib::Pointers::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
+					NosLib::Pointer::OneOffRootPointer<ArrayDataType>(MainArray[i])->ModifyArrayPosition(i);
 				}
 			}
 

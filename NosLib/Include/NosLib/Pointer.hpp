@@ -2,14 +2,28 @@
 #define _POINTERS_NOSLIB_HPP_
 
 #include "TypeTraits.hpp"
+#include <memory>
 
 namespace NosLib
 {
 	/// <summary>
 	/// namespace which containts Pointer related Items
 	/// </summary>
-	namespace Pointers
+	namespace Pointer
 	{
+		template <typename Derived, typename Base>
+		std::unique_ptr<Derived> DynamicUniquePtrCast(std::unique_ptr<Base>&& basePtr)
+		{
+			if (Derived* derivedPtr = dynamic_cast<Derived*>(basePtr.get()))
+			{
+				// Release ownership from the base pointer, so it won't be deleted
+				basePtr.release();
+				return std::unique_ptr<Derived>(derivedPtr);
+			}
+			// Cast failed; return an empty unique_ptr.
+			return std::unique_ptr<Derived>(nullptr);
+		}
+
 		/// <summary>
 		/// Finds the pointer to the root value
 		/// </summary>
