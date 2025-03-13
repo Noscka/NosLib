@@ -5,9 +5,7 @@
 #include "Internal/String.hpp"
 #include "Internal/Export.hpp"
 
-#ifdef NOSLIB_USE_OPENSSL
-#include <openssl/evp.h>
-#endif // NOSLIB_USE_OPENSSL
+#include <NosLib/Hash.hpp>
 
 namespace NosLib
 {
@@ -31,8 +29,7 @@ namespace NosLib
 		uint64_t GetFileSize() const;
 
 		#ifdef NOSLIB_USE_OPENSSL
-		NosString GetHash(const EVP_MD*) const;
-		static NosString GetHash(const NosString&, const EVP_MD*);
+		Hash GetHash(const EVP_MD*) const;
 		#endif // NOSLIB_USE_OPENSSL
 
 		/*#ifdef _WIN32
