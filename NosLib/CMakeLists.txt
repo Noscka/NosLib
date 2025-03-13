@@ -2,16 +2,24 @@
 
 file(GLOB_RECURSE LibrarySourceFiles CONFIGURE_DEPENDS "Source/*")
 
+if(WIN32)
+    set(Boost_USE_STATIC_LIBS ON) 
+    set(Boost_USE_MULTITHREADED ON)  
+    set(Boost_USE_STATIC_RUNTIME OFF) 
+endif()
+
 if(NOSLIB_REQUIRE_OPENSSL)
     find_package(OpenSSL REQUIRED)
 else()
     find_package(OpenSSL)
 endif()
 
+set(BoostComponents serialization filesystem)
+
 if(NOSLIB_REQUIRE_BOOST)
-    find_package(Boost REQUIRED)
+    find_package(Boost REQUIRED COMPONENTS ${BoostComponents})
 else()
-    find_package(Boost)
+    find_package(Boost COMPONENTS ${BoostComponents})
 endif()
 
 add_library(${PROJECT_NAME} ${LibrarySourceFiles})
@@ -23,6 +31,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJ
 if(Boost_FOUND)
     message(STATUS "Using Boost")
     target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})
+    target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem)
     target_compile_definitions(${PROJECT_NAME} PUBLIC NOSLIB_USE_BOOST)
 endif()
 

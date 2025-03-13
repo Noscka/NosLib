@@ -26,7 +26,10 @@ namespace NosLib
 		NosString GetFilePath() const;
 		NosString GetFilename() const;
 		NosString GetExtension() const;
+
+		#ifdef NOSLIB_USE_BOOST
 		uint64_t GetFileSize() const;
+		#endif // NOSLIB_USE_BOOST
 
 		#ifdef NOSLIB_USE_OPENSSL
 		Hash GetHash(const EVP_MD*) const;

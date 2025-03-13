@@ -1,5 +1,9 @@
 #include <NosLib/File.hpp>
 
+#ifdef NOSLIB_USE_BOOST
+#include <boost/filesystem.hpp>
+#endif // NOSLIB_USE_BOOST
+
 #include <filesystem>
 
 /*
@@ -29,12 +33,12 @@ NosLib::NosString NosLib::File::GetExtension() const
 	return Filename.substr(Filename.find_last_of(".") + 1);
 }
 
+#ifdef NOSLIB_USE_BOOST
 uint64_t NosLib::File::GetFileSize() const
 {
-	struct stat stat_buf;
-	int rc = stat(GetFilePath().c_str(), &stat_buf);
-	return rc == 0 ? stat_buf.st_size : -1;
+	return boost::filesystem::file_size(GetFilePath());
 }
+#endif // NOSLIB_USE_BOOST
 
 #ifdef NOSLIB_USE_OPENSSL
 NosLib::Hash NosLib::File::GetHash(const EVP_MD* md) const
