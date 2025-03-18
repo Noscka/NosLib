@@ -1,6 +1,7 @@
 #ifndef _STRING_INTERNAL_NOSLIB_HPP_
 #define _STRING_INTERNAL_NOSLIB_HPP_
 
+#include "Export.hpp"
 #include <string>
 
 namespace NosLib

@@ -42,10 +42,10 @@ namespace NosLib
 		static Verbose VerboseLevel;
 
 		NosString LogMessage;
-		Severity LogSeverity;
+		Severity LogSeverity{};
 		std::chrono::system_clock::time_point LogTimestamp;
 
-		constexpr Logging() {}
+		Logging() = default;
 		Logging(const NosString&, const Severity&);
 
 		static NosString SeverityToString(const Severity&);

@@ -48,7 +48,7 @@ namespace NosLib
 			}
 		}
 
-		Hash returnHash;
+		Hash returnHash{};
 		if (!EVP_DigestFinal_ex(ctx, returnHash.HashBinary.data(), &returnHash.HashLenght))
 		{
 			EVP_MD_CTX_free(ctx);

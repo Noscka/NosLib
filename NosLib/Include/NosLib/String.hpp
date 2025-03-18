@@ -14,6 +14,7 @@
 #include <sstream>
 #include <iterator>
 #include <cstdint>
+#include <algorithm>
 
 namespace NosLib
 {
@@ -39,7 +40,9 @@ namespace NosLib
 			}
 			
 			std::basic_string<StringTo> strOut;
-			std::copy(strIn.begin(), strIn.end(), std::back_insert_iterator(strOut));
+			strOut.reserve(strIn.size());
+			std::transform(strIn.begin(), strIn.end(), std::back_inserter(strOut),
+						   [](StringFrom ch) -> StringTo { return static_cast<StringTo>(ch); });
 			return strOut;
 		}
 

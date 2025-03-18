@@ -18,7 +18,7 @@ namespace NosLib
 	public:
 		File() = default;
 		inline File(const NosString& path, const NosString& filename) :
-			Path(path),
+			Path(NormalizePath(path)),
 			Filename(filename)
 		{}
 
@@ -34,6 +34,8 @@ namespace NosLib
 		#ifdef NOSLIB_USE_OPENSSL
 		Hash GetHash(const EVP_MD*) const;
 		#endif // NOSLIB_USE_OPENSSL
+
+		static NosString NormalizePath(NosString);
 
 		/*#ifdef _WIN32
 		HRESULT CreateFileShortcut(const LPCWSTR& lpszTargetfile, const LPCWSTR& lpszShortcutLocation, const LPCWSTR& lpszIconFile = L"", const int& iIconIndex = 0, const LPCWSTR& lpszDescription = L"", const LPCWSTR& lpszArgument = L"");

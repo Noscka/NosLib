@@ -1,45 +1,59 @@
 #ifndef _ERRORHANDLING_NOSLIB_HPP_
 #define _ERRORHANDLING_NOSLIB_HPP_
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif // _WIN32
+#include <NosLib/Logging.hpp>
 
-#include <string>
+/**
+* @brief if statement is true, runs directive and leaves log
+*
+* Full name:  NOSLOG_ASSERT
+* Access:     public
+*
+* @param[in]  statement   The statement that returns a boolean used to check whether to run the directive
+* @param[in]  statementDirective   The directive to be run if statement is true (e.g, return, break, continue, etc)
+* @param[in]  logSeverity   Using NosLib::Logging::Severity for log severity
+* @param[in]  logMsg   The main message used in log (works the same as std::format)
+* @param[in]  ...   variadic parameters to be used in the message above
+* @return	  Whatever the statement directive describes
+*/
+#define NOSLOG_ASSERT(statement, statementDirective, logSeverity, logMsg, ...)\
+	do                            \
+	{                             \
+		if ((statement))          \
+		{                         \
+			NosLog::CreateLog(    \
+				logSeverity,      \
+				logMsg,           \
+				 __VA_ARGS__      \
+			);                    \
+			statementDirective;   \
+		}                         \
+	} while (0)
+
+/**
+* @brief if statement is true, runs directive and leaves log
+*
+* Full name:  NOS_ASSERT
+* Access:     public
+*
+* @param[in]  statement   The statement that returns a boolean used to check whether to run the directive
+* @param[in]  statementDirective   The directive to be run if statement is true (e.g, return, break, continue, etc)
+* @return	  Whatever the statement directive describes
+*/
+#define NOS_ASSERT(statement, statementDirective)\
+	do                            \
+	{                             \
+		if ((statement))          \
+		{                         \
+			statementDirective;   \
+		}                         \
+	} while (0)
 
 namespace NosLib
 {
 	#ifdef _WIN32
-namespace ErrorHandling
-	{
-#pragma region GetLastErrorAsString
-		inline std::string GetLastErrorAsString()
-		{
-			//Get the error message ID, if any.
-			DWORD errorMessageID = ::GetLastError();
-			if (errorMessageID == 0)
-			{
-				return std::string(); //No error message has been recorded
-			}
-
-			LPSTR messageBuffer = nullptr;
-
-			//Ask Win32 to give us the string version of that message ID.
-			//The parameters we pass in, tell Win32 to create the buffer that holds the message for us (because we don't yet know how long the message string will be).
-			size_t size = FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-										NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
-
-		   //Copy the error message into a std::string.
-			std::string message(messageBuffer, size);
-
-			//Free the Win32's string's buffer.
-			LocalFree(messageBuffer);
-
-			return message;
-		}
-#pragma endregion
-	}
-#endif // _WIN32
+	std::string GetLastErrorAsString();
+	#endif // _WIN32
 }
 
 #endif
