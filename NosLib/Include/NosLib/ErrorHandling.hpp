@@ -59,11 +59,21 @@ namespace NosLib
 
 	public:
 		ResultBase() = default;
-		explicit ResultBase(const std::error_code& errorCode)
-			: ErrorCodeInternal(errorCode)
+		ResultBase(const std::error_code& errorCode) :
+			ErrorCodeInternal(errorCode)
+		{}
+
+		template <class enumType, std::enable_if_t<std::is_error_code_enum_v<enumType>, int> = 0>
+		ResultBase(enumType errorCode) :
+			ErrorCodeInternal(errorCode)
 		{}
 
 		virtual ~ResultBase() = default;
+
+		const std::error_code& ErrorCode() const
+		{
+			return ErrorCodeInternal;
+		}
 
 		int ErrorValue() const
 		{
@@ -100,10 +110,15 @@ namespace NosLib
 	public:
 		Result() = default;
 		using ResultBase::ResultBase;
+
+		inline Result(const ReturnValue& storedObject) :
+			StoredObject(storedObject)
+		{}
+
 		inline Result(const ReturnValue& storedObject,
 					  const std::error_code& errorCode) :
 			StoredObject(storedObject),
-			ErrorCodeInternal(errorCode)
+			ResultBase(errorCode)
 		{}
 
 		virtual ~Result() = default;

@@ -40,15 +40,15 @@ namespace NosLib
 			return "Unknown error";
 		}
 	};
-}
 
-namespace std
-{
 	inline std::error_code make_error_code(NosLib::GenericErrors e) noexcept
 	{
 		return { static_cast<int>(e), NosLib::GenericErrorCategory::instance() };
 	}
+}
 
+namespace std
+{
 	template <>
 	struct is_error_code_enum<NosLib::GenericErrors> : true_type {};
 }
