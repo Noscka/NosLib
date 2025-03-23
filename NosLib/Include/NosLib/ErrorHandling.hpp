@@ -58,46 +58,48 @@ namespace NosLib
 		std::error_code ErrorCodeInternal;
 
 	public:
-		ResultBase() = default;
-		ResultBase(const std::error_code& errorCode) :
+		ResultBase() noexcept = default;
+		ResultBase(const std::error_code& errorCode) noexcept :
 			ErrorCodeInternal(errorCode)
 		{}
 
 		template <class enumType, std::enable_if_t<std::is_error_code_enum_v<enumType>, int> = 0>
-		ResultBase(enumType errorCode) :
+		ResultBase(enumType errorCode) noexcept :
 			ErrorCodeInternal(errorCode)
 		{}
 
 		virtual ~ResultBase() = default;
 
-		const std::error_code& ErrorCode() const
+		const std::error_code& ErrorCode() const noexcept
 		{
 			return ErrorCodeInternal;
 		}
 
-		int ErrorValue() const
+		int ErrorValue() const noexcept
 		{
 			return ErrorCodeInternal.value();
 		}
 
-		std::string ErrorMessage() const
+		std::string ErrorMessage() const noexcept
 		{
 			return ErrorCodeInternal.message();
 		}
 
-		const std::error_category& ErrorCategory() const
+		const std::error_category& ErrorCategory() const noexcept
 		{
 			return ErrorCodeInternal.category();
 		}
 
-		std::string ErrorCategoryName() const
+		std::string ErrorCategoryName() const noexcept
 		{
 			return ErrorCategory().name();
 		}
 
-		explicit operator bool() const
+		explicit operator bool() const noexcept
 		{
-			return static_cast<bool>(ErrorCodeInternal);
+			/* Reverse since error code returns true if there is an error
+			 * I want to have this object return true if the object is valid (no error) */
+			return !static_cast<bool>(ErrorCodeInternal);
 		}
 	};
 
@@ -108,30 +110,67 @@ namespace NosLib
 		ReturnValue StoredObject;
 
 	public:
-		Result() = default;
+		Result() noexcept = default;
 		using ResultBase::ResultBase;
 
-		inline Result(const ReturnValue& storedObject) :
+		inline Result(const ReturnValue& storedObject) noexcept :
 			StoredObject(storedObject)
 		{}
 
 		inline Result(const ReturnValue& storedObject,
-					  const std::error_code& errorCode) :
+					  const std::error_code& errorCode) noexcept :
 			StoredObject(storedObject),
 			ResultBase(errorCode)
 		{}
 
 		virtual ~Result() = default;
 
-		inline ReturnValue& GetReturn()
+		inline ReturnValue& GetReturn() noexcept
 		{
 			return StoredObject;
 		}
 
-		operator ReturnValue& ()
+		operator ReturnValue& () noexcept
 		{
 			return StoredObject;
 		}
+	};
+
+	template<typename ReturnValue>
+	class Result<std::unique_ptr<ReturnValue>> : public ResultBase
+	{
+	private:
+		std::unique_ptr<ReturnValue> StoredObject;
+
+	public:
+		Result() noexcept = default;
+		using ResultBase::ResultBase;
+
+		Result(std::unique_ptr<ReturnValue>&& storedObject) noexcept :
+			StoredObject(std::move(storedObject))
+		{}
+
+		Result(const std::error_code& errorCode) noexcept :
+			ResultBase(errorCode)
+		{}
+
+		std::unique_ptr<ReturnValue>& GetReturn() noexcept
+		{
+			return StoredObject;
+		}
+
+		operator std::unique_ptr<ReturnValue>& () noexcept
+		{
+			return StoredObject;
+		}
+
+		/* Move constructor/operator */
+		Result(Result&& other) noexcept = default;
+		Result& operator=(Result&& other) noexcept = default;
+
+		/* Copy constructor/operator */
+		Result(const Result&) = delete;
+		Result& operator=(const Result&) = delete;
 	};
 
 	template<>
