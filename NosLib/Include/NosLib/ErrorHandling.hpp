@@ -52,7 +52,7 @@
 
 namespace NosLib
 {
-	class ResultBase
+	class NOSLIB_API ResultBase
 	{
 	protected:
 		std::error_code ErrorCodeInternal;
@@ -104,7 +104,7 @@ namespace NosLib
 	};
 
 	template<typename ReturnValue>
-	class Result : public ResultBase
+	class NOSLIB_API Result : public ResultBase
 	{
 	private:
 		ReturnValue StoredObject;
@@ -137,7 +137,7 @@ namespace NosLib
 	};
 
 	template<typename ReturnValue>
-	class Result<std::unique_ptr<ReturnValue>> : public ResultBase
+	class NOSLIB_API Result<std::unique_ptr<ReturnValue>> : public ResultBase
 	{
 	private:
 		std::unique_ptr<ReturnValue> StoredObject;
@@ -174,7 +174,7 @@ namespace NosLib
 	};
 
 	template<>
-	class Result<void> : public ResultBase
+	class NOSLIB_API Result<void> : public ResultBase
 	{
 	public:
 		Result() = default;
@@ -184,7 +184,7 @@ namespace NosLib
 	};
 
 	#ifdef _WIN32
-	std::string GetLastErrorAsString();
+	std::string NOSLIB_API GetLastErrorAsString();
 	#endif // _WIN32
 }
 
