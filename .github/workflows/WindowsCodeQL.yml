@@ -1,0 +1,62 @@
+name: "Windows CodeQL"
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: windows-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: c-cpp
+          build_mode: manual
+          build_type: Release
+        - language: c-cpp
+          build_mode: manual
+          build_type: Debug
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+
+    - name: Install Dependencies
+      run: |
+        .\vcpkg\vcpkg.exe install boost
+        .\vcpkg\vcpkg.exe install openssl
+        .\vcpkg\vcpkg.exe integrate install
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        
+    - name: Build Project (${{ matrix.build_type }})
+      run: |
+        cmake -S . -B build_${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        cmake --build build_${{ matrix.build_type }}
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
