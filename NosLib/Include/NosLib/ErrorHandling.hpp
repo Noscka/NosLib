@@ -18,17 +18,17 @@
 * @return	  Whatever the statement directive describes
 */
 #define NOSLOG_ASSERT(statement, statementDirective, logSeverity, logMsg, ...)\
-	do                            \
-	{                             \
-		if ((statement))          \
-		{                         \
-			NosLib::Logging::CreateLog(    \
-				logSeverity,      \
-				logMsg,           \
-				 __VA_ARGS__      \
-			);                    \
-			statementDirective;   \
-		}                         \
+	do									\
+	{									\
+		if ((statement))				\
+		{								\
+			NosLib::Logging::CreateLog( \
+				logSeverity,			\
+				logMsg __VA_OPT__(, )   \
+				__VA_ARGS__				\
+			);							\
+			statementDirective;			\
+		}								\
 	} while (0)
 
 /**
@@ -52,19 +52,19 @@
 
 namespace NosLib
 {
-	class NOSLIB_API ResultBase
+	class ResultBase
 	{
 	protected:
 		std::error_code ErrorCodeInternal;
 
 	public:
-		ResultBase() noexcept = default;
-		ResultBase(const std::error_code& errorCode) noexcept :
+		inline ResultBase() noexcept = default;
+		inline ResultBase(const std::error_code& errorCode) noexcept :
 			ErrorCodeInternal(errorCode)
 		{}
 
 		template <class enumType, std::enable_if_t<std::is_error_code_enum_v<enumType>, int> = 0>
-		ResultBase(enumType errorCode) noexcept :
+		inline ResultBase(enumType errorCode) noexcept :
 			ErrorCodeInternal(errorCode)
 		{}
 
@@ -104,13 +104,13 @@ namespace NosLib
 	};
 
 	template<typename ReturnValue>
-	class NOSLIB_API Result : public ResultBase
+	class Result : public ResultBase
 	{
 	private:
 		ReturnValue StoredObject;
 
 	public:
-		Result() noexcept = default;
+		inline Result() noexcept = default;
 		using ResultBase::ResultBase;
 
 		inline Result(const ReturnValue& storedObject) noexcept :
@@ -137,20 +137,20 @@ namespace NosLib
 	};
 
 	template<typename ReturnValue>
-	class NOSLIB_API Result<std::unique_ptr<ReturnValue>> : public ResultBase
+	class Result<std::unique_ptr<ReturnValue>> : public ResultBase
 	{
 	private:
 		std::unique_ptr<ReturnValue> StoredObject;
 
 	public:
-		Result() noexcept = default;
+		inline Result() noexcept = default;
 		using ResultBase::ResultBase;
 
-		Result(std::unique_ptr<ReturnValue>&& storedObject) noexcept :
+		inline Result(std::unique_ptr<ReturnValue>&& storedObject) noexcept :
 			StoredObject(std::move(storedObject))
 		{}
 
-		Result(const std::error_code& errorCode) noexcept :
+		inline Result(const std::error_code& errorCode) noexcept :
 			ResultBase(errorCode)
 		{}
 
@@ -177,7 +177,7 @@ namespace NosLib
 	class NOSLIB_API Result<void> : public ResultBase
 	{
 	public:
-		Result() = default;
+		inline Result() = default;
 		using ResultBase::ResultBase;
 
 		virtual ~Result() = default;
