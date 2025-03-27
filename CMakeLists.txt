@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.12)
 
-include("cmake/Versioning.cmake")
+include("CMake/Versioning.cmake")
 
 Get_Git_Version()
 Get_Git_Branch()
