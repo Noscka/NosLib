@@ -17,6 +17,21 @@
 * @param[in]  ...   variadic parameters to be used in the message above
 * @return	  Whatever the statement directive describes
 */
+#ifdef _WIN32
+#define NOSLOG_ASSERT(statement, statementDirective, logSeverity, logMsg, ...)\
+	do									\
+	{									\
+		if ((statement))				\
+		{								\
+			NosLib::Logging::CreateLog( \
+				logSeverity,			\
+				logMsg				    \
+				__VA_ARGS__				\
+			);							\
+			statementDirective;			\
+		}								\
+	} while (0)
+#else
 #define NOSLOG_ASSERT(statement, statementDirective, logSeverity, logMsg, ...)\
 	do									\
 	{									\
@@ -30,6 +45,7 @@
 			statementDirective;			\
 		}								\
 	} while (0)
+#endif // _WIN32
 
 /**
 * @brief if statement is true, runs directive and leaves log
