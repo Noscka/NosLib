@@ -3,7 +3,6 @@
 
 #include "Internal/String.hpp"
 #include "Internal/Export.hpp"
-#include "DynamicArray.hpp"
 #include "String.hpp"
 
 #include <memory>

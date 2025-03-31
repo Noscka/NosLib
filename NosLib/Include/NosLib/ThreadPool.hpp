@@ -1,7 +1,6 @@
 #ifndef _THREADPOOL_NOSLIB_HPP_
 #define _THREADPOOL_NOSLIB_HPP_
 
-#include "DynamicArray.hpp"
 #include "Logging.hpp"
 #include "Functional.hpp"
 
@@ -9,13 +8,14 @@
 #include <condition_variable>
 #include <thread>
 #include <cstdint>
+#include <vector>
 
 namespace NosLib
 {
 	class ThreadPool
 	{
 	protected:
-		NosLib::DynamicArray<std::thread*> ThreadPoolArray;
+		std::vector<std::thread*> ThreadPoolArray;
 		NosLib::FunctionStoreBase* ThreadFunction;
 
 		std::mutex threadJoinMutex;
@@ -27,16 +27,16 @@ namespace NosLib
 
 		inline void ManageThreads()
 		{
-			for (int i = 0; i <= ThreadPoolArray.GetLastArrayIndex(); /* ArrayIndex will go down */)
+			for (int i = 0; i <= ThreadPoolArray.size(); /* ArrayIndex will go down */)
 			{
 				ThreadPoolArray[i]->join();
-				ThreadPoolArray.Remove(i);
-				NosLib::Logging::CreateLog<char>(std::format("Thread {} finished", i), NosLib::Logging::Severity::Debug);
+				ThreadPoolArray.erase(ThreadPoolArray.begin() + i);
+				NosLib::Logging::CreateLog(NosLib::Logging::Severity::Debug, "Thread {} finished", i);
 			}
 
 			delete ThreadFunction;
 
-			NosLib::Logging::CreateLog<char>("Thread Pool finished work", NosLib::Logging::Severity::Debug);
+			NosLib::Logging::CreateLog(NosLib::Logging::Severity::Debug, "Thread Pool finished work");
 		}
 
 		inline void ThreadPoolManagement()
@@ -47,8 +47,8 @@ namespace NosLib
 
 			for (unsigned int i = 0; i < threadCount; i++)
 			{
-				ThreadPoolArray.Append(new std::thread([this]() { ThreadFunction->RunFunction(); }));
-				NosLib::Logging::CreateLog<char>(std::format("Thread {} started", i), NosLib::Logging::Severity::Debug);
+				ThreadPoolArray.push_back(new std::thread([this]() { ThreadFunction->RunFunction(); }));
+				NosLib::Logging::CreateLog(NosLib::Logging::Severity::Debug, "Thread {} started", i);
 				//Sleep(1); /* desync threads */
 			}
 

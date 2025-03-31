@@ -1,4 +1,4 @@
-#include <NosLib/Hash.hpp>
+#include "AllHeaders.hpp"
 
 #include <iostream>
 #include <atomic>

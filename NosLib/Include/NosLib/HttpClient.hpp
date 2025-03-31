@@ -118,7 +118,7 @@ namespace NosLib
 			}
 			logOutput += ("====================================================================================================================\n\n\n");
 
-			NosLib::Logging::CreateLog<char>(logOutput, NosLib::Logging::Severity::Debug);
+			NosLib::Logging::CreateLog(NosLib::Logging::Severity::Debug, logOutput);
 		}
 	};
 }

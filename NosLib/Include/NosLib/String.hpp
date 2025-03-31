@@ -2,9 +2,7 @@
 #define _STRING_NOSLIB_HPP_
 
 #include "Internal/String.hpp"
-#include "DynamicArray.hpp"
 #include "TypeTraits.hpp"
-#include "Cast.hpp"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -15,6 +13,7 @@
 #include <iterator>
 #include <cstdint>
 #include <algorithm>
+#include <vector>
 
 namespace NosLib
 {
@@ -64,7 +63,7 @@ namespace NosLib
 			static_assert(NosLib::TypeTraits::is_character<CharTo>::value, "type getting converted into must be character type");
 			static_assert(NosLib::TypeTraits::is_character<CharFrom>::value, "type getting converted from must be character type");
 
-			return NosLib::Cast<CharTo, CharFrom>(charIn);
+			return static_cast<CharTo>(charIn);
 		}
 #pragma endregion
 
@@ -110,14 +109,14 @@ namespace NosLib
 		/// <param name="delimiter">(default = L' ') - delimiter which will determine the split</param>
 		/// <returns>pointer to modified DynamicArray</returns>
 		template <typename CharT>
-		inline constexpr NosLib::DynamicArray<std::basic_string<CharT>>* Split(NosLib::DynamicArray<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = ' ')
+		inline constexpr std::vector<std::basic_string<CharT>>* Split(std::vector<std::basic_string<CharT>>* result, const std::basic_string<CharT>& input, const CharT& delimiter = ' ')
 		{
 			std::basic_string<CharT> tmp;
 			std::basic_stringstream<CharT> ss(input);
 
 			while (std::getline(ss, tmp, delimiter))
 			{
-				result->Append(tmp);
+				result->push_back(tmp);
 			}
 
 			return result;
@@ -134,15 +133,15 @@ namespace NosLib
 		/// <param name="seperator">(default = L' ') - seperator which will determine the split</param>
 		/// <returns>pointer to modified DynamicArray</returns>
 		template <typename CharT>
-		inline constexpr std::basic_string<CharT> Combine(NosLib::DynamicArray<std::basic_string<CharT>>* inputArray, const CharT& seperator = ' ')
+		inline constexpr std::basic_string<CharT> Combine(std::vector<std::basic_string<CharT>>* inputArray, const CharT& seperator = ' ')
 		{
 			std::basic_string<CharT> out;
 
-			for (int i = 0; i <= inputArray->GetLastArrayIndex(); i++)
+			for (int i = 0; i <= inputArray->size(); i++)
 			{
 				out.append((*inputArray)[i]);
 
-				if (i != inputArray->GetLastArrayIndex())
+				if (i != inputArray->size())
 				{
 					out += seperator;
 				}
@@ -170,13 +169,13 @@ namespace NosLib
 			int columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 			std::basic_string<CharT> output;
 
-			NosLib::DynamicArray<std::basic_string<CharT>> inputSplit;
+			std::vector<std::basic_string<CharT>> inputSplit;
 			NosLib::String::Split<CharT>(&inputSplit, input, L'\n');
 
 			for (std::basic_string<CharT> Singleinput : inputSplit)
 			{
-				int leftPadding = max(NosLib::Cast<int>((columns / 2) - Singleinput.size() / 2), 0);
-				int rightPadding = max(NosLib::Cast<int>(columns - (Singleinput.size() + leftPadding)), 0);
+				int leftPadding = max(static_cast<int>((columns / 2) - Singleinput.size() / 2), 0);
+				int rightPadding = max(static_cast<int>(columns - (Singleinput.size() + leftPadding)), 0);
 
 				output += (std::basic_string<CharT>(leftPadding, (CharT)' ') + Singleinput + (rightPadding ? std::wstring(rightPadding, (CharT)' ') : NosLib::String::ConvertString<CharT, char>("")) + NosLib::String::ConvertCharacter<CharT, char>('\n'));
 			}
@@ -308,7 +307,7 @@ namespace NosLib
 			FindNextWord<CharT>(string, startPosition, word, wordStartPosition, delimiter);
 			for (int i = 0; i < wordCount; i++)
 			{
-				FindNextWord<CharT>(string, NosLib::Cast<int>((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
+				FindNextWord<CharT>(string, static_cast<int>((*wordStartPosition) + word->length()), word, wordStartPosition, delimiter);
 			}
 			return *word;
 		}
@@ -376,7 +375,7 @@ namespace NosLib
 
 			std::wstring output;
 
-			NosLib::DynamicArray<std::basic_string<CharT>> stringSplit;
+			std::vector<std::basic_string<CharT>> stringSplit;
 			NosLib::String::Split<CharT>(&stringSplit, string, L'\n');
 
 			for (int i = 0; i <= stringSplit.GetLastArrayIndex(); i++)
