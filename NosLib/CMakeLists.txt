@@ -30,7 +30,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJ
 
 if(Boost_FOUND)
 	message(STATUS "Using Boost")
-	target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem Boost::asio)
+	target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::serialization Boost::filesystem Boost::asio)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC NOSLIB_USE_BOOST)
 endif()
 

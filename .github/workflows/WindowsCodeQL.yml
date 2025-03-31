@@ -12,6 +12,8 @@ jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
     runs-on: windows-latest
+    env:
+        VCPKG_ROOT: ${{ github.workspace }}/vcpkg
     permissions:
       security-events: write
       packages: read
@@ -29,7 +31,7 @@ jobs:
           build_mode: manual
           build_type: Debug
     steps:
-    - name: Checkout repository
+    - name: Checkout repository#
       uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -38,12 +40,6 @@ jobs:
       run: |
         git clone https://github.com/microsoft/vcpkg.git
         .\vcpkg\bootstrap-vcpkg.bat
-
-    - name: Install Dependencies
-      run: |
-        .\vcpkg\vcpkg.exe install boost
-        .\vcpkg\vcpkg.exe install openssl
-        .\vcpkg\vcpkg.exe integrate install
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
