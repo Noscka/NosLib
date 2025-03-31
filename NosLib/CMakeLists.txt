@@ -31,7 +31,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJ
 if(Boost_FOUND)
 	message(STATUS "Using Boost")
 	target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})
-	target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem)
+	target_link_libraries(${PROJECT_NAME} PUBLIC Boost::boost Boost::serialization Boost::filesystem)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC NOSLIB_USE_BOOST)
 endif()
 
@@ -93,7 +93,7 @@ write_basic_package_version_file(
 
 # Configure the package config file using an input template
 configure_package_config_file(
-	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+	"${CMAKE_CURRENT_SOURCE_DIR}/CMake/${PROJECT_NAME}Config.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
 )
@@ -102,5 +102,5 @@ configure_package_config_file(
 install(FILES
 	"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
 	"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/CMake/${PROJECT_NAME}
 )
