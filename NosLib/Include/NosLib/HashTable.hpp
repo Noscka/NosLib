@@ -2,7 +2,7 @@
 #define _HASHTABLE_NOSLIB_HPP_
 
 #include "TypeTraits.hpp"
-#include "Pointers.hpp"
+#include "Pointer.hpp"
 
 #include <type_traits>
 #include <cstdint>
@@ -145,7 +145,7 @@ namespace NosLib
 		/// <param name="insertObject">- pointer to object</param>
 		inline constexpr void Insert(HashTableType insertObject)
 		{
-			HashTableTypeNormalized normalizedInsertObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>((&insertObject));
+			HashTableTypeNormalized normalizedInsertObject = NosLib::Pointer::OneOffRootPointer<HashTableType*>((&insertObject));
 
 			/* do mod on the hash value to convert into a usable position number */
 			size_t pos = (std::hash<HashTableKey>{}((normalizedInsertObject->*GetKeyValueFunction)()) % TableSize);
@@ -183,7 +183,7 @@ namespace NosLib
 			{
 				HashTableType* currentObject = &((*MainTable[pos])[i].Object);
 
-				HashTableTypeNormalized normalizedObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>(currentObject);
+				HashTableTypeNormalized normalizedObject = NosLib::Pointer::OneOffRootPointer<HashTableType*>(currentObject);
 
 				if ((normalizedObject->*GetKeyValueFunction)() == findKey)
 				{
@@ -215,7 +215,7 @@ namespace NosLib
 			for (int i = 0; i < MainTable[pos]->Count(); i++)
 			{
 				HashTableType* currentObject = &((*MainTable[pos])[i].Object);
-				HashTableTypeNormalized normalizedObject = NosLib::Pointers::OneOffRootPointer<HashTableType*>(currentObject);
+				HashTableTypeNormalized normalizedObject = NosLib::Pointer::OneOffRootPointer<HashTableType*>(currentObject);
 
 				if ((normalizedObject->*GetKeyValueFunction)() != findKey) /* check if object key matches argument key */
 				{

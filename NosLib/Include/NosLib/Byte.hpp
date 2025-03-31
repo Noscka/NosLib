@@ -1,9 +1,8 @@
 #ifndef _BINARYMATH_NOSLIB_HPP_
 #define _BINARYMATH_NOSLIB_HPP_
 
-#include "Cast.hpp"
-
 #include <cmath>
+#include <algorithm>
 
 namespace NosLib
 {
@@ -22,7 +21,7 @@ namespace NosLib
 			int maxValue = 0;
 			for (int i = 0; bitCount > i; i++)
 			{
-				maxValue += NosLib::Cast<int>(pow(2, i));
+				maxValue += static_cast<int>(pow(2, i));
 			}
 			return maxValue;
 		}
@@ -50,7 +49,7 @@ namespace NosLib
 			static_assert(std::is_arithmetic_v<numType>, "Type has to be either an Integer or Floating point");
 
 			(*byteOut) = new char[sizeof(numType)];
-			std::copy(NosLib::Cast<const char*>(&intIn), NosLib::Cast<const char*>(&intIn) + sizeof(numType), (*byteOut));
+			std::copy(static_cast<const char*>(&intIn), static_cast<const char*>(&intIn) + sizeof(numType), (*byteOut));
 		}
 
 		/// <summary>
@@ -63,7 +62,7 @@ namespace NosLib
 		inline constexpr numType ByteToArithematic(char* byte)
 		{
 			numType out = 0;
-			std::copy(byte, byte + sizeof(numType), NosLib::Cast<char*>(&out));
+			std::copy(byte, byte + sizeof(numType), static_cast<char*>(&out));
 			return out;
 		}
 
@@ -82,8 +81,8 @@ namespace NosLib
 			char in1Byte[count * sizeof(type1)];
 			char in2Byte[count * sizeof(type2)];
 
-			std::copy(NosLib::Cast<const char*>(&in1), NosLib::Cast<const char*>(&in1) + (sizeof(type1) * count), in1Byte);
-			std::copy(NosLib::Cast<const char*>(&in2), NosLib::Cast<const char*>(&in2) + (sizeof(type2) * count), in2Byte);
+			std::copy(static_cast<const char*>(&in1), static_cast<const char*>(&in1) + (sizeof(type1) * count), in1Byte);
+			std::copy(static_cast<const char*>(&in2), static_cast<const char*>(&in2) + (sizeof(type2) * count), in2Byte);
 
 
 			for (int i = 0; i < count * std::min(sizeof(type1), sizeof(type2)); i++)
