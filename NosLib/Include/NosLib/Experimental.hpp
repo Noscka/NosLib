@@ -1,5 +1,6 @@
 #ifndef _EXPERIMENTAL_NOSLIB_HPP_
 #define _EXPERIMENTAL_NOSLIB_HPP_
+#ifdef _WIN32
 
 #include "Console.hpp"
 #include "RGB.hpp"
@@ -145,4 +146,5 @@ namespace NosLib
 	}
 }
 
+#endif
 #endif

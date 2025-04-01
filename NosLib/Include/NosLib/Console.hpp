@@ -1,5 +1,6 @@
 #ifndef _CONSOLE_NOSLIB_HPP_
 #define _CONSOLE_NOSLIB_HPP_
+#ifdef _WIN32
 
 #include "String.hpp"
 #include "DimensionVector.hpp"
@@ -10,7 +11,6 @@
 
 namespace NosLib
 {
-	#ifdef _WIN32
 	/// <summary>
 	/// namespace for items which are related to Console
 	/// </summary>
@@ -423,6 +423,7 @@ namespace NosLib
 		}
 		#pragma endregion
 	}
-	#endif
 }
+
+#endif
 #endif

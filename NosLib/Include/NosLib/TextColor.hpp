@@ -39,7 +39,7 @@ namespace NosLib
 			/// <returns>a row with a color</returns>
 			inline std::wstring ColorRow(const int& columnCount, const NosLib::RGB::NosRGB& rgbValue = NosLib::RGB::NosRGB(20, 180, 170))
 			{
-				return NosLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(max(columnCount, 0), L'█') + L"\033[0m";
+				return NosLib::TextColor::MakeANSICode<wchar_t>(rgbValue, true) + std::wstring(std::max(columnCount, 0), L'█') + L"\033[0m";
 			}
 
 			/// <summary>
