@@ -28,6 +28,8 @@ target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
+Set_Harsh_Compiler_flags(${PROJECT_NAME})
+
 if(Boost_FOUND)
 	message(STATUS "Using Boost")
 	target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIR})

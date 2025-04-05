@@ -3,6 +3,8 @@
 add_executable(${PROJECT_NAME} "main.cpp")
 target_link_libraries(${PROJECT_NAME} PRIVATE "NosLib")
 
+Set_Harsh_Compiler_flags(${PROJECT_NAME})
+
 add_custom_command(
 	TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:${PROJECT_NAME}> "$<TARGET_RUNTIME_DLLS:${PROJECT_NAME}>"
