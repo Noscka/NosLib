@@ -72,6 +72,7 @@ namespace NosLib
 	{
 	protected:
 		std::error_code ErrorCodeInternal;
+		NosString AdditionalErrorMessage;
 
 	public:
 		inline ResultBase() noexcept = default;
@@ -82,6 +83,17 @@ namespace NosLib
 		template <class enumType, std::enable_if_t<std::is_error_code_enum_v<enumType>, int> = 0>
 		inline ResultBase(enumType errorCode) noexcept :
 			ErrorCodeInternal(errorCode)
+		{}
+
+		inline ResultBase(const std::error_code& errorCode, const std::string& additionalErrorMessage) noexcept :
+			ErrorCodeInternal(errorCode),
+			AdditionalErrorMessage(additionalErrorMessage)
+		{}
+
+		template <class enumType, std::enable_if_t<std::is_error_code_enum_v<enumType>, int> = 0>
+		inline ResultBase(enumType errorCode, const std::string& additionalErrorMessage) noexcept :
+			ErrorCodeInternal(errorCode),
+			AdditionalErrorMessage(additionalErrorMessage)
 		{}
 
 		virtual ~ResultBase() = default;
@@ -99,6 +111,11 @@ namespace NosLib
 		std::string ErrorMessage() const noexcept
 		{
 			return ErrorCodeInternal.message();
+		}
+
+		std::string GetAdditionalErrorMessage() const noexcept
+		{
+			return AdditionalErrorMessage;
 		}
 
 		const std::error_category& ErrorCategory() const noexcept
