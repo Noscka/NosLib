@@ -11,6 +11,7 @@ namespace NosLib
 	{
 		Successful,
 		Casting,
+		NullPointer
 	};
 
 	class NOSLIB_API GenericErrorCategory : public std::error_category
@@ -36,6 +37,9 @@ namespace NosLib
 
 			case GenericErrors::Casting:
 				return "Couldn't cast";
+
+			case GenericErrors::NullPointer:
+				return "Null Pointer";
 			}
 
 			return "Unknown error";
