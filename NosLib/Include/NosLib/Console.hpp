@@ -1,19 +1,20 @@
 #ifndef _CONSOLE_NOSLIB_HPP_
 #define _CONSOLE_NOSLIB_HPP_
-#ifdef _WIN32
 
 #include "String.hpp"
 #include "DimensionVector.hpp"
 
+#ifdef _WIN32
 #include <Windows.h>
 #include <io.h>
 #include <fcntl.h>
+#endif
 
 namespace NosLib
 {
-	/// <summary>
-	/// namespace for items which are related to Console
-	/// </summary>
+	void ClearScreen();
+
+#ifdef _WIN32
 	namespace Console
 	{
 		/// <summary>
@@ -423,7 +424,7 @@ namespace NosLib
 		}
 		#pragma endregion
 	}
+#endif
 }
 
-#endif
 #endif
