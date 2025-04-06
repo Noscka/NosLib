@@ -63,6 +63,8 @@ if(WIN32 AND BUILD_SHARED_LIBS)
   set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
+include(GNUInstallDirs)
+
 # --- Installation and Package Export ---
 # 1. Install the library target
 install(TARGETS ${PROJECT_NAME}

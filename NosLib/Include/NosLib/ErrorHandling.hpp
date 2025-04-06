@@ -163,7 +163,8 @@ namespace NosLib
 			return StoredObject;
 		}
 
-		template <typename = typename std::enable_if<ReturnValue != bool>::type>
+		template<typename U = ReturnValue,
+			typename = std::enable_if_t<!std::is_same_v<U, bool>>>
 		explicit operator ReturnValue&() noexcept
 		{
 			return StoredObject;
