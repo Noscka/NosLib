@@ -6,7 +6,7 @@ using NosLog = NosLib::Logging;
 
 NosLog::Verbose NosLog::VerboseLevel = NosLog::Verbose::Warning;
 
-NosLog::Logging(const NosString& logMessage, const NosLog::Severity& logSeverity)
+NosLog::Logging(const std::string& logMessage, const NosLog::Severity& logSeverity)
 {
 	LogMessage = logMessage;
 	if (LogMessage.back() != static_cast<NosChar>(L'\n'))
@@ -18,7 +18,7 @@ NosLog::Logging(const NosString& logMessage, const NosLog::Severity& logSeverity
 	LogTimestamp = std::chrono::system_clock::now();
 }
 
-NosLib::NosString NosLog::SeverityToString(const NosLog::Severity& logSeverity)
+std::string NosLog::SeverityToString(const NosLog::Severity& logSeverity)
 {
 	switch (logSeverity)
 	{
@@ -41,9 +41,9 @@ NosLib::NosString NosLog::SeverityToString(const NosLog::Severity& logSeverity)
 	return "UNKNOWN";
 }
 
-NosLib::NosString& NosLog::GenerateLogFormat()
+std::string& NosLog::GenerateLogFormat()
 {
-	static NosLib::NosString LogFormat;
+	static std::string LogFormat;
 
 	if (!LogFormat.empty())
 	{
@@ -71,11 +71,9 @@ NosLib::NosString& NosLog::GenerateLogFormat()
 
 void NosLog::WriteToFile(const std::string& fileName) const
 {
-	using NosofStream = std::basic_ofstream<NosChar, std::char_traits<NosChar>>;
+	std::string containedLogMessage = GetLog();
 
-	NosString containedLogMessage = GetLog();
-
-	NosofStream outLog(fileName, std::ios::binary | std::ios::app);
+	std::ofstream outLog(fileName, std::ios::binary | std::ios::app);
 	outLog.write(containedLogMessage.c_str(), containedLogMessage.size());
 	outLog.close();
 }
@@ -90,13 +88,13 @@ NosLog::Verbose NosLog::GetVerboseLevel()
 	return VerboseLevel;
 }
 
-NosLib::NosString NosLog::GetLog() const
+std::string NosLog::GetLog() const
 {
-	NosLib::NosString severityString = std::format("({})", SeverityToString(LogSeverity));
-	NosLib::NosString chronoTimestamp = std::format("{:%X}", std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp));
+	std::string severityString = std::format("({})", SeverityToString(LogSeverity));
+	std::string chronoTimestamp = std::format("{:%X}", std::chrono::zoned_time(std::chrono::current_zone(), LogTimestamp));
 
 	// %d/%m/%Y for date too
-	NosLib::NosString outLog = std::vformat(GenerateLogFormat(),
+	std::string outLog = std::vformat(GenerateLogFormat(),
 											std::make_format_args(
 												severityString,
 												chronoTimestamp,

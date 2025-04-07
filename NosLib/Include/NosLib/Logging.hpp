@@ -10,14 +10,13 @@
 #include <chrono>
 #include <string>
 #include <cstdint>
+#include <print>
 
 namespace NosLib
 {
 	class NOSLIB_API Logging
 	{
 	public:
-		using Ptr = std::unique_ptr<Logging>;
-
 		enum class Severity : uint8_t
 		{
 			Debug,		/* useful for debug */
@@ -40,51 +39,38 @@ namespace NosLib
 	protected:
 		static Verbose VerboseLevel;
 
-		NosString LogMessage;
+		std::string LogMessage;
 		Severity LogSeverity{};
 		std::chrono::system_clock::time_point LogTimestamp;
 
 		Logging() = default;
-		Logging(const NosString&, const Severity&);
+		Logging(const std::string&, const Severity&);
 
-		static NosString SeverityToString(const Severity&);
-		static NosString& GenerateLogFormat();
+		static std::string SeverityToString(const Severity&);
+		static std::string& GenerateLogFormat();
 		void WriteToFile(const std::string&) const;
 
 	public:
 		static void SetVerboseLevel(const Verbose&);
 		static Verbose GetVerboseLevel();
 
-		NosString GetLog() const;
+		std::string GetLog() const;
 
-		template<typename CharType, typename... fmtArgs>
-		static inline Ptr CreateLog(const Severity& logSeverity, const std::basic_string<CharType>& logMessage, fmtArgs... formatArgs)
+		template<typename... fmtArgs>
+		static inline void CreateLog(const Severity& logSeverity, const std::string& logMessage, fmtArgs... formatArgs)
 		{
-			using InString = std::basic_string<CharType>;
+			std::string formattedLog = std::vformat(logMessage, std::make_format_args(formatArgs...));
+			Logging logObject(formattedLog, logSeverity);
+			logObject.WriteToFile("full-log.txt");
 
-			InString formattedLog = std::vformat(logMessage, std::make_format_args(formatArgs...));
-			NosString formattedNosLog = String::ConvertString<NosChar, CharType>(formattedLog);
-			Ptr logObject(new Logging(formattedNosLog, logSeverity));
-
-			logObject->WriteToFile("full-log.txt");
 			/* if severity is lower then Verbose, then don't print or add to file */
 			if (static_cast<uint8_t>(logSeverity) < static_cast<uint8_t>(VerboseLevel))
 			{
-				return logObject;
+				return;
 			}
 
-			NosString containedLogMessage = logObject->GetLog();
-			printf(NosLib::String::ConvertString<char, NosChar>(containedLogMessage).c_str());
-
-			logObject->WriteToFile("log.txt");
-
-			return logObject;
-		}
-
-		template<typename CharType, typename... fmtArgs>
-		static inline Ptr CreateLog(const Severity& logSeverity, const CharType* logMessage, fmtArgs... formatArgs)
-		{
-			return CreateLog(logSeverity, std::basic_string<CharType>(logMessage), std::forward<fmtArgs>(formatArgs)...);
+			printf(logObject.GetLog().c_str());
+			logObject.WriteToFile("log.txt");
 		}
 	};
 }
