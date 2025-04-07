@@ -1,20 +1,14 @@
 #ifndef _CONSOLE_NOSLIB_HPP_
 #define _CONSOLE_NOSLIB_HPP_
 
-#include "String.hpp"
-#include "DimensionVector.hpp"
-
-#ifdef _WIN32
-#include <Windows.h>
-#include <io.h>
-#include <fcntl.h>
-#endif
-
 namespace NosLib
 {
+	bool EnableANSI();
+	bool CheckANSI(); /* Checks if ANSI is enabled */
+
 	void ClearScreen();
 
-#ifdef _WIN32
+#if 0
 	namespace Console
 	{
 		/// <summary>

@@ -1,11 +1,11 @@
 #ifndef __ALL_HEADERS__
 #define __ALL_HEADERS__
+#include <NosLib/ANSI.hpp>
 #include <NosLib/Byte.hpp>
 #include <NosLib/Console.hpp>
 #include <NosLib/DimensionVector.hpp>
 #include <NosLib/ErrorCodes.hpp>
 #include <NosLib/ErrorHandling.hpp>
-#include <NosLib/Experimental.hpp>
 #include <NosLib/File.hpp>
 #include <NosLib/Functional.hpp>
 #include <NosLib/Hash.hpp>
@@ -16,9 +16,9 @@
 #include <NosLib/Pointer.hpp>
 #include <NosLib/RGB.hpp>
 #include <NosLib/String.hpp>
-#include <NosLib/TextColor.hpp>
 #include <NosLib/ThreadPool.hpp>
 #include <NosLib/TypeTraits.hpp>
+#include <NosLib/Version.hpp>
 #include <NosLib/Boost/WinVersion.hpp>
 #include <NosLib/Internal/Export.hpp>
 #include <NosLib/Internal/String.hpp>

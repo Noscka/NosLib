@@ -1,8 +1,44 @@
 #ifdef _WIN32
 #include <NosLib/Console.hpp>
+#include <Windows.h>
 
 namespace NosLib
 {
+	bool EnableANSI()
+	{
+		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (consoleHandle == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+
+		DWORD consoleMode = 0;
+		bool getOperationResults = GetConsoleMode(consoleHandle, &consoleMode);
+		consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING; /* makes output get parsed, so ANSI gets actually used */
+		consoleMode |= DISABLE_NEWLINE_AUTO_RETURN; /* makes it so newlines have an effect. */
+		bool setOperationResults = SetConsoleMode(consoleHandle, consoleMode);
+
+		return (getOperationResults && setOperationResults);
+	}
+
+	bool CheckANSI()
+	{
+		HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+		DWORD consoleMode = 0;
+
+		if (consoleHandle == INVALID_HANDLE_VALUE)
+		{
+			return false;
+		}
+
+		if (!GetConsoleMode(consoleHandle, &consoleMode))
+		{
+			return false;
+		}
+		
+		return (consoleMode & ENABLE_VIRTUAL_TERMINAL_PROCESSING) != 0;
+	}
+
 	void ClearScreen()
 	{
 		HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
