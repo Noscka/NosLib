@@ -11,13 +11,13 @@
 
 namespace NosLib
 {
-	class NOSLIB_API Version
+	class Version
 	{
 	private:
 		#ifdef NOSLIB_USE_BOOST
 		friend class boost::serialization::access;
 		template<class Archive>
-		void serialize(Archive& archive, const unsigned int)
+		inline void serialize(Archive& archive, const unsigned int)
 		{
 			archive& Major;
 			archive& Minor;
@@ -36,11 +36,11 @@ namespace NosLib
 		{ }
 		virtual ~Version() = default;
 
-		uint16_t GetMajor() { return Major; }
-		uint16_t GetMinor() { return Minor; }
-		uint16_t GetPatch() { return Patch; }
+		inline uint16_t GetMajor() { return Major; }
+		inline uint16_t GetMinor() { return Minor; }
+		inline uint16_t GetPatch() { return Patch; }
 
-		NosString GetVersion()
+		inline NosString GetVersion()
 		{
 			return std::format("{}.{}.{}", Major, Minor, Patch);
 		}
