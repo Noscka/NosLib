@@ -4,17 +4,18 @@
 #include <NosLib/Internal/Export.hpp>
 #include <system_error>
 #include <string>
+#include <cstdint>
 
 namespace NosLib
 {
-	enum class NOSLIB_API GenericErrors : uint8_t
+	enum class GenericErrors : uint8_t
 	{
 		Successful,
 		Casting,
 		NullPointer
 	};
 
-	class NOSLIB_API GenericErrorCategory : public std::error_category
+	class GenericErrorCategory : public std::error_category
 	{
 	public:
 		static const GenericErrorCategory& instance()
@@ -46,7 +47,7 @@ namespace NosLib
 		}
 	};
 
-	inline std::error_code NOSLIB_API make_error_code(NosLib::GenericErrors e) noexcept
+	inline std::error_code make_error_code(NosLib::GenericErrors e) noexcept
 	{
 		return { static_cast<int>(e), NosLib::GenericErrorCategory::instance() };
 	}

@@ -11,90 +11,13 @@ namespace NosLib
 #if 0
 	namespace Console
 	{
+		#ifdef _EVENTHANDLING_NOSDOS_HPP_
 		/// <summary>
-		/// namespace for items (mostly functions) which are meant to (but don't have to) be used at the beginning of the program to enable stuff like Unicode characters or ANSI escape code (colored text)
+		/// (Aliased) Creates hook which handles events
 		/// </summary>
-		namespace InitializeModifiers
-		{
-			/// <summary>
-			/// Sets program to output unicode16 text
-			/// </summary>
-			/// <returns>output of function used. -1 if error and anything else if succeful</returns>
-			inline int EnableUnicode()
-			{
-				return _setmode(_fileno(stdout), _O_U16TEXT); /* set program to unicode output */
-			}
-
-			#pragma region EnableANSI
-			/// <summary>
-			/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text with Custom Console Handle
-			/// </summary>
-			/// <param name="consoleHandle">- Custom Console Handle</param>
-			/// <returns>if operation was succesful</returns>
-			inline bool EnableANSI(const HANDLE& consoleHandle)
-			{
-				DWORD consoleMode;
-				bool getOperationResults = GetConsoleMode(consoleHandle, &consoleMode);
-				consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING; /* makes output get parsed, so ANSI gets actually used */
-				consoleMode |= DISABLE_NEWLINE_AUTO_RETURN; /* makes it so newlines have an effect. */
-				bool setOperationResults = SetConsoleMode(consoleHandle, consoleMode);
-
-				return (getOperationResults && setOperationResults); /* return the and of both (only returns true if both are true) */
-			}
-
-
-			/// <summary>
-			/// Appends `ENABLE_VIRTUAL_TERMINAL_PROCESSING` and `DISABLE_NEWLINE_AUTO_RETURN` to console modes to allow for colored text
-			/// </summary>
-			/// <returns>if operation was succesful</returns>
-			inline bool EnableANSI()
-			{
-				return EnableANSI(GetStdHandle(STD_OUTPUT_HANDLE));
-			}
-			#pragma endregion
-
-			#pragma region BeautifyConsole
-			/// <summary>
-			/// Makes the console loop more beautiful with a specified console window
-			/// </summary>
-			/// <typeparam name="CharT">- string char type</typeparam>
-			/// <param name="window">- specified window handle</param>
-			/// <param name="title">- what the window should be called</param>
-			/// <returns>if succesful</returns>
-			template <typename CharT>
-			inline constexpr bool BeatifyConsole(const HWND& window, const std::basic_string<CharT>& title)
-			{
-				bool setTitle;
-				#ifdef UNICODE
-				setTitle = SetConsoleTitleW(NosLib::String::ConvertString<wchar_t, CharT>(title).c_str());
-				#else
-				setTitle = SetConsoleTitleA(NosLib::String::ConvertString<char, CharT>(title).c_str());
-				#endif // UNICODE
-
-				return setTitle && ShowScrollBar(window, SB_BOTH, FALSE);
-			}
-
-			/// <summary>
-			/// Makes the console loop more beatiful
-			/// </summary>
-			/// <typeparam name="CharT">- string char type</typeparam>
-			/// <param name="title">- what the window should be called</param>
-			/// <returns>if succesful</returns>
-			template <typename CharT>
-			inline constexpr bool BeatifyConsole(const std::basic_string<CharT>& title)
-			{
-				return BeatifyConsole<CharT>(GetConsoleWindow(), title);
-			}
-			#pragma endregion
-
-			#ifdef _EVENTHANDLING_NOSDOS_HPP_
-			/// <summary>
-			/// (Aliased) Creates hook which handles events
-			/// </summary>
-			/// <returns>true for succesful and false for unsuccesful</returns>
-			inline constexpr bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
-			#endif
-		}
+		/// <returns>true for succesful and false for unsuccesful</returns>
+		inline constexpr bool (*InitializeEventHandler)() = &NosLib::EventHandling::InitializeEventHandler;
+		#endif
 
 		#pragma region GetCaretPosition
 		/// <summary>

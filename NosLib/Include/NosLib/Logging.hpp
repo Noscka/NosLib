@@ -1,16 +1,13 @@
 #ifndef _LOGGING_NOSLIB_HPP_
 #define _LOGGING_NOSLIB_HPP_
 
-#include "Internal/String.hpp"
-#include "Internal/Export.hpp"
-#include "String.hpp"
+#include <NosLib/Internal/Export.hpp>
+#include <NosLib/String.hpp>
+#include <NosLib/RGB.hpp>
+#include <NosLib/ErrorHandling.hpp>
 
-#include <memory>
-#include <fstream>
 #include <chrono>
-#include <string>
 #include <cstdint>
-#include <print>
 
 namespace NosLib
 {
@@ -47,8 +44,10 @@ namespace NosLib
 		Logging(const std::string&, const Severity&);
 
 		static std::string SeverityToString(const Severity&);
+		static NosRGB SeverityToColor(const Severity&);
 		static std::string& GenerateLogFormat();
 		void WriteToFile(const std::string&) const;
+		void PrintLog() const;
 
 	public:
 		static void SetVerboseLevel(const Verbose&);
@@ -64,12 +63,9 @@ namespace NosLib
 			logObject.WriteToFile("full-log.txt");
 
 			/* if severity is lower then Verbose, then don't print or add to file */
-			if (static_cast<uint8_t>(logSeverity) < static_cast<uint8_t>(VerboseLevel))
-			{
-				return;
-			}
+			NOS_ASSERT(static_cast<uint8_t>(logSeverity) < static_cast<uint8_t>(VerboseLevel), return);
 
-			printf(logObject.GetLog().c_str());
+			logObject.PrintLog();
 			logObject.WriteToFile("log.txt");
 		}
 	};

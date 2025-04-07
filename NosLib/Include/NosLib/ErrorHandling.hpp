@@ -1,8 +1,8 @@
 #ifndef _ERRORHANDLING_NOSLIB_HPP_
 #define _ERRORHANDLING_NOSLIB_HPP_
 
-#include <NosLib/Logging.hpp>
 #include <NosLib/ErrorCodes.hpp>
+#include <memory>
 
 /**
 * @brief if statement is true, runs directive and leaves log
@@ -72,7 +72,7 @@ namespace NosLib
 	{
 	protected:
 		std::error_code ErrorCodeInternal;
-		NosString AdditionalErrorMessage;
+		std::string AdditionalErrorMessage;
 
 	public:
 		inline ResultBase() noexcept = default;

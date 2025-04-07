@@ -8,12 +8,12 @@
 
 namespace NosLib
 {
-	inline std::string CreateANSIColorCode(const NosLib::RGB& value)
+	inline std::string CreateANSIColorCode(const NosLib::NosRGB& value)
 	{
 		return std::format("\033[38;2;{};{};{}m", value.R, value.G, value.B);
 	}
 
-	inline std::string CreateANSIBackgroundColorCode(const NosLib::RGB& value)
+	inline std::string CreateANSIBackgroundColorCode(const NosLib::NosRGB& value)
 	{
 		return std::format("\033[48;2;{};{};{}m", value.R, value.G, value.B);
 	}
@@ -23,7 +23,7 @@ namespace NosLib
 		return "\033[0m";
 	}
 
-	inline std::string ColorString(const std::string& string, const NosLib::RGB& value)
+	inline std::string ColorString(const std::string& string, const NosLib::NosRGB& value)
 	{
 		return CreateANSIColorCode(value) + string + CreateANSIResetCode();
 	}

@@ -1,6 +1,8 @@
 #include <NosLib/Logging.hpp>
+#include <NosLib/ANSI.hpp>
+#include <NosLib/Console.hpp>
 
-#include <format>
+#include <fstream>
 
 using NosLog = NosLib::Logging;
 
@@ -41,6 +43,29 @@ std::string NosLog::SeverityToString(const NosLog::Severity& logSeverity)
 	return "UNKNOWN";
 }
 
+NosLib::NosRGB NosLog::SeverityToColor(const NosLog::Severity& logSeverity)
+{
+	switch (logSeverity)
+	{
+	case Severity::Debug:
+		return { 0, 122, 204 };
+
+	case Severity::Info:
+		return { 220, 220, 220 };
+
+	case Severity::Warning:
+		return { 255, 204, 0 };
+
+	case Severity::Error:
+		return { 255, 0, 0 };
+
+	case Severity::Fatal:
+		return { 255, 69, 0 };
+	}
+
+	return { 255,255,255 };
+}
+
 std::string& NosLog::GenerateLogFormat()
 {
 	static std::string LogFormat;
@@ -74,8 +99,20 @@ void NosLog::WriteToFile(const std::string& fileName) const
 	std::string containedLogMessage = GetLog();
 
 	std::ofstream outLog(fileName, std::ios::binary | std::ios::app);
-	outLog.write(containedLogMessage.c_str(), containedLogMessage.size());
+	outLog.write(containedLogMessage.c_str(), static_cast<std::streamsize>(containedLogMessage.size()));
 	outLog.close();
+}
+
+void NosLog::PrintLog() const
+{
+	std::string logString = GetLog();
+
+	if (NosLib::CheckANSI())
+	{
+		logString = NosLib::ColorString(logString, SeverityToColor(LogSeverity));
+	}
+
+	printf("%s", logString.c_str());
 }
 
 void NosLog::SetVerboseLevel(const Verbose& verboseLevel)
@@ -95,10 +132,10 @@ std::string NosLog::GetLog() const
 
 	// %d/%m/%Y for date too
 	std::string outLog = std::vformat(GenerateLogFormat(),
-											std::make_format_args(
-												severityString,
-												chronoTimestamp,
-												LogMessage));
+									  std::make_format_args(
+										  severityString,
+										  chronoTimestamp,
+										  LogMessage));
 
 	return outLog;
 }

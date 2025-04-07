@@ -5,15 +5,15 @@
 
 namespace NosLib
 {
-	class RGB
+	class NosRGB
 	{
 	public:
 		uint8_t R, G, B;
 
-		inline constexpr RGB() = default;
-		inline constexpr RGB(uint8_t r, uint8_t g, uint8_t b) : R(r), G(g), B(b) {}
+		inline constexpr NosRGB() = default;
+		inline constexpr NosRGB(uint8_t r, uint8_t g, uint8_t b) : R(r), G(g), B(b) {}
 
-		inline RGB& Iterate(uint8_t iterateValue = 1)
+		inline NosRGB& Iterate(uint8_t iterateValue = 1)
 		{
 			if (R > 0 && B == 0)
 			{

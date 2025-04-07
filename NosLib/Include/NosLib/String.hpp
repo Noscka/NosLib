@@ -1,12 +1,8 @@
 #ifndef _STRING_NOSLIB_HPP_
 #define _STRING_NOSLIB_HPP_
 
-#include "Internal/String.hpp"
-#include "TypeTraits.hpp"
-
-#ifdef _WIN32
-#include <Windows.h>
-#endif // _WIN32
+#include <NosLib/Internal/String.hpp>
+#include <NosLib/TypeTraits.hpp>
 
 #include <string>
 #include <sstream>
@@ -151,7 +147,7 @@ namespace NosLib
 		}
 #pragma endregion
 
-		#ifdef _WIN32
+		#if 0
 #pragma region CenterString
 		/// <summary>
 		/// Center string with custom console Handle
@@ -354,7 +350,7 @@ namespace NosLib
 		}
 #pragma endregion
 
-#ifdef _WIN32
+#if 0
 #pragma region Shorten
 		/// <summary>
 		/// Shortens string to set size
