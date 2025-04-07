@@ -169,6 +169,24 @@ namespace NosLib
 		{
 			return StoredObject;
 		}
+
+		ReturnValue& operator*()
+		{
+			return StoredObject;
+		}
+		const ReturnValue& operator*() const
+		{
+			return StoredObject;
+		}
+
+		ReturnValue* operator->()
+		{
+			return &StoredObject;
+		}
+		const ReturnValue* operator->() const
+		{
+			return &StoredObject;
+		}
 	};
 
 	template<typename ReturnValue>
