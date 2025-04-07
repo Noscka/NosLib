@@ -38,7 +38,15 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libssl-dev libboost-all-dev
-        
+    
+    - name: Install NosCMLib
+      run: |
+        git clone https://github.com/Noscka/NosCMLib
+        cd NosCMLib
+        cmake -S . -B Build -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/local
+        cmake --build Build
+        cmake --install Build
+    
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -47,7 +55,7 @@ jobs:
         
     - name: Build Project (${{ matrix.build_type }})
       run: |
-        cmake -S . -B build_${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        cmake -S . -B build_${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DNosCMLib_DIR=$GITHUB_WORKSPACE/local/lib/cmake/NosCMLib
         cmake --build build_${{ matrix.build_type }} -- -j$(nproc)
 
     - name: Perform CodeQL Analysis
