@@ -16,10 +16,8 @@ message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(NOSLIB_REQUIRE_OPENSSL "Require OpenSSL" ON)
 option(NOSLIB_REQUIRE_BOOST "Require Boost" ON)
+option(NOSLIB_REQUIRE_CPPHTTPLIB "Require Cpp-HttpLib" ON)
 
-set(HTTPLIB_REQUIRE_OPENSSL ${NOSLIB_REQUIRE_OPENSSL} CACHE BOOL "Require OpenSSL (overridden)" FORCE)
-add_subdirectory(External)
-target_compile_definitions(httplib INTERFACE CPPHTTPLIB_OPENSSL_SUPPORT)
 add_subdirectory(NosLib)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)

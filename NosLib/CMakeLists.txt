@@ -22,6 +22,12 @@ else()
 	find_package(Boost COMPONENTS ${BoostComponents})
 endif()
 
+if(NOSLIB_REQUIRE_CPPHTTPLIB)
+	find_package(httplib REQUIRED)
+else()
+	find_package(httplib)
+endif()
+
 add_library(${PROJECT_NAME} ${LibrarySourceFiles})
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
