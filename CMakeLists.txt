@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.12)
 
-find_package(NosCMLib REQUIRED)
+add_subdirectory(CMake)
 
 Get_Git_Version()
 Get_Git_Branch()
