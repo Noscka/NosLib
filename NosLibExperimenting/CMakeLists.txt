@@ -1,4 +1,6 @@
-﻿project ("NosLibTesting" VERSION 1.0.0 LANGUAGES CXX)
+﻿project ("NosLibExperimenting" VERSION 1.0.0 LANGUAGES CXX)
+
+# This is just for me to experiment while I develop new library features
 
 add_executable(${PROJECT_NAME} "main.cpp")
 target_link_libraries(${PROJECT_NAME} PRIVATE "NosLib")

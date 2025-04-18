@@ -1,5 +1,6 @@
 #ifndef _HOSTPATH_NOSLIB_HPP_
 #define _HOSTPATH_NOSLIB_HPP_
+#ifdef NOSLIB_USE_HTTPLIB
 
 #include <NosLib/String.hpp>
 
@@ -59,4 +60,6 @@ namespace NosLib
 		}
 	};
 }
-#endif
+
+#endif // NOSLIB_USE_HTTPLIB
+#endif // _HOSTPATH_NOSLIB_HPP_

@@ -22,15 +22,8 @@ else()
 	find_package(Boost COMPONENTS ${BoostComponents})
 endif()
 
-if(NOSLIB_REQUIRE_CPPHTTPLIB)
-	find_package(httplib REQUIRED)
-else()
-	find_package(httplib)
-endif()
-
 add_library(${PROJECT_NAME} ${LibrarySourceFiles})
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
-target_link_libraries(${PROJECT_NAME} INTERFACE httplib::httplib)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 
@@ -47,6 +40,12 @@ if(OpenSSL_FOUND)
 	message(STATUS "Using OpenSSL")
 	target_link_libraries(${PROJECT_NAME} PUBLIC OpenSSL::Crypto OpenSSL::SSL)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC NOSLIB_USE_OPENSSL)
+endif()
+
+if(true) #httplib_FOUND)
+	message(STATUS "Using HttpLib")
+	target_link_libraries(${PROJECT_NAME} PUBLIC httplib::httplib)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC NOSLIB_USE_HTTPLIB)
 endif()
 
 if(BUILD_SHARED_LIBS)

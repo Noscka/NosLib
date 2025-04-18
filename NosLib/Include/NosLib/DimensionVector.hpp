@@ -1,7 +1,11 @@
 #ifndef _DIMENTIONVECTOR_NOSLIB_HPP_
 #define _DIMENTIONVECTOR_NOSLIB_HPP_
 
-#include "String.hpp"
+#include <NosLib/String.hpp>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 #include <string>
 #include <type_traits>

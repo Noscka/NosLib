@@ -1,3 +1,6 @@
 [submodule "CMake"]
 	path = CMake
 	url = https://github.com/Noscka/NosCMLib
+[submodule "External/cpp-httplib"]
+	path = External/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib
