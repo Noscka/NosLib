@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.5)
 
-add_subdirectory(CMake)
+add_subdirectory(NosCMLib)
 
 Get_Git_Version()
 Get_Git_Branch()
