@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 4.0)
+﻿cmake_minimum_required (VERSION 3.5)
 
 add_subdirectory(CMake)
 
@@ -10,11 +10,6 @@ Get_Git_Branch()
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-
-set(HTTPLIB_REQUIRE_OPENSSL ${NOSLIB_REQUIRE_OPENSSL} CACHE BOOL "Require OpenSSL (overridden)" FORCE)
-add_subdirectory(External)
-target_compile_definitions(httplib INTERFACE CPPHTTPLIB_OPENSSL_SUPPORT)
 
 project ("NosLib" LANGUAGES CXX)
 
