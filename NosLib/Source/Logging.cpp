@@ -3,6 +3,7 @@
 #include <NosLib/Console.hpp>
 
 #include <fstream>
+#include <regex>
 
 using NosLog = NosLib::Logging;
 
@@ -138,4 +139,10 @@ std::string NosLog::GetLog() const
 										  LogMessage));
 
 	return outLog;
+}
+
+std::string NosLog::SanitizeString(const std::string& str)
+{
+	static const std::regex re(R"([\{\}])");
+	return std::regex_replace(str, re, "$&$&");
 }

@@ -54,6 +54,7 @@ namespace NosLib
 		static Verbose GetVerboseLevel();
 
 		std::string GetLog() const;
+		static std::string SanitizeString(const std::string&);
 
 		template<typename... fmtArgs>
 		static inline void CreateLog(const Severity& logSeverity, const std::string& logMessage, fmtArgs... formatArgs)
