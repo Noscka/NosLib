@@ -55,6 +55,7 @@ if(httplib_FOUND)
 	message(STATUS "Using HttpLib")
 	target_link_libraries(${PROJECT_NAME} PUBLIC httplib::httplib)
 	target_compile_definitions(${PROJECT_NAME} PUBLIC NOSLIB_USE_HTTPLIB)
+	target_compile_definitions(${PROJECT_NAME} PUBLIC CPPHTTPLIB_OPENSSL_SUPPORT)
 endif()
 
 if(BUILD_SHARED_LIBS)

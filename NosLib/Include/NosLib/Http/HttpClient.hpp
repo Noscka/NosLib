@@ -19,9 +19,9 @@ namespace NosLib
 		inline static std::string UserAgent;
 
 	public:
-		using ptr = std::unique_ptr<HttpClient>;
+		using Ptr = std::unique_ptr<HttpClient>;
 
-		static ptr MakeClient(const std::string& host, const bool& enableServerCertVerification = true);
+		static Ptr MakeClient(const std::string& host, const bool& enableServerCertVerification = true);
 
 		static void SetUserAgent(const std::string& userAgent);
 		static void SetUserAgent(const std::wstring& userAgent);

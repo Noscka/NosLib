@@ -6,9 +6,9 @@
 
 namespace NosLib
 {
-	HttpClient::ptr HttpClient::MakeClient(const std::string& host, const bool& enableServerCertVerification)
+	HttpClient::Ptr HttpClient::MakeClient(const std::string& host, const bool& enableServerCertVerification)
 	{
-		ptr ret = std::make_unique<HttpClient>(host);
+		Ptr ret = std::make_unique<HttpClient>(host);
 
 		ret->enable_server_certificate_verification(enableServerCertVerification);
 

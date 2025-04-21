@@ -2,26 +2,28 @@
 #define _HOSTPATH_NOSLIB_HPP_
 #ifdef NOSLIB_USE_HTTPLIB
 
+#include <NosLib/Internal/Export.hpp>
 #include <NosLib/String.hpp>
 
 #include <httplib.h>
 
 namespace NosLib
 {
-	struct HostPath
+	class HostPath
 	{
-		std::wstring Host;
-		std::wstring Path;
+	protected:
+		std::string Host;
+		std::string Path;
 
+	public:
 		HostPath() {}
 
-		inline HostPath(const std::wstring& host, const std::wstring& path)
-		{
-			Host = host;
-			Path = path;
-		}
+		inline HostPath(const std::string& host, const std::string& path) :
+			Host(host),
+			Path(path)
+		{}
 
-		inline HostPath(const std::wstring& link)
+		inline HostPath(const std::string& link)
 		{
 			int slashCount = 0;
 
@@ -41,15 +43,17 @@ namespace NosLib
 			}
 		}
 
-		inline HostPath(const std::string& host, const std::string& path)
-			: HostPath(NosLib::String::ToWstring(host), NosLib::String::ToWstring(path))
-		{}
+		inline std::string GetHost() const
+		{
+			return Host;
+		}
 
-		inline HostPath(const std::string& link)
-			: HostPath(NosLib::String::ToWstring(link))
-		{}
+		inline std::string GetPath() const
+		{
+			return Path;
+		}
 
-		inline std::wstring Full() const
+		inline std::string GetFull() const
 		{
 			return Host + Path;
 		}
