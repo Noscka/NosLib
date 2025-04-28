@@ -21,16 +21,6 @@ namespace NosLib
 		return ret;
 	}
 
-	void HttpClient::SetUserAgent(const std::string& userAgent)
-	{
-		UserAgent = userAgent;
-	}
-
-	void HttpClient::SetUserAgent(const std::wstring& userAgent)
-	{
-		UserAgent = NosLib::String::ToString(userAgent);
-	}
-
 	bool HttpClient::DownloadFile(const std::string& urlPath, const std::string& filepath)
 	{
 		std::ofstream fileDownloadStream(filepath, std::ios::binary);
@@ -65,6 +55,24 @@ namespace NosLib
 		return true;
 	}
 
+	bool HttpClient::VerifyResult(const httplib::Result& res)
+	{
+		if (res)
+		{
+			return true;
+		}
+
+		NosLib::Logging::CreateLog(NosLib::Logging::Severity::Error, httplib::to_string(res.error()));
+
+		auto result = get_openssl_verify_result();
+		if (result)
+		{
+			NosLib::Logging::CreateLog(NosLib::Logging::Severity::Error, "OpenSSL Error: {}", X509_verify_cert_error_string(result));
+		}
+
+		return false;
+	}
+
 	void HttpClient::LoggingFunction(const httplib::Request& req, const httplib::Response& res)
 	{
 		/* if is more then Debug */
@@ -78,28 +86,24 @@ namespace NosLib
 		logOutput += (std::format(":METHOD: {}\n", req.method).c_str());
 		logOutput += (std::format(":PATH:   {}\n", req.path).c_str());
 		logOutput += (std::format(":BODY:   {}\n", req.body).c_str());
-
 		logOutput += ("======HEADERS======\n");
-
 		for (auto itr = req.headers.begin(); itr != req.headers.end(); itr++)
 		{
 			logOutput += (std::format("{} : {}\n", itr->first, itr->second).c_str());
 		}
 		logOutput += ("====================================================================================================================\nResponse\n");
-
 		logOutput += (std::format(":STATUS: {}\n", res.status).c_str());
 		logOutput += (std::format(":REASON: {}\n", res.reason).c_str());
 		logOutput += (std::format(":BODY:   {}\n", res.body).c_str());
 		logOutput += (std::format(":LOCATION:   {}\n", res.location).c_str());
-
 		logOutput += ("======HEADERS======\n");
-
 		for (auto itr = res.headers.begin(); itr != res.headers.end(); itr++)
 		{
 			logOutput += (std::format("{} : {}\n", itr->first, itr->second).c_str());
 		}
 		logOutput += ("====================================================================================================================\n\n\n");
 
+		logOutput = NosLib::Logging::SanitizeString(logOutput);
 		NosLib::Logging::CreateLog(NosLib::Logging::Severity::Debug, logOutput);
 	}
 }

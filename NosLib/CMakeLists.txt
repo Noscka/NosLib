@@ -33,6 +33,7 @@ set(NOSLIB_INSTALL_INCLUDEDIR "Include")
 add_library(${PROJECT_NAME} ${LibrarySourceFiles})
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS "${PROJECT_NAME}")
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include> $<INSTALL_INTERFACE:${NOSLIB_INSTALL_INCLUDEDIR}>)
+#target_link_libraries(${PROJECT_NAME} PUBLIC htmlparser)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
 

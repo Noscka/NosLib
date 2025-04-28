@@ -1,3 +1,6 @@
 [submodule "CMake"]
 	path = NosCMLib
 	url = https://github.com/Noscka/NosCMLib
+[submodule "External/HtmlParser"]
+	path = External/HtmlParser
+	url = https://github.com/mylogin/htmlparser.git

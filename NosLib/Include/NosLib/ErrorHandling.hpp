@@ -17,35 +17,20 @@
 * @param[in]  ...   variadic parameters to be used in the message above
 * @return	  Whatever the statement directive describes
 */
-#ifdef _WIN32
+
 #define NOSLOG_ASSERT(statement, statementDirective, logSeverity, logMsg, ...)\
-	do									\
-	{									\
-		if ((statement))				\
-		{								\
-			NosLib::Logging::CreateLog( \
-				logSeverity,			\
-				logMsg,				    \
-				__VA_ARGS__				\
-			);							\
-			statementDirective;			\
-		}								\
-	} while (0)
-#else
-#define NOSLOG_ASSERT(statement, statementDirective, logSeverity, logMsg, ...)\
-	do									\
-	{									\
-		if ((statement))				\
-		{								\
-			NosLib::Logging::CreateLog( \
-				logSeverity,			\
-				logMsg __VA_OPT__(, )   \
-				__VA_ARGS__				\
-			);							\
-			statementDirective;			\
-		}								\
-	} while (0)
-#endif // _WIN32
+do									 \
+{									 \
+	if ((statement))				 \
+	{								 \
+		NosLib::Logging::CreateLog(  \
+			logSeverity,			 \
+			logMsg				     \
+			__VA_OPT__(, __VA_ARGS__)\
+		);							 \
+		statementDirective;			 \
+	}								 \
+} while (0)
 
 /**
 * @brief if statement is true, runs directive and leaves log
@@ -165,7 +150,7 @@ namespace NosLib
 
 		template<typename U = ReturnValue,
 			typename = std::enable_if_t<!std::is_same_v<U, bool>>>
-		explicit operator ReturnValue&() noexcept
+		explicit operator ReturnValue& () noexcept
 		{
 			return StoredObject;
 		}

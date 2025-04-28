@@ -45,7 +45,6 @@ namespace NosLib
 		const auto ToWstring = ConvertString<wchar_t, char>;
 #pragma endregion
 
-#pragma region Character Conversion
 		/// <summary>
 		/// Converts single characters using casting
 		/// </summary>
@@ -61,25 +60,31 @@ namespace NosLib
 
 			return static_cast<CharTo>(charIn);
 		}
-#pragma endregion
 
-#pragma region IsNumber
-		/// <summary>
-		/// Check if string is number (with or without signs)
-		/// </summary>
-		/// <typeparam name="CharT">- string type</typeparam>
-		/// <param name="str">- string to check</param>
-		/// <param name="allowSigns">(default = true) - if it should allow signs at the start of the string (-123 or +123)</param>
-		/// <returns>if string is valid number</returns>
-		template <typename CharT>
-		inline constexpr bool IsNumber(const std::basic_string<CharT>& str, const bool& allowSigns = true)
+		inline constexpr NosString ToLower(NosString str)
+		{
+			std::transform(str.begin(), str.end(), str.begin(),
+						   [](unsigned char c) { return std::tolower(c); });
+
+			return str;
+		}
+
+		inline constexpr NosString ToUpper(NosString str)
+		{
+			std::transform(str.begin(), str.end(), str.begin(),
+						   [](unsigned char c) { return std::toupper(c); });
+
+			return str;
+		}
+
+		inline constexpr bool IsNumber(const NosString& str, const bool& allowSigns = true)
 		{
 			/* Iterator int, allows for changing start position */
 			int Iteration = 0;
 			if (allowSigns)
 			{
 				/* if allowSigns is true, check if first character is either - or + or a number */
-				if ((str[0] != NosLib::String::ConvertCharacter<CharT, wchar_t>(L'-') && str[0] != NosLib::String::ConvertCharacter<CharT, wchar_t>(L'+')) && !std::isdigit(str[0]))
+				if ((str[0] != '-' && str[0] != L'+') && !std::isdigit(str[0]))
 					return false;
 
 				Iteration = 1; /* Make Iterator go up 1 so for loop doesn't check first character */
@@ -93,7 +98,6 @@ namespace NosLib
 
 			return true;
 		}
-#pragma endregion
 
 #pragma region Split
 		/// <summary>

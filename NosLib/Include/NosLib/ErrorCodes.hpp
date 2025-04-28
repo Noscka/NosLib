@@ -11,6 +11,7 @@ namespace NosLib
 	enum class NOSLIB_API GenericErrors : uint8_t
 	{
 		Successful,
+		InvalidArgument,
 		Casting,
 		NullPointer
 	};
@@ -35,6 +36,9 @@ namespace NosLib
 			{
 			case GenericErrors::Successful:
 				return "Successful";
+
+			case GenericErrors::InvalidArgument:
+				return "Argument was invalid";
 
 			case GenericErrors::Casting:
 				return "Couldn't cast";

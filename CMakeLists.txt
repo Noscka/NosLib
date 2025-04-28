@@ -20,6 +20,8 @@ option(NOSLIB_REQUIRE_OPENSSL "Require OpenSSL" ON)
 option(NOSLIB_REQUIRE_BOOST "Require Boost" ON)
 option(NOSLIB_REQUIRE_CPPHTTPLIB "Require Cpp-HttpLib" ON)
 
+#add_subdirectory(External)
+
 add_subdirectory(NosLib)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)

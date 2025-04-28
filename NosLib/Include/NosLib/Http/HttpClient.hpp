@@ -23,9 +23,8 @@ namespace NosLib
 
 		static Ptr MakeClient(const std::string& host, const bool& enableServerCertVerification = true);
 
-		static void SetUserAgent(const std::string& userAgent);
-		static void SetUserAgent(const std::wstring& userAgent);
 		bool DownloadFile(const std::string& urlPath, const std::string& filepath);
+		bool VerifyResult(const httplib::Result&);
 
 	protected:
 		static void LoggingFunction(const httplib::Request& req, const httplib::Response& res);
